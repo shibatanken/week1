@@ -1,0 +1,4 @@
+2025-11-30 22:55:16 - User signed up with email: haidang1@gmail.com
+2025-11-30 22:55:25 - User signed up with email: haidang1@gmail.com
+2025-11-30 22:55:29 - User signed up with email: haidang1@gmail.com
+2025-11-30 22:55:39 - User logged in with email: haidang1@gmail.com
