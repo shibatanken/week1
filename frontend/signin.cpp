@@ -72,7 +72,7 @@ void Signin::onReadyRead() {
                 ui->emailLineEdit->setText("");
                 ui->passwordLineEdit->setText("");
 
-                emit showHome();
+                emit loginSuccess();
             }
         }
     } else {

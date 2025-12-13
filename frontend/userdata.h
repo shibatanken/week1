@@ -15,49 +15,7 @@ public:
 
     void setUserData(const QJsonObject &data) {
         userData = data;
-    }
-
-    void setUserName(const QString &name) {
-        userData["name"] = name;
-    }
-
-    void setEmail(const QString &email) {
-        userData["email"] = email;
-    }
-
-    void setDob(const QString &dob) {
-        userData["dob"] = dob;
-    }
-
-    QString getUserName() const {
-        if (userData.contains("name")) {
-            return userData["name"].toString();
-        }
-        return QString();
-    }
-
-    QString getEmail() const {
-        if (userData.contains("email")) {
-            return userData["email"].toString();
-        }
-        return QString();
-    }
-
-    QString getDob() const {
-        if (userData.contains("dob")) {
-            return userData["dob"].toString();
-        }
-        return QString();
-    }
-
-    QString getRole() const {
-        if (userData.contains("email")) {
-            QString email = userData["email"].toString();
-            if (email == "admin@gmail.com") {
-                return "admin";
-            } else return "user";
-        }
-        return QString();
+        qDebug() << "UserData set:" << userData;
     }
 
     QJsonObject getUserData() const {
@@ -69,6 +27,21 @@ public:
             return userData["user_id"].toInt();
         }
         return -1;
+    }
+
+    QString getRole() const {
+        if (userData.contains("role")) {
+            return userData["role"].toString();
+        }
+        return "student"; // Default role
+    }
+
+    bool isTeacher() const {
+        return getRole() == "teacher";
+    }
+
+    bool isStudent() const {
+        return getRole() == "student";
     }
 
     void reset() {

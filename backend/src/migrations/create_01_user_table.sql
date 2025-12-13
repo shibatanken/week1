@@ -3,5 +3,7 @@ CREATE TABLE IF NOT EXISTS user (
     email VARCHAR(255) NOT NULL,
     pass VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    dob DATETIME
+    dob DATETIME,
+    role ENUM('student', 'teacher') NOT NULL DEFAULT 'student',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );

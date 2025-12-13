@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ClassDetail</class>
+ <widget class="QWidget" name="ClassDetail">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Class Detail</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QPushButton" name="backButton">
+     <property name="text">
+      <string>&lt; Quay lại</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="classNameLabel">
+     <property name="text">
+      <string>Tên lớp học</string>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="descriptionLabel">
+     <property name="text">
+      <string>Mô tả</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="teacherLabel">
+     <property name="text">
+      <string>Giáo viên: </string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Danh sách sinh viên:</string>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="addStudentLayout">
+     <item>
+      <widget class="QComboBox" name="studentComboBox"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="addStudentButton">
+       <property name="text">
+        <string>Thêm sinh viên</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="refreshButton">
+       <property name="text">
+        <string>Làm mới</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QListWidget" name="studentListWidget"/>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
+

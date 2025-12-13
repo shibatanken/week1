@@ -9,19 +9,25 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     signin.cpp \
-    signup.cpp
+    signup.cpp \
+    classlist.cpp \
+    classdetail.cpp
 
 HEADERS += \
     config.h \
     mainwindow.h \
     signin.h \
     signup.h \
-    userdata.h
+    userdata.h \
+    classlist.h \
+    classdetail.h
 
 FORMS += \
     mainwindow.ui \
     signin.ui \
-    signup.ui
+    signup.ui \
+    classlist.ui \
+    classdetail.ui
 
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

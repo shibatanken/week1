@@ -1,5 +1,6 @@
 #include "../data_structures/index.h"
 #include "../controllers/auth/auth_controller.h"
+#include "../controllers/class/class_controller.h"
 #include <netinet/in.h>
 #include <pthread.h>
 #include <signal.h>
@@ -26,6 +27,7 @@ void *pthread_routine(void *arg);
 
 void handle_control_message(int socket, ControlMessage *msg)
 {
+    // Authentication
     if (strcmp(msg->type, LOGIN) == 0)
     {
         handle_login(socket, msg);
@@ -33,6 +35,35 @@ void handle_control_message(int socket, ControlMessage *msg)
     else if (strcmp(msg->type, SIGN_UP) == 0)
     {
         handle_signup(socket, msg);
+    }
+    // Class Management
+    else if (strcmp(msg->type, CREATE_CLASS) == 0)
+    {
+        handle_create_class(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_CLASS_LIST) == 0)
+    {
+        handle_get_class_list(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_CLASS_DETAIL) == 0)
+    {
+        handle_get_class_detail(socket, msg);
+    }
+    else if (strcmp(msg->type, ADD_STUDENT_TO_CLASS) == 0)
+    {
+        handle_add_student_to_class(socket, msg);
+    }
+    else if (strcmp(msg->type, REMOVE_STUDENT_FROM_CLASS) == 0)
+    {
+        handle_remove_student_from_class(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_STUDENTS_IN_CLASS) == 0)
+    {
+        handle_get_students_in_class(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_STUDENTS_NOT_IN_CLASS) == 0)
+    {
+        handle_get_students_not_in_class(socket, msg);
     }
 }
 
