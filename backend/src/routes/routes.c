@@ -1,5 +1,5 @@
 #include "../data_structures/index.h"
-#include "../controllers/auth/auth_controller.h"
+#include "../controllers/controller.h"
 #include <netinet/in.h>
 #include <pthread.h>
 #include <signal.h>
@@ -33,6 +33,22 @@ void handle_control_message(int socket, ControlMessage *msg)
     else if (strcmp(msg->type, SIGN_UP) == 0)
     {
         handle_signup(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_ROOM_LIST) == 0)
+    {
+        handle_get_room_list(socket, msg);
+    }
+    else if (strcmp(msg->type, CREATE_ROOM) == 0)
+    {
+        handle_create_room(socket, msg);
+    }
+    else if (strcmp(msg->type, ADD_QUESTION) == 0)
+    {
+        handle_add_question(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_ROOM_QUESTION) == 0)
+    {
+        handle_get_room_question(socket, msg);
     }
 }
 
@@ -125,9 +141,10 @@ void *pthread_routine(void *arg)
     pthread_arg_t *pthread_arg = (pthread_arg_t *)arg;
     int new_socket_fd = pthread_arg->new_socket_fd;
 
-    char buffer[2048];
+    char buffer[4096];
     memset(buffer, 0, sizeof(buffer));
-    read(new_socket_fd, buffer, 2048);
+    read(new_socket_fd, buffer, sizeof(buffer));
+    printf("Received message: %s\n", buffer);
 
     char *header = strtok(buffer, "\n");
     char *body = header + strlen(header) + 1;

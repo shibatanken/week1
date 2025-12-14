@@ -15,6 +15,8 @@ Signup::Signup(QWidget *parent)
     connect(ui->signinButton, &QPushButton::clicked, [this]() {
         emit showSignin();
     });
+    
+    connect(tcpSocket, &QTcpSocket::readyRead, this, &Signup::handleSignupResponse);
 }
 
 Signup::~Signup() {
@@ -42,8 +44,6 @@ void Signup::handleSignup() {
         tcpSocket->write(dataString.toUtf8());
         tcpSocket->flush();
     }
-
-    connect(tcpSocket, &QTcpSocket::readyRead, this, &Signup::handleSignupResponse);
 }
 
 void Signup::handleSignupResponse() {
@@ -51,8 +51,18 @@ void Signup::handleSignupResponse() {
     QString responseString(response);
 
     if (responseString.startsWith("NOTIFICATION SIGN_UP_SUCCESS")) {
-        QMessageBox::information(this, "Thông báo", "Đăng ký tài khoản thành công");
+        QMessageBox::information(this, "Thông báo", "Đăng ký tài khoản thành công! Vui lòng đăng nhập.");
+        
+        // Reset form
+        ui->emailLineEdit->clear();
+        ui->passwordLineEdit->clear();
+        ui->usernameLineEdit->clear();
+        
+        // Chuyển về trang đăng nhập
+        emit showSignin();
     } else {
-        QMessageBox::warning(this, "Thông báo", "Đăng ký tài khoản thất bại");
+        QMessageBox::warning(this, "Thông báo", "Đăng ký tài khoản thất bại. Vui lòng thử lại.");
     }
+    
+    tcpSocket->disconnectFromHost();
 }

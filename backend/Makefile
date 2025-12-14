@@ -6,7 +6,11 @@ SRCS = src/main.c \
        src/db/connect-db.c \
        src/routes/routes.c \
        src/controllers/auth/auth_controller.c \
+       src/controllers/room/room_controller.c \
+       src/controllers/question/question_controller.c \
        src/services/auth/auth_service.c \
+       src/services/room/room_service.c \
+       src/services/question/question_service.c \
        src/utils/json_utils.c \
        src/utils/mysql_utils.c \
        src/utils/time_utils.c \

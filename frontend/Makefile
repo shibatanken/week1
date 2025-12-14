@@ -52,16 +52,36 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = main.cpp \
+SOURCES       = createexamroom.cpp \
+		createquestion.cpp \
+		examroomdialog.cpp \
+		examroommanagement.cpp \
+		home.cpp \
+		main.cpp \
 		mainwindow.cpp \
 		signin.cpp \
-		signup.cpp moc_mainwindow.cpp \
+		signup.cpp moc_createexamroom.cpp \
+		moc_createquestion.cpp \
+		moc_examroomdialog.cpp \
+		moc_examroommanagement.cpp \
+		moc_home.cpp \
+		moc_mainwindow.cpp \
 		moc_signin.cpp \
 		moc_signup.cpp
-OBJECTS       = main.o \
+OBJECTS       = createexamroom.o \
+		createquestion.o \
+		examroomdialog.o \
+		examroommanagement.o \
+		home.o \
+		main.o \
 		mainwindow.o \
 		signin.o \
 		signup.o \
+		moc_createexamroom.o \
+		moc_createquestion.o \
+		moc_examroomdialog.o \
+		moc_examroommanagement.o \
+		moc_home.o \
 		moc_mainwindow.o \
 		moc_signin.o \
 		moc_signup.o
@@ -277,10 +297,20 @@ DIST          = /opt/anaconda3/mkspecs/features/spec_pre.prf \
 		/opt/anaconda3/mkspecs/features/yacc.prf \
 		/opt/anaconda3/mkspecs/features/lex.prf \
 		frontend.pro config.h \
+		createexamroom.h \
+		createquestion.h \
+		examroomdialog.h \
+		examroommanagement.h \
+		home.h \
 		mainwindow.h \
 		signin.h \
 		signup.h \
-		userdata.h main.cpp \
+		userdata.h createexamroom.cpp \
+		createquestion.cpp \
+		examroomdialog.cpp \
+		examroommanagement.cpp \
+		home.cpp \
+		main.cpp \
 		mainwindow.cpp \
 		signin.cpp \
 		signup.cpp
@@ -302,7 +332,7 @@ include /opt/anaconda3/mkspecs/features/mac/sdk.mk
 first: all
 ####### Build rules
 
-frontend.app/Contents/MacOS/frontend: ui_mainwindow.h ui_signin.h ui_signup.h $(OBJECTS)  
+frontend.app/Contents/MacOS/frontend: ui_createexamroom.h ui_createquestion.h ui_examroomdialog.h ui_examroommanagement.h ui_home.h ui_mainwindow.h ui_signin.h ui_signup.h $(OBJECTS)  
 	@test -d frontend.app/Contents/MacOS/ || mkdir -p frontend.app/Contents/MacOS/
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
@@ -761,9 +791,9 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /opt/anaconda3/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents config.h mainwindow.h signin.h signup.h userdata.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp signin.cpp signup.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.ui signin.ui signup.ui $(DISTDIR)/
+	$(COPY_FILE) --parents config.h createexamroom.h createquestion.h examroomdialog.h examroommanagement.h home.h mainwindow.h signin.h signup.h userdata.h $(DISTDIR)/
+	$(COPY_FILE) --parents createexamroom.cpp createquestion.cpp examroomdialog.cpp examroommanagement.cpp home.cpp main.cpp mainwindow.cpp signin.cpp signup.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents createexamroom.ui createquestion.ui examroomdialog.ui examroommanagement.ui home.ui mainwindow.ui signin.ui signup.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -798,9 +828,624 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /opt/anaconda3/mkspecs/features/data/dummy.cpp
 	/Library/Developer/CommandLineTools/usr/bin/clang++ -pipe -stdlib=libc++ -O2 -std=gnu++1z $(EXPORT_ARCH_ARGS) -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=10.13 -Wall -Wextra -dM -E -o moc_predefs.h /opt/anaconda3/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_signin.cpp moc_signup.cpp
+compiler_moc_header_make_all: moc_createexamroom.cpp moc_createquestion.cpp moc_examroomdialog.cpp moc_examroommanagement.cpp moc_home.cpp moc_mainwindow.cpp moc_signin.cpp moc_signup.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_signin.cpp moc_signup.cpp
+	-$(DEL_FILE) moc_createexamroom.cpp moc_createquestion.cpp moc_examroomdialog.cpp moc_examroommanagement.cpp moc_home.cpp moc_mainwindow.cpp moc_signin.cpp moc_signup.cpp
+moc_createexamroom.cpp: createexamroom.h \
+		/opt/anaconda3/include/qt/QtWidgets/QWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/opt/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig.h \
+		/opt/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/opt/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/opt/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qlogging.h \
+		/opt/anaconda3/include/qt/QtCore/qflags.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/opt/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/opt/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/opt/anaconda3/include/qt/QtCore/qmutex.h \
+		/opt/anaconda3/include/qt/QtCore/qnumeric.h \
+		/opt/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/opt/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qnamespace.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/opt/anaconda3/include/qt/QtCore/qobject.h \
+		/opt/anaconda3/include/qt/QtCore/qstring.h \
+		/opt/anaconda3/include/qt/QtCore/qchar.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearray.h \
+		/opt/anaconda3/include/qt/QtCore/qrefcount.h \
+		/opt/anaconda3/include/qt/QtCore/qarraydata.h \
+		/opt/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/opt/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qstringview.h \
+		/opt/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/opt/anaconda3/include/qt/QtCore/qlist.h \
+		/opt/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qiterator.h \
+		/opt/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/opt/anaconda3/include/qt/QtCore/qpair.h \
+		/opt/anaconda3/include/qt/QtCore/qvector.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qpoint.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/opt/anaconda3/include/qt/QtCore/qstringlist.h \
+		/opt/anaconda3/include/qt/QtCore/qregexp.h \
+		/opt/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/opt/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qmetatype.h \
+		/opt/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/opt/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qmargins.h \
+		/opt/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/opt/anaconda3/include/qt/QtCore/qrect.h \
+		/opt/anaconda3/include/qt/QtCore/qsize.h \
+		/opt/anaconda3/include/qt/QtGui/qpalette.h \
+		/opt/anaconda3/include/qt/QtGui/qcolor.h \
+		/opt/anaconda3/include/qt/QtGui/qrgb.h \
+		/opt/anaconda3/include/qt/QtGui/qrgba64.h \
+		/opt/anaconda3/include/qt/QtGui/qbrush.h \
+		/opt/anaconda3/include/qt/QtGui/qmatrix.h \
+		/opt/anaconda3/include/qt/QtGui/qpolygon.h \
+		/opt/anaconda3/include/qt/QtGui/qregion.h \
+		/opt/anaconda3/include/qt/QtCore/qdatastream.h \
+		/opt/anaconda3/include/qt/QtCore/qiodevice.h \
+		/opt/anaconda3/include/qt/QtCore/qline.h \
+		/opt/anaconda3/include/qt/QtGui/qtransform.h \
+		/opt/anaconda3/include/qt/QtGui/qimage.h \
+		/opt/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpixmap.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qshareddata.h \
+		/opt/anaconda3/include/qt/QtCore/qhash.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/opt/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/opt/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/opt/anaconda3/include/qt/QtGui/qcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/opt/anaconda3/include/qt/QtGui/qevent.h \
+		/opt/anaconda3/include/qt/QtCore/qvariant.h \
+		/opt/anaconda3/include/qt/QtCore/qmap.h \
+		/opt/anaconda3/include/qt/QtCore/qdebug.h \
+		/opt/anaconda3/include/qt/QtCore/qtextstream.h \
+		/opt/anaconda3/include/qt/QtCore/qlocale.h \
+		/opt/anaconda3/include/qt/QtCore/qset.h \
+		/opt/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/opt/anaconda3/include/qt/QtCore/qurl.h \
+		/opt/anaconda3/include/qt/QtCore/qurlquery.h \
+		/opt/anaconda3/include/qt/QtCore/qfile.h \
+		/opt/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/opt/anaconda3/include/qt/QtGui/qvector2d.h \
+		/opt/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		/opt/anaconda3/include/qt/QtNetwork/QTcpSocket \
+		/opt/anaconda3/include/qt/QtNetwork/qtcpsocket.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetworkglobal.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetwork-config.h \
+		/opt/anaconda3/include/qt/QtNetwork/qabstractsocket.h \
+		moc_predefs.h \
+		/opt/anaconda3/bin/moc
+	/opt/anaconda3/bin/moc $(DEFINES) --include '/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend/moc_predefs.h' -I/opt/anaconda3/mkspecs/macx-clang -I'/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend' -I/opt/anaconda3/include/qt -I/opt/anaconda3/include/qt/QtWidgets -I/opt/anaconda3/include/qt/QtGui -I/opt/anaconda3/include/qt/QtNetwork -I/opt/anaconda3/include/qt/QtCore -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/16/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include createexamroom.h -o moc_createexamroom.cpp
+
+moc_createquestion.cpp: createquestion.h \
+		/opt/anaconda3/include/qt/QtWidgets/QWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/opt/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig.h \
+		/opt/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/opt/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/opt/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qlogging.h \
+		/opt/anaconda3/include/qt/QtCore/qflags.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/opt/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/opt/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/opt/anaconda3/include/qt/QtCore/qmutex.h \
+		/opt/anaconda3/include/qt/QtCore/qnumeric.h \
+		/opt/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/opt/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qnamespace.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/opt/anaconda3/include/qt/QtCore/qobject.h \
+		/opt/anaconda3/include/qt/QtCore/qstring.h \
+		/opt/anaconda3/include/qt/QtCore/qchar.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearray.h \
+		/opt/anaconda3/include/qt/QtCore/qrefcount.h \
+		/opt/anaconda3/include/qt/QtCore/qarraydata.h \
+		/opt/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/opt/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qstringview.h \
+		/opt/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/opt/anaconda3/include/qt/QtCore/qlist.h \
+		/opt/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qiterator.h \
+		/opt/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/opt/anaconda3/include/qt/QtCore/qpair.h \
+		/opt/anaconda3/include/qt/QtCore/qvector.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qpoint.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/opt/anaconda3/include/qt/QtCore/qstringlist.h \
+		/opt/anaconda3/include/qt/QtCore/qregexp.h \
+		/opt/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/opt/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qmetatype.h \
+		/opt/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/opt/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qmargins.h \
+		/opt/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/opt/anaconda3/include/qt/QtCore/qrect.h \
+		/opt/anaconda3/include/qt/QtCore/qsize.h \
+		/opt/anaconda3/include/qt/QtGui/qpalette.h \
+		/opt/anaconda3/include/qt/QtGui/qcolor.h \
+		/opt/anaconda3/include/qt/QtGui/qrgb.h \
+		/opt/anaconda3/include/qt/QtGui/qrgba64.h \
+		/opt/anaconda3/include/qt/QtGui/qbrush.h \
+		/opt/anaconda3/include/qt/QtGui/qmatrix.h \
+		/opt/anaconda3/include/qt/QtGui/qpolygon.h \
+		/opt/anaconda3/include/qt/QtGui/qregion.h \
+		/opt/anaconda3/include/qt/QtCore/qdatastream.h \
+		/opt/anaconda3/include/qt/QtCore/qiodevice.h \
+		/opt/anaconda3/include/qt/QtCore/qline.h \
+		/opt/anaconda3/include/qt/QtGui/qtransform.h \
+		/opt/anaconda3/include/qt/QtGui/qimage.h \
+		/opt/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpixmap.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qshareddata.h \
+		/opt/anaconda3/include/qt/QtCore/qhash.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/opt/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/opt/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/opt/anaconda3/include/qt/QtGui/qcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/opt/anaconda3/include/qt/QtGui/qevent.h \
+		/opt/anaconda3/include/qt/QtCore/qvariant.h \
+		/opt/anaconda3/include/qt/QtCore/qmap.h \
+		/opt/anaconda3/include/qt/QtCore/qdebug.h \
+		/opt/anaconda3/include/qt/QtCore/qtextstream.h \
+		/opt/anaconda3/include/qt/QtCore/qlocale.h \
+		/opt/anaconda3/include/qt/QtCore/qset.h \
+		/opt/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/opt/anaconda3/include/qt/QtCore/qurl.h \
+		/opt/anaconda3/include/qt/QtCore/qurlquery.h \
+		/opt/anaconda3/include/qt/QtCore/qfile.h \
+		/opt/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/opt/anaconda3/include/qt/QtGui/qvector2d.h \
+		/opt/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		/opt/anaconda3/include/qt/QtNetwork/QTcpSocket \
+		/opt/anaconda3/include/qt/QtNetwork/qtcpsocket.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetworkglobal.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetwork-config.h \
+		/opt/anaconda3/include/qt/QtNetwork/qabstractsocket.h \
+		/opt/anaconda3/include/qt/QtWidgets/QListWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qlistwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlistview.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractitemview.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractscrollarea.h \
+		/opt/anaconda3/include/qt/QtWidgets/qframe.h \
+		/opt/anaconda3/include/qt/QtCore/qabstractitemmodel.h \
+		/opt/anaconda3/include/qt/QtCore/qitemselectionmodel.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractitemdelegate.h \
+		/opt/anaconda3/include/qt/QtWidgets/qstyleoption.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractspinbox.h \
+		/opt/anaconda3/include/qt/QtGui/qvalidator.h \
+		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
+		/opt/anaconda3/include/qt/QtGui/qicon.h \
+		/opt/anaconda3/include/qt/QtWidgets/qslider.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractslider.h \
+		/opt/anaconda3/include/qt/QtWidgets/qstyle.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtabbar.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtabwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qrubberband.h \
+		/opt/anaconda3/include/qt/QtWidgets/QPlainTextEdit \
+		/opt/anaconda3/include/qt/QtWidgets/qplaintextedit.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtextedit.h \
+		/opt/anaconda3/include/qt/QtGui/qtextdocument.h \
+		/opt/anaconda3/include/qt/QtGui/qtextoption.h \
+		/opt/anaconda3/include/qt/QtGui/qtextcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qtextformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpen.h \
+		/opt/anaconda3/include/qt/QtGui/qabstracttextdocumentlayout.h \
+		/opt/anaconda3/include/qt/QtGui/qtextlayout.h \
+		/opt/anaconda3/include/qt/QtGui/qglyphrun.h \
+		/opt/anaconda3/include/qt/QtGui/qrawfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontdatabase.h \
+		/opt/anaconda3/include/qt/QtWidgets/QRadioButton \
+		/opt/anaconda3/include/qt/QtWidgets/qradiobutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/QVBoxLayout \
+		/opt/anaconda3/include/qt/QtWidgets/qboxlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayoutitem.h \
+		/opt/anaconda3/include/qt/QtWidgets/qgridlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/QHBoxLayout \
+		/opt/anaconda3/include/qt/QtWidgets/QButtonGroup \
+		/opt/anaconda3/include/qt/QtWidgets/qbuttongroup.h \
+		moc_predefs.h \
+		/opt/anaconda3/bin/moc
+	/opt/anaconda3/bin/moc $(DEFINES) --include '/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend/moc_predefs.h' -I/opt/anaconda3/mkspecs/macx-clang -I'/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend' -I/opt/anaconda3/include/qt -I/opt/anaconda3/include/qt/QtWidgets -I/opt/anaconda3/include/qt/QtGui -I/opt/anaconda3/include/qt/QtNetwork -I/opt/anaconda3/include/qt/QtCore -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/16/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include createquestion.h -o moc_createquestion.cpp
+
+moc_examroomdialog.cpp: examroomdialog.h \
+		/opt/anaconda3/include/qt/QtWidgets/QWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/opt/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig.h \
+		/opt/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/opt/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/opt/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qlogging.h \
+		/opt/anaconda3/include/qt/QtCore/qflags.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/opt/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/opt/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/opt/anaconda3/include/qt/QtCore/qmutex.h \
+		/opt/anaconda3/include/qt/QtCore/qnumeric.h \
+		/opt/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/opt/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qnamespace.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/opt/anaconda3/include/qt/QtCore/qobject.h \
+		/opt/anaconda3/include/qt/QtCore/qstring.h \
+		/opt/anaconda3/include/qt/QtCore/qchar.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearray.h \
+		/opt/anaconda3/include/qt/QtCore/qrefcount.h \
+		/opt/anaconda3/include/qt/QtCore/qarraydata.h \
+		/opt/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/opt/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qstringview.h \
+		/opt/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/opt/anaconda3/include/qt/QtCore/qlist.h \
+		/opt/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qiterator.h \
+		/opt/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/opt/anaconda3/include/qt/QtCore/qpair.h \
+		/opt/anaconda3/include/qt/QtCore/qvector.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qpoint.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/opt/anaconda3/include/qt/QtCore/qstringlist.h \
+		/opt/anaconda3/include/qt/QtCore/qregexp.h \
+		/opt/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/opt/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qmetatype.h \
+		/opt/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/opt/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qmargins.h \
+		/opt/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/opt/anaconda3/include/qt/QtCore/qrect.h \
+		/opt/anaconda3/include/qt/QtCore/qsize.h \
+		/opt/anaconda3/include/qt/QtGui/qpalette.h \
+		/opt/anaconda3/include/qt/QtGui/qcolor.h \
+		/opt/anaconda3/include/qt/QtGui/qrgb.h \
+		/opt/anaconda3/include/qt/QtGui/qrgba64.h \
+		/opt/anaconda3/include/qt/QtGui/qbrush.h \
+		/opt/anaconda3/include/qt/QtGui/qmatrix.h \
+		/opt/anaconda3/include/qt/QtGui/qpolygon.h \
+		/opt/anaconda3/include/qt/QtGui/qregion.h \
+		/opt/anaconda3/include/qt/QtCore/qdatastream.h \
+		/opt/anaconda3/include/qt/QtCore/qiodevice.h \
+		/opt/anaconda3/include/qt/QtCore/qline.h \
+		/opt/anaconda3/include/qt/QtGui/qtransform.h \
+		/opt/anaconda3/include/qt/QtGui/qimage.h \
+		/opt/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpixmap.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qshareddata.h \
+		/opt/anaconda3/include/qt/QtCore/qhash.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/opt/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/opt/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/opt/anaconda3/include/qt/QtGui/qcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/opt/anaconda3/include/qt/QtGui/qevent.h \
+		/opt/anaconda3/include/qt/QtCore/qvariant.h \
+		/opt/anaconda3/include/qt/QtCore/qmap.h \
+		/opt/anaconda3/include/qt/QtCore/qdebug.h \
+		/opt/anaconda3/include/qt/QtCore/qtextstream.h \
+		/opt/anaconda3/include/qt/QtCore/qlocale.h \
+		/opt/anaconda3/include/qt/QtCore/qset.h \
+		/opt/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/opt/anaconda3/include/qt/QtCore/qurl.h \
+		/opt/anaconda3/include/qt/QtCore/qurlquery.h \
+		/opt/anaconda3/include/qt/QtCore/qfile.h \
+		/opt/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/opt/anaconda3/include/qt/QtGui/qvector2d.h \
+		/opt/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		/opt/anaconda3/include/qt/QtNetwork/QTcpSocket \
+		/opt/anaconda3/include/qt/QtNetwork/qtcpsocket.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetworkglobal.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetwork-config.h \
+		/opt/anaconda3/include/qt/QtNetwork/qabstractsocket.h \
+		moc_predefs.h \
+		/opt/anaconda3/bin/moc
+	/opt/anaconda3/bin/moc $(DEFINES) --include '/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend/moc_predefs.h' -I/opt/anaconda3/mkspecs/macx-clang -I'/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend' -I/opt/anaconda3/include/qt -I/opt/anaconda3/include/qt/QtWidgets -I/opt/anaconda3/include/qt/QtGui -I/opt/anaconda3/include/qt/QtNetwork -I/opt/anaconda3/include/qt/QtCore -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/16/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include examroomdialog.h -o moc_examroomdialog.cpp
+
+moc_examroommanagement.cpp: examroommanagement.h \
+		/opt/anaconda3/include/qt/QtWidgets/QWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/opt/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig.h \
+		/opt/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/opt/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/opt/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qlogging.h \
+		/opt/anaconda3/include/qt/QtCore/qflags.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/opt/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/opt/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/opt/anaconda3/include/qt/QtCore/qmutex.h \
+		/opt/anaconda3/include/qt/QtCore/qnumeric.h \
+		/opt/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/opt/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qnamespace.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/opt/anaconda3/include/qt/QtCore/qobject.h \
+		/opt/anaconda3/include/qt/QtCore/qstring.h \
+		/opt/anaconda3/include/qt/QtCore/qchar.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearray.h \
+		/opt/anaconda3/include/qt/QtCore/qrefcount.h \
+		/opt/anaconda3/include/qt/QtCore/qarraydata.h \
+		/opt/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/opt/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qstringview.h \
+		/opt/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/opt/anaconda3/include/qt/QtCore/qlist.h \
+		/opt/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qiterator.h \
+		/opt/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/opt/anaconda3/include/qt/QtCore/qpair.h \
+		/opt/anaconda3/include/qt/QtCore/qvector.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qpoint.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/opt/anaconda3/include/qt/QtCore/qstringlist.h \
+		/opt/anaconda3/include/qt/QtCore/qregexp.h \
+		/opt/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/opt/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qmetatype.h \
+		/opt/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/opt/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qmargins.h \
+		/opt/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/opt/anaconda3/include/qt/QtCore/qrect.h \
+		/opt/anaconda3/include/qt/QtCore/qsize.h \
+		/opt/anaconda3/include/qt/QtGui/qpalette.h \
+		/opt/anaconda3/include/qt/QtGui/qcolor.h \
+		/opt/anaconda3/include/qt/QtGui/qrgb.h \
+		/opt/anaconda3/include/qt/QtGui/qrgba64.h \
+		/opt/anaconda3/include/qt/QtGui/qbrush.h \
+		/opt/anaconda3/include/qt/QtGui/qmatrix.h \
+		/opt/anaconda3/include/qt/QtGui/qpolygon.h \
+		/opt/anaconda3/include/qt/QtGui/qregion.h \
+		/opt/anaconda3/include/qt/QtCore/qdatastream.h \
+		/opt/anaconda3/include/qt/QtCore/qiodevice.h \
+		/opt/anaconda3/include/qt/QtCore/qline.h \
+		/opt/anaconda3/include/qt/QtGui/qtransform.h \
+		/opt/anaconda3/include/qt/QtGui/qimage.h \
+		/opt/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpixmap.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qshareddata.h \
+		/opt/anaconda3/include/qt/QtCore/qhash.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/opt/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/opt/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/opt/anaconda3/include/qt/QtGui/qcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/opt/anaconda3/include/qt/QtGui/qevent.h \
+		/opt/anaconda3/include/qt/QtCore/qvariant.h \
+		/opt/anaconda3/include/qt/QtCore/qmap.h \
+		/opt/anaconda3/include/qt/QtCore/qdebug.h \
+		/opt/anaconda3/include/qt/QtCore/qtextstream.h \
+		/opt/anaconda3/include/qt/QtCore/qlocale.h \
+		/opt/anaconda3/include/qt/QtCore/qset.h \
+		/opt/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/opt/anaconda3/include/qt/QtCore/qurl.h \
+		/opt/anaconda3/include/qt/QtCore/qurlquery.h \
+		/opt/anaconda3/include/qt/QtCore/qfile.h \
+		/opt/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/opt/anaconda3/include/qt/QtGui/qvector2d.h \
+		/opt/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		/opt/anaconda3/include/qt/QtNetwork/QTcpSocket \
+		/opt/anaconda3/include/qt/QtNetwork/qtcpsocket.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetworkglobal.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetwork-config.h \
+		/opt/anaconda3/include/qt/QtNetwork/qabstractsocket.h \
+		moc_predefs.h \
+		/opt/anaconda3/bin/moc
+	/opt/anaconda3/bin/moc $(DEFINES) --include '/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend/moc_predefs.h' -I/opt/anaconda3/mkspecs/macx-clang -I'/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend' -I/opt/anaconda3/include/qt -I/opt/anaconda3/include/qt/QtWidgets -I/opt/anaconda3/include/qt/QtGui -I/opt/anaconda3/include/qt/QtNetwork -I/opt/anaconda3/include/qt/QtCore -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/16/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include examroommanagement.h -o moc_examroommanagement.cpp
+
+moc_home.cpp: home.h \
+		/opt/anaconda3/include/qt/QtWidgets/QWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/opt/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig.h \
+		/opt/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/opt/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/opt/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qlogging.h \
+		/opt/anaconda3/include/qt/QtCore/qflags.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/opt/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/opt/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/opt/anaconda3/include/qt/QtCore/qmutex.h \
+		/opt/anaconda3/include/qt/QtCore/qnumeric.h \
+		/opt/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/opt/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qnamespace.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/opt/anaconda3/include/qt/QtCore/qobject.h \
+		/opt/anaconda3/include/qt/QtCore/qstring.h \
+		/opt/anaconda3/include/qt/QtCore/qchar.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearray.h \
+		/opt/anaconda3/include/qt/QtCore/qrefcount.h \
+		/opt/anaconda3/include/qt/QtCore/qarraydata.h \
+		/opt/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/opt/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qstringview.h \
+		/opt/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/opt/anaconda3/include/qt/QtCore/qlist.h \
+		/opt/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qiterator.h \
+		/opt/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/opt/anaconda3/include/qt/QtCore/qpair.h \
+		/opt/anaconda3/include/qt/QtCore/qvector.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qpoint.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/opt/anaconda3/include/qt/QtCore/qstringlist.h \
+		/opt/anaconda3/include/qt/QtCore/qregexp.h \
+		/opt/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/opt/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qmetatype.h \
+		/opt/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/opt/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qmargins.h \
+		/opt/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/opt/anaconda3/include/qt/QtCore/qrect.h \
+		/opt/anaconda3/include/qt/QtCore/qsize.h \
+		/opt/anaconda3/include/qt/QtGui/qpalette.h \
+		/opt/anaconda3/include/qt/QtGui/qcolor.h \
+		/opt/anaconda3/include/qt/QtGui/qrgb.h \
+		/opt/anaconda3/include/qt/QtGui/qrgba64.h \
+		/opt/anaconda3/include/qt/QtGui/qbrush.h \
+		/opt/anaconda3/include/qt/QtGui/qmatrix.h \
+		/opt/anaconda3/include/qt/QtGui/qpolygon.h \
+		/opt/anaconda3/include/qt/QtGui/qregion.h \
+		/opt/anaconda3/include/qt/QtCore/qdatastream.h \
+		/opt/anaconda3/include/qt/QtCore/qiodevice.h \
+		/opt/anaconda3/include/qt/QtCore/qline.h \
+		/opt/anaconda3/include/qt/QtGui/qtransform.h \
+		/opt/anaconda3/include/qt/QtGui/qimage.h \
+		/opt/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpixmap.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qshareddata.h \
+		/opt/anaconda3/include/qt/QtCore/qhash.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/opt/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/opt/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/opt/anaconda3/include/qt/QtGui/qcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/opt/anaconda3/include/qt/QtGui/qevent.h \
+		/opt/anaconda3/include/qt/QtCore/qvariant.h \
+		/opt/anaconda3/include/qt/QtCore/qmap.h \
+		/opt/anaconda3/include/qt/QtCore/qdebug.h \
+		/opt/anaconda3/include/qt/QtCore/qtextstream.h \
+		/opt/anaconda3/include/qt/QtCore/qlocale.h \
+		/opt/anaconda3/include/qt/QtCore/qset.h \
+		/opt/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/opt/anaconda3/include/qt/QtCore/qurl.h \
+		/opt/anaconda3/include/qt/QtCore/qurlquery.h \
+		/opt/anaconda3/include/qt/QtCore/qfile.h \
+		/opt/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/opt/anaconda3/include/qt/QtGui/qvector2d.h \
+		/opt/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		userdata.h \
+		/opt/anaconda3/include/qt/QtCore/QString \
+		/opt/anaconda3/include/qt/QtCore/QJsonObject \
+		/opt/anaconda3/include/qt/QtCore/qjsonobject.h \
+		/opt/anaconda3/include/qt/QtCore/qjsonvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qcborvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qdatetime.h \
+		/opt/anaconda3/include/qt/QtCore/qcborcommon.h \
+		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
+		/opt/anaconda3/include/qt/QtCore/quuid.h \
+		/opt/anaconda3/include/qt/QtCore/QDebug \
+		moc_predefs.h \
+		/opt/anaconda3/bin/moc
+	/opt/anaconda3/bin/moc $(DEFINES) --include '/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend/moc_predefs.h' -I/opt/anaconda3/mkspecs/macx-clang -I'/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend' -I/opt/anaconda3/include/qt -I/opt/anaconda3/include/qt/QtWidgets -I/opt/anaconda3/include/qt/QtGui -I/opt/anaconda3/include/qt/QtNetwork -I/opt/anaconda3/include/qt/QtCore -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/16/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include home.h -o moc_home.cpp
+
 moc_mainwindow.cpp: mainwindow.h \
 		/opt/anaconda3/include/qt/QtWidgets/QMainWindow \
 		/opt/anaconda3/include/qt/QtWidgets/qmainwindow.h \
@@ -927,6 +1572,8 @@ moc_mainwindow.cpp: mainwindow.h \
 		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
 		/opt/anaconda3/include/qt/QtCore/quuid.h \
 		/opt/anaconda3/include/qt/QtCore/QDebug \
+		home.h \
+		examroommanagement.h \
 		moc_predefs.h \
 		/opt/anaconda3/bin/moc
 	/opt/anaconda3/bin/moc $(DEFINES) --include '/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend/moc_predefs.h' -I/opt/anaconda3/mkspecs/macx-clang -I'/Users/luonghaidang/Downloads/Quizz-app-main 2/week1/frontend' -I/opt/anaconda3/include/qt -I/opt/anaconda3/include/qt/QtWidgets -I/opt/anaconda3/include/qt/QtGui -I/opt/anaconda3/include/qt/QtNetwork -I/opt/anaconda3/include/qt/QtCore -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/16/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include mainwindow.h -o moc_mainwindow.cpp
@@ -1172,9 +1819,29 @@ compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h ui_signin.h ui_signup.h
+compiler_uic_make_all: ui_createexamroom.h ui_createquestion.h ui_examroomdialog.h ui_examroommanagement.h ui_home.h ui_mainwindow.h ui_signin.h ui_signup.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h ui_signin.h ui_signup.h
+	-$(DEL_FILE) ui_createexamroom.h ui_createquestion.h ui_examroomdialog.h ui_examroommanagement.h ui_home.h ui_mainwindow.h ui_signin.h ui_signup.h
+ui_createexamroom.h: createexamroom.ui \
+		/opt/anaconda3/bin/uic
+	/opt/anaconda3/bin/uic createexamroom.ui -o ui_createexamroom.h
+
+ui_createquestion.h: createquestion.ui \
+		/opt/anaconda3/bin/uic
+	/opt/anaconda3/bin/uic createquestion.ui -o ui_createquestion.h
+
+ui_examroomdialog.h: examroomdialog.ui \
+		/opt/anaconda3/bin/uic
+	/opt/anaconda3/bin/uic examroomdialog.ui -o ui_examroomdialog.h
+
+ui_examroommanagement.h: examroommanagement.ui \
+		/opt/anaconda3/bin/uic
+	/opt/anaconda3/bin/uic examroommanagement.ui -o ui_examroommanagement.h
+
+ui_home.h: home.ui \
+		/opt/anaconda3/bin/uic
+	/opt/anaconda3/bin/uic home.ui -o ui_home.h
+
 ui_mainwindow.h: mainwindow.ui \
 		/opt/anaconda3/bin/uic
 	/opt/anaconda3/bin/uic mainwindow.ui -o ui_mainwindow.h
@@ -1198,6 +1865,860 @@ compiler_lex_clean:
 compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
+
+createexamroom.o: createexamroom.cpp createexamroom.h \
+		/opt/anaconda3/include/qt/QtWidgets/QWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/opt/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig.h \
+		/opt/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/opt/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/opt/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qlogging.h \
+		/opt/anaconda3/include/qt/QtCore/qflags.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/opt/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/opt/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/opt/anaconda3/include/qt/QtCore/qmutex.h \
+		/opt/anaconda3/include/qt/QtCore/qnumeric.h \
+		/opt/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/opt/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qnamespace.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/opt/anaconda3/include/qt/QtCore/qobject.h \
+		/opt/anaconda3/include/qt/QtCore/qstring.h \
+		/opt/anaconda3/include/qt/QtCore/qchar.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearray.h \
+		/opt/anaconda3/include/qt/QtCore/qrefcount.h \
+		/opt/anaconda3/include/qt/QtCore/qarraydata.h \
+		/opt/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/opt/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qstringview.h \
+		/opt/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/opt/anaconda3/include/qt/QtCore/qlist.h \
+		/opt/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qiterator.h \
+		/opt/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/opt/anaconda3/include/qt/QtCore/qpair.h \
+		/opt/anaconda3/include/qt/QtCore/qvector.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qpoint.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/opt/anaconda3/include/qt/QtCore/qstringlist.h \
+		/opt/anaconda3/include/qt/QtCore/qregexp.h \
+		/opt/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/opt/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qmetatype.h \
+		/opt/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/opt/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qmargins.h \
+		/opt/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/opt/anaconda3/include/qt/QtCore/qrect.h \
+		/opt/anaconda3/include/qt/QtCore/qsize.h \
+		/opt/anaconda3/include/qt/QtGui/qpalette.h \
+		/opt/anaconda3/include/qt/QtGui/qcolor.h \
+		/opt/anaconda3/include/qt/QtGui/qrgb.h \
+		/opt/anaconda3/include/qt/QtGui/qrgba64.h \
+		/opt/anaconda3/include/qt/QtGui/qbrush.h \
+		/opt/anaconda3/include/qt/QtGui/qmatrix.h \
+		/opt/anaconda3/include/qt/QtGui/qpolygon.h \
+		/opt/anaconda3/include/qt/QtGui/qregion.h \
+		/opt/anaconda3/include/qt/QtCore/qdatastream.h \
+		/opt/anaconda3/include/qt/QtCore/qiodevice.h \
+		/opt/anaconda3/include/qt/QtCore/qline.h \
+		/opt/anaconda3/include/qt/QtGui/qtransform.h \
+		/opt/anaconda3/include/qt/QtGui/qimage.h \
+		/opt/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpixmap.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qshareddata.h \
+		/opt/anaconda3/include/qt/QtCore/qhash.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/opt/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/opt/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/opt/anaconda3/include/qt/QtGui/qcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/opt/anaconda3/include/qt/QtGui/qevent.h \
+		/opt/anaconda3/include/qt/QtCore/qvariant.h \
+		/opt/anaconda3/include/qt/QtCore/qmap.h \
+		/opt/anaconda3/include/qt/QtCore/qdebug.h \
+		/opt/anaconda3/include/qt/QtCore/qtextstream.h \
+		/opt/anaconda3/include/qt/QtCore/qlocale.h \
+		/opt/anaconda3/include/qt/QtCore/qset.h \
+		/opt/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/opt/anaconda3/include/qt/QtCore/qurl.h \
+		/opt/anaconda3/include/qt/QtCore/qurlquery.h \
+		/opt/anaconda3/include/qt/QtCore/qfile.h \
+		/opt/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/opt/anaconda3/include/qt/QtGui/qvector2d.h \
+		/opt/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		/opt/anaconda3/include/qt/QtNetwork/QTcpSocket \
+		/opt/anaconda3/include/qt/QtNetwork/qtcpsocket.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetworkglobal.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetwork-config.h \
+		/opt/anaconda3/include/qt/QtNetwork/qabstractsocket.h \
+		ui_createexamroom.h \
+		/opt/anaconda3/include/qt/QtCore/QVariant \
+		/opt/anaconda3/include/qt/QtWidgets/QApplication \
+		/opt/anaconda3/include/qt/QtWidgets/qapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qeventloop.h \
+		/opt/anaconda3/include/qt/QtWidgets/qdesktopwidget.h \
+		/opt/anaconda3/include/qt/QtGui/qguiapplication.h \
+		/opt/anaconda3/include/qt/QtGui/qinputmethod.h \
+		/opt/anaconda3/include/qt/QtWidgets/QDateTimeEdit \
+		/opt/anaconda3/include/qt/QtWidgets/qdatetimeedit.h \
+		/opt/anaconda3/include/qt/QtCore/qdatetime.h \
+		/opt/anaconda3/include/qt/QtCore/qcalendar.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractspinbox.h \
+		/opt/anaconda3/include/qt/QtGui/qvalidator.h \
+		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
+		/opt/anaconda3/include/qt/QtWidgets/QFormLayout \
+		/opt/anaconda3/include/qt/QtWidgets/qformlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/QLayout \
+		/opt/anaconda3/include/qt/QtWidgets/qlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayoutitem.h \
+		/opt/anaconda3/include/qt/QtWidgets/qboxlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qgridlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/QLabel \
+		/opt/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/opt/anaconda3/include/qt/QtWidgets/qframe.h \
+		/opt/anaconda3/include/qt/QtWidgets/QLineEdit \
+		/opt/anaconda3/include/qt/QtWidgets/qlineedit.h \
+		/opt/anaconda3/include/qt/QtGui/qtextcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qtextformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpen.h \
+		/opt/anaconda3/include/qt/QtGui/qtextoption.h \
+		/opt/anaconda3/include/qt/QtWidgets/QPushButton \
+		/opt/anaconda3/include/qt/QtWidgets/qpushbutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/opt/anaconda3/include/qt/QtGui/qicon.h \
+		/opt/anaconda3/include/qt/QtWidgets/QSpacerItem \
+		/opt/anaconda3/include/qt/QtWidgets/QSpinBox \
+		/opt/anaconda3/include/qt/QtWidgets/qspinbox.h \
+		/opt/anaconda3/include/qt/QtWidgets/QVBoxLayout \
+		/opt/anaconda3/include/qt/QtCore/QDebug \
+		/opt/anaconda3/include/qt/QtWidgets/QDialog \
+		/opt/anaconda3/include/qt/QtWidgets/qdialog.h \
+		/opt/anaconda3/include/qt/QtWidgets/QMessageBox \
+		/opt/anaconda3/include/qt/QtWidgets/qmessagebox.h \
+		/opt/anaconda3/include/qt/QtCore/QJsonDocument \
+		/opt/anaconda3/include/qt/QtCore/qjsondocument.h \
+		/opt/anaconda3/include/qt/QtCore/qjsonvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qcborvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qcborcommon.h \
+		/opt/anaconda3/include/qt/QtCore/quuid.h \
+		/opt/anaconda3/include/qt/QtCore/QJsonArray \
+		/opt/anaconda3/include/qt/QtCore/qjsonarray.h \
+		/opt/anaconda3/include/qt/QtCore/QJsonObject \
+		/opt/anaconda3/include/qt/QtCore/qjsonobject.h \
+		config.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o createexamroom.o createexamroom.cpp
+
+createquestion.o: createquestion.cpp createquestion.h \
+		/opt/anaconda3/include/qt/QtWidgets/QWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/opt/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig.h \
+		/opt/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/opt/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/opt/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qlogging.h \
+		/opt/anaconda3/include/qt/QtCore/qflags.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/opt/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/opt/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/opt/anaconda3/include/qt/QtCore/qmutex.h \
+		/opt/anaconda3/include/qt/QtCore/qnumeric.h \
+		/opt/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/opt/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qnamespace.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/opt/anaconda3/include/qt/QtCore/qobject.h \
+		/opt/anaconda3/include/qt/QtCore/qstring.h \
+		/opt/anaconda3/include/qt/QtCore/qchar.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearray.h \
+		/opt/anaconda3/include/qt/QtCore/qrefcount.h \
+		/opt/anaconda3/include/qt/QtCore/qarraydata.h \
+		/opt/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/opt/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qstringview.h \
+		/opt/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/opt/anaconda3/include/qt/QtCore/qlist.h \
+		/opt/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qiterator.h \
+		/opt/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/opt/anaconda3/include/qt/QtCore/qpair.h \
+		/opt/anaconda3/include/qt/QtCore/qvector.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qpoint.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/opt/anaconda3/include/qt/QtCore/qstringlist.h \
+		/opt/anaconda3/include/qt/QtCore/qregexp.h \
+		/opt/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/opt/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qmetatype.h \
+		/opt/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/opt/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qmargins.h \
+		/opt/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/opt/anaconda3/include/qt/QtCore/qrect.h \
+		/opt/anaconda3/include/qt/QtCore/qsize.h \
+		/opt/anaconda3/include/qt/QtGui/qpalette.h \
+		/opt/anaconda3/include/qt/QtGui/qcolor.h \
+		/opt/anaconda3/include/qt/QtGui/qrgb.h \
+		/opt/anaconda3/include/qt/QtGui/qrgba64.h \
+		/opt/anaconda3/include/qt/QtGui/qbrush.h \
+		/opt/anaconda3/include/qt/QtGui/qmatrix.h \
+		/opt/anaconda3/include/qt/QtGui/qpolygon.h \
+		/opt/anaconda3/include/qt/QtGui/qregion.h \
+		/opt/anaconda3/include/qt/QtCore/qdatastream.h \
+		/opt/anaconda3/include/qt/QtCore/qiodevice.h \
+		/opt/anaconda3/include/qt/QtCore/qline.h \
+		/opt/anaconda3/include/qt/QtGui/qtransform.h \
+		/opt/anaconda3/include/qt/QtGui/qimage.h \
+		/opt/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpixmap.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qshareddata.h \
+		/opt/anaconda3/include/qt/QtCore/qhash.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/opt/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/opt/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/opt/anaconda3/include/qt/QtGui/qcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/opt/anaconda3/include/qt/QtGui/qevent.h \
+		/opt/anaconda3/include/qt/QtCore/qvariant.h \
+		/opt/anaconda3/include/qt/QtCore/qmap.h \
+		/opt/anaconda3/include/qt/QtCore/qdebug.h \
+		/opt/anaconda3/include/qt/QtCore/qtextstream.h \
+		/opt/anaconda3/include/qt/QtCore/qlocale.h \
+		/opt/anaconda3/include/qt/QtCore/qset.h \
+		/opt/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/opt/anaconda3/include/qt/QtCore/qurl.h \
+		/opt/anaconda3/include/qt/QtCore/qurlquery.h \
+		/opt/anaconda3/include/qt/QtCore/qfile.h \
+		/opt/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/opt/anaconda3/include/qt/QtGui/qvector2d.h \
+		/opt/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		/opt/anaconda3/include/qt/QtNetwork/QTcpSocket \
+		/opt/anaconda3/include/qt/QtNetwork/qtcpsocket.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetworkglobal.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetwork-config.h \
+		/opt/anaconda3/include/qt/QtNetwork/qabstractsocket.h \
+		/opt/anaconda3/include/qt/QtWidgets/QListWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qlistwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlistview.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractitemview.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractscrollarea.h \
+		/opt/anaconda3/include/qt/QtWidgets/qframe.h \
+		/opt/anaconda3/include/qt/QtCore/qabstractitemmodel.h \
+		/opt/anaconda3/include/qt/QtCore/qitemselectionmodel.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractitemdelegate.h \
+		/opt/anaconda3/include/qt/QtWidgets/qstyleoption.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractspinbox.h \
+		/opt/anaconda3/include/qt/QtGui/qvalidator.h \
+		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
+		/opt/anaconda3/include/qt/QtGui/qicon.h \
+		/opt/anaconda3/include/qt/QtWidgets/qslider.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractslider.h \
+		/opt/anaconda3/include/qt/QtWidgets/qstyle.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtabbar.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtabwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qrubberband.h \
+		/opt/anaconda3/include/qt/QtWidgets/QPlainTextEdit \
+		/opt/anaconda3/include/qt/QtWidgets/qplaintextedit.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtextedit.h \
+		/opt/anaconda3/include/qt/QtGui/qtextdocument.h \
+		/opt/anaconda3/include/qt/QtGui/qtextoption.h \
+		/opt/anaconda3/include/qt/QtGui/qtextcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qtextformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpen.h \
+		/opt/anaconda3/include/qt/QtGui/qabstracttextdocumentlayout.h \
+		/opt/anaconda3/include/qt/QtGui/qtextlayout.h \
+		/opt/anaconda3/include/qt/QtGui/qglyphrun.h \
+		/opt/anaconda3/include/qt/QtGui/qrawfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontdatabase.h \
+		/opt/anaconda3/include/qt/QtWidgets/QRadioButton \
+		/opt/anaconda3/include/qt/QtWidgets/qradiobutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/QVBoxLayout \
+		/opt/anaconda3/include/qt/QtWidgets/qboxlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayoutitem.h \
+		/opt/anaconda3/include/qt/QtWidgets/qgridlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/QHBoxLayout \
+		/opt/anaconda3/include/qt/QtWidgets/QButtonGroup \
+		/opt/anaconda3/include/qt/QtWidgets/qbuttongroup.h \
+		ui_createquestion.h \
+		/opt/anaconda3/include/qt/QtCore/QVariant \
+		/opt/anaconda3/include/qt/QtWidgets/QApplication \
+		/opt/anaconda3/include/qt/QtWidgets/qapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qeventloop.h \
+		/opt/anaconda3/include/qt/QtWidgets/qdesktopwidget.h \
+		/opt/anaconda3/include/qt/QtGui/qguiapplication.h \
+		/opt/anaconda3/include/qt/QtGui/qinputmethod.h \
+		/opt/anaconda3/include/qt/QtWidgets/QComboBox \
+		/opt/anaconda3/include/qt/QtWidgets/qcombobox.h \
+		/opt/anaconda3/include/qt/QtWidgets/QLabel \
+		/opt/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/opt/anaconda3/include/qt/QtWidgets/QPushButton \
+		/opt/anaconda3/include/qt/QtWidgets/qpushbutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/QSpacerItem \
+		/opt/anaconda3/include/qt/QtWidgets/QTextEdit \
+		/opt/anaconda3/include/qt/QtWidgets/QDialog \
+		/opt/anaconda3/include/qt/QtWidgets/qdialog.h \
+		/opt/anaconda3/include/qt/QtCore/QJsonDocument \
+		/opt/anaconda3/include/qt/QtCore/qjsondocument.h \
+		/opt/anaconda3/include/qt/QtCore/qjsonvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qcborvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qdatetime.h \
+		/opt/anaconda3/include/qt/QtCore/qcborcommon.h \
+		/opt/anaconda3/include/qt/QtCore/quuid.h \
+		/opt/anaconda3/include/qt/QtCore/QJsonArray \
+		/opt/anaconda3/include/qt/QtCore/qjsonarray.h \
+		/opt/anaconda3/include/qt/QtCore/QJsonObject \
+		/opt/anaconda3/include/qt/QtCore/qjsonobject.h \
+		/opt/anaconda3/include/qt/QtWidgets/QMessageBox \
+		/opt/anaconda3/include/qt/QtWidgets/qmessagebox.h \
+		config.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o createquestion.o createquestion.cpp
+
+examroomdialog.o: examroomdialog.cpp examroomdialog.h \
+		/opt/anaconda3/include/qt/QtWidgets/QWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/opt/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig.h \
+		/opt/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/opt/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/opt/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qlogging.h \
+		/opt/anaconda3/include/qt/QtCore/qflags.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/opt/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/opt/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/opt/anaconda3/include/qt/QtCore/qmutex.h \
+		/opt/anaconda3/include/qt/QtCore/qnumeric.h \
+		/opt/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/opt/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qnamespace.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/opt/anaconda3/include/qt/QtCore/qobject.h \
+		/opt/anaconda3/include/qt/QtCore/qstring.h \
+		/opt/anaconda3/include/qt/QtCore/qchar.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearray.h \
+		/opt/anaconda3/include/qt/QtCore/qrefcount.h \
+		/opt/anaconda3/include/qt/QtCore/qarraydata.h \
+		/opt/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/opt/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qstringview.h \
+		/opt/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/opt/anaconda3/include/qt/QtCore/qlist.h \
+		/opt/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qiterator.h \
+		/opt/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/opt/anaconda3/include/qt/QtCore/qpair.h \
+		/opt/anaconda3/include/qt/QtCore/qvector.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qpoint.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/opt/anaconda3/include/qt/QtCore/qstringlist.h \
+		/opt/anaconda3/include/qt/QtCore/qregexp.h \
+		/opt/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/opt/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qmetatype.h \
+		/opt/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/opt/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qmargins.h \
+		/opt/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/opt/anaconda3/include/qt/QtCore/qrect.h \
+		/opt/anaconda3/include/qt/QtCore/qsize.h \
+		/opt/anaconda3/include/qt/QtGui/qpalette.h \
+		/opt/anaconda3/include/qt/QtGui/qcolor.h \
+		/opt/anaconda3/include/qt/QtGui/qrgb.h \
+		/opt/anaconda3/include/qt/QtGui/qrgba64.h \
+		/opt/anaconda3/include/qt/QtGui/qbrush.h \
+		/opt/anaconda3/include/qt/QtGui/qmatrix.h \
+		/opt/anaconda3/include/qt/QtGui/qpolygon.h \
+		/opt/anaconda3/include/qt/QtGui/qregion.h \
+		/opt/anaconda3/include/qt/QtCore/qdatastream.h \
+		/opt/anaconda3/include/qt/QtCore/qiodevice.h \
+		/opt/anaconda3/include/qt/QtCore/qline.h \
+		/opt/anaconda3/include/qt/QtGui/qtransform.h \
+		/opt/anaconda3/include/qt/QtGui/qimage.h \
+		/opt/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpixmap.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qshareddata.h \
+		/opt/anaconda3/include/qt/QtCore/qhash.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/opt/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/opt/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/opt/anaconda3/include/qt/QtGui/qcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/opt/anaconda3/include/qt/QtGui/qevent.h \
+		/opt/anaconda3/include/qt/QtCore/qvariant.h \
+		/opt/anaconda3/include/qt/QtCore/qmap.h \
+		/opt/anaconda3/include/qt/QtCore/qdebug.h \
+		/opt/anaconda3/include/qt/QtCore/qtextstream.h \
+		/opt/anaconda3/include/qt/QtCore/qlocale.h \
+		/opt/anaconda3/include/qt/QtCore/qset.h \
+		/opt/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/opt/anaconda3/include/qt/QtCore/qurl.h \
+		/opt/anaconda3/include/qt/QtCore/qurlquery.h \
+		/opt/anaconda3/include/qt/QtCore/qfile.h \
+		/opt/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/opt/anaconda3/include/qt/QtGui/qvector2d.h \
+		/opt/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		/opt/anaconda3/include/qt/QtNetwork/QTcpSocket \
+		/opt/anaconda3/include/qt/QtNetwork/qtcpsocket.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetworkglobal.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetwork-config.h \
+		/opt/anaconda3/include/qt/QtNetwork/qabstractsocket.h \
+		ui_examroomdialog.h \
+		/opt/anaconda3/include/qt/QtCore/QVariant \
+		/opt/anaconda3/include/qt/QtWidgets/QApplication \
+		/opt/anaconda3/include/qt/QtWidgets/qapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qeventloop.h \
+		/opt/anaconda3/include/qt/QtWidgets/qdesktopwidget.h \
+		/opt/anaconda3/include/qt/QtGui/qguiapplication.h \
+		/opt/anaconda3/include/qt/QtGui/qinputmethod.h \
+		/opt/anaconda3/include/qt/QtWidgets/QFrame \
+		/opt/anaconda3/include/qt/QtWidgets/qframe.h \
+		/opt/anaconda3/include/qt/QtWidgets/QHBoxLayout \
+		/opt/anaconda3/include/qt/QtWidgets/qboxlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayoutitem.h \
+		/opt/anaconda3/include/qt/QtWidgets/qgridlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/QLabel \
+		/opt/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/opt/anaconda3/include/qt/QtWidgets/QListWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qlistwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlistview.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractitemview.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractscrollarea.h \
+		/opt/anaconda3/include/qt/QtCore/qabstractitemmodel.h \
+		/opt/anaconda3/include/qt/QtCore/qitemselectionmodel.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractitemdelegate.h \
+		/opt/anaconda3/include/qt/QtWidgets/qstyleoption.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractspinbox.h \
+		/opt/anaconda3/include/qt/QtGui/qvalidator.h \
+		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
+		/opt/anaconda3/include/qt/QtGui/qicon.h \
+		/opt/anaconda3/include/qt/QtWidgets/qslider.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractslider.h \
+		/opt/anaconda3/include/qt/QtWidgets/qstyle.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtabbar.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtabwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qrubberband.h \
+		/opt/anaconda3/include/qt/QtWidgets/QPushButton \
+		/opt/anaconda3/include/qt/QtWidgets/qpushbutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/QSpacerItem \
+		/opt/anaconda3/include/qt/QtWidgets/QVBoxLayout \
+		createquestion.h \
+		/opt/anaconda3/include/qt/QtWidgets/QPlainTextEdit \
+		/opt/anaconda3/include/qt/QtWidgets/qplaintextedit.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtextedit.h \
+		/opt/anaconda3/include/qt/QtGui/qtextdocument.h \
+		/opt/anaconda3/include/qt/QtGui/qtextoption.h \
+		/opt/anaconda3/include/qt/QtGui/qtextcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qtextformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpen.h \
+		/opt/anaconda3/include/qt/QtGui/qabstracttextdocumentlayout.h \
+		/opt/anaconda3/include/qt/QtGui/qtextlayout.h \
+		/opt/anaconda3/include/qt/QtGui/qglyphrun.h \
+		/opt/anaconda3/include/qt/QtGui/qrawfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontdatabase.h \
+		/opt/anaconda3/include/qt/QtWidgets/QRadioButton \
+		/opt/anaconda3/include/qt/QtWidgets/qradiobutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/QButtonGroup \
+		/opt/anaconda3/include/qt/QtWidgets/qbuttongroup.h \
+		/opt/anaconda3/include/qt/QtWidgets/QDialog \
+		/opt/anaconda3/include/qt/QtWidgets/qdialog.h \
+		/opt/anaconda3/include/qt/QtCore/QJsonDocument \
+		/opt/anaconda3/include/qt/QtCore/qjsondocument.h \
+		/opt/anaconda3/include/qt/QtCore/qjsonvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qcborvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qdatetime.h \
+		/opt/anaconda3/include/qt/QtCore/qcborcommon.h \
+		/opt/anaconda3/include/qt/QtCore/quuid.h \
+		/opt/anaconda3/include/qt/QtCore/QJsonArray \
+		/opt/anaconda3/include/qt/QtCore/qjsonarray.h \
+		/opt/anaconda3/include/qt/QtCore/QJsonObject \
+		/opt/anaconda3/include/qt/QtCore/qjsonobject.h \
+		config.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o examroomdialog.o examroomdialog.cpp
+
+examroommanagement.o: examroommanagement.cpp examroommanagement.h \
+		/opt/anaconda3/include/qt/QtWidgets/QWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/opt/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig.h \
+		/opt/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/opt/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/opt/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qlogging.h \
+		/opt/anaconda3/include/qt/QtCore/qflags.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/opt/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/opt/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/opt/anaconda3/include/qt/QtCore/qmutex.h \
+		/opt/anaconda3/include/qt/QtCore/qnumeric.h \
+		/opt/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/opt/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qnamespace.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/opt/anaconda3/include/qt/QtCore/qobject.h \
+		/opt/anaconda3/include/qt/QtCore/qstring.h \
+		/opt/anaconda3/include/qt/QtCore/qchar.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearray.h \
+		/opt/anaconda3/include/qt/QtCore/qrefcount.h \
+		/opt/anaconda3/include/qt/QtCore/qarraydata.h \
+		/opt/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/opt/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qstringview.h \
+		/opt/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/opt/anaconda3/include/qt/QtCore/qlist.h \
+		/opt/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qiterator.h \
+		/opt/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/opt/anaconda3/include/qt/QtCore/qpair.h \
+		/opt/anaconda3/include/qt/QtCore/qvector.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qpoint.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/opt/anaconda3/include/qt/QtCore/qstringlist.h \
+		/opt/anaconda3/include/qt/QtCore/qregexp.h \
+		/opt/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/opt/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qmetatype.h \
+		/opt/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/opt/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qmargins.h \
+		/opt/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/opt/anaconda3/include/qt/QtCore/qrect.h \
+		/opt/anaconda3/include/qt/QtCore/qsize.h \
+		/opt/anaconda3/include/qt/QtGui/qpalette.h \
+		/opt/anaconda3/include/qt/QtGui/qcolor.h \
+		/opt/anaconda3/include/qt/QtGui/qrgb.h \
+		/opt/anaconda3/include/qt/QtGui/qrgba64.h \
+		/opt/anaconda3/include/qt/QtGui/qbrush.h \
+		/opt/anaconda3/include/qt/QtGui/qmatrix.h \
+		/opt/anaconda3/include/qt/QtGui/qpolygon.h \
+		/opt/anaconda3/include/qt/QtGui/qregion.h \
+		/opt/anaconda3/include/qt/QtCore/qdatastream.h \
+		/opt/anaconda3/include/qt/QtCore/qiodevice.h \
+		/opt/anaconda3/include/qt/QtCore/qline.h \
+		/opt/anaconda3/include/qt/QtGui/qtransform.h \
+		/opt/anaconda3/include/qt/QtGui/qimage.h \
+		/opt/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpixmap.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qshareddata.h \
+		/opt/anaconda3/include/qt/QtCore/qhash.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/opt/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/opt/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/opt/anaconda3/include/qt/QtGui/qcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/opt/anaconda3/include/qt/QtGui/qevent.h \
+		/opt/anaconda3/include/qt/QtCore/qvariant.h \
+		/opt/anaconda3/include/qt/QtCore/qmap.h \
+		/opt/anaconda3/include/qt/QtCore/qdebug.h \
+		/opt/anaconda3/include/qt/QtCore/qtextstream.h \
+		/opt/anaconda3/include/qt/QtCore/qlocale.h \
+		/opt/anaconda3/include/qt/QtCore/qset.h \
+		/opt/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/opt/anaconda3/include/qt/QtCore/qurl.h \
+		/opt/anaconda3/include/qt/QtCore/qurlquery.h \
+		/opt/anaconda3/include/qt/QtCore/qfile.h \
+		/opt/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/opt/anaconda3/include/qt/QtGui/qvector2d.h \
+		/opt/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		/opt/anaconda3/include/qt/QtNetwork/QTcpSocket \
+		/opt/anaconda3/include/qt/QtNetwork/qtcpsocket.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetworkglobal.h \
+		/opt/anaconda3/include/qt/QtNetwork/qtnetwork-config.h \
+		/opt/anaconda3/include/qt/QtNetwork/qabstractsocket.h \
+		ui_examroommanagement.h \
+		/opt/anaconda3/include/qt/QtCore/QVariant \
+		/opt/anaconda3/include/qt/QtWidgets/QApplication \
+		/opt/anaconda3/include/qt/QtWidgets/qapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qeventloop.h \
+		/opt/anaconda3/include/qt/QtWidgets/qdesktopwidget.h \
+		/opt/anaconda3/include/qt/QtGui/qguiapplication.h \
+		/opt/anaconda3/include/qt/QtGui/qinputmethod.h \
+		/opt/anaconda3/include/qt/QtWidgets/QHBoxLayout \
+		/opt/anaconda3/include/qt/QtWidgets/qboxlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayoutitem.h \
+		/opt/anaconda3/include/qt/QtWidgets/qgridlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/QHeaderView \
+		/opt/anaconda3/include/qt/QtWidgets/qheaderview.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractitemview.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractscrollarea.h \
+		/opt/anaconda3/include/qt/QtWidgets/qframe.h \
+		/opt/anaconda3/include/qt/QtCore/qabstractitemmodel.h \
+		/opt/anaconda3/include/qt/QtCore/qitemselectionmodel.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractitemdelegate.h \
+		/opt/anaconda3/include/qt/QtWidgets/qstyleoption.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractspinbox.h \
+		/opt/anaconda3/include/qt/QtGui/qvalidator.h \
+		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
+		/opt/anaconda3/include/qt/QtGui/qicon.h \
+		/opt/anaconda3/include/qt/QtWidgets/qslider.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractslider.h \
+		/opt/anaconda3/include/qt/QtWidgets/qstyle.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtabbar.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtabwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qrubberband.h \
+		/opt/anaconda3/include/qt/QtWidgets/QLabel \
+		/opt/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/opt/anaconda3/include/qt/QtWidgets/QPushButton \
+		/opt/anaconda3/include/qt/QtWidgets/qpushbutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/QSpacerItem \
+		/opt/anaconda3/include/qt/QtWidgets/QTableWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qtablewidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtableview.h \
+		/opt/anaconda3/include/qt/QtWidgets/QVBoxLayout \
+		createexamroom.h \
+		examroomdialog.h \
+		userdata.h \
+		/opt/anaconda3/include/qt/QtCore/QString \
+		/opt/anaconda3/include/qt/QtCore/QJsonObject \
+		/opt/anaconda3/include/qt/QtCore/qjsonobject.h \
+		/opt/anaconda3/include/qt/QtCore/qjsonvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qcborvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qdatetime.h \
+		/opt/anaconda3/include/qt/QtCore/qcborcommon.h \
+		/opt/anaconda3/include/qt/QtCore/quuid.h \
+		/opt/anaconda3/include/qt/QtCore/QDebug \
+		/opt/anaconda3/include/qt/QtWidgets/QDialog \
+		/opt/anaconda3/include/qt/QtWidgets/qdialog.h \
+		/opt/anaconda3/include/qt/QtWidgets/QMessageBox \
+		/opt/anaconda3/include/qt/QtWidgets/qmessagebox.h \
+		/opt/anaconda3/include/qt/QtCore/QJsonDocument \
+		/opt/anaconda3/include/qt/QtCore/qjsondocument.h \
+		/opt/anaconda3/include/qt/QtCore/QJsonArray \
+		/opt/anaconda3/include/qt/QtCore/qjsonarray.h \
+		config.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o examroommanagement.o examroommanagement.cpp
+
+home.o: home.cpp home.h \
+		/opt/anaconda3/include/qt/QtWidgets/QWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/opt/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qglobal.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/opt/anaconda3/include/qt/QtCore/qconfig.h \
+		/opt/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/opt/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/opt/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/opt/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/opt/anaconda3/include/qt/QtCore/qlogging.h \
+		/opt/anaconda3/include/qt/QtCore/qflags.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/opt/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/opt/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/opt/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/opt/anaconda3/include/qt/QtCore/qmutex.h \
+		/opt/anaconda3/include/qt/QtCore/qnumeric.h \
+		/opt/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/opt/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/opt/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/opt/anaconda3/include/qt/QtCore/qnamespace.h \
+		/opt/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/opt/anaconda3/include/qt/QtCore/qobject.h \
+		/opt/anaconda3/include/qt/QtCore/qstring.h \
+		/opt/anaconda3/include/qt/QtCore/qchar.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearray.h \
+		/opt/anaconda3/include/qt/QtCore/qrefcount.h \
+		/opt/anaconda3/include/qt/QtCore/qarraydata.h \
+		/opt/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/opt/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qstringview.h \
+		/opt/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/opt/anaconda3/include/qt/QtCore/qlist.h \
+		/opt/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/opt/anaconda3/include/qt/QtCore/qiterator.h \
+		/opt/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/opt/anaconda3/include/qt/QtCore/qpair.h \
+		/opt/anaconda3/include/qt/QtCore/qvector.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qpoint.h \
+		/opt/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/opt/anaconda3/include/qt/QtCore/qstringlist.h \
+		/opt/anaconda3/include/qt/QtCore/qregexp.h \
+		/opt/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/opt/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qmetatype.h \
+		/opt/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/opt/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/opt/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/opt/anaconda3/include/qt/QtCore/qmargins.h \
+		/opt/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/opt/anaconda3/include/qt/QtCore/qrect.h \
+		/opt/anaconda3/include/qt/QtCore/qsize.h \
+		/opt/anaconda3/include/qt/QtGui/qpalette.h \
+		/opt/anaconda3/include/qt/QtGui/qcolor.h \
+		/opt/anaconda3/include/qt/QtGui/qrgb.h \
+		/opt/anaconda3/include/qt/QtGui/qrgba64.h \
+		/opt/anaconda3/include/qt/QtGui/qbrush.h \
+		/opt/anaconda3/include/qt/QtGui/qmatrix.h \
+		/opt/anaconda3/include/qt/QtGui/qpolygon.h \
+		/opt/anaconda3/include/qt/QtGui/qregion.h \
+		/opt/anaconda3/include/qt/QtCore/qdatastream.h \
+		/opt/anaconda3/include/qt/QtCore/qiodevice.h \
+		/opt/anaconda3/include/qt/QtCore/qline.h \
+		/opt/anaconda3/include/qt/QtGui/qtransform.h \
+		/opt/anaconda3/include/qt/QtGui/qimage.h \
+		/opt/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpixmap.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/opt/anaconda3/include/qt/QtCore/qshareddata.h \
+		/opt/anaconda3/include/qt/QtCore/qhash.h \
+		/opt/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/opt/anaconda3/include/qt/QtGui/qfont.h \
+		/opt/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/opt/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/opt/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/opt/anaconda3/include/qt/QtGui/qcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/opt/anaconda3/include/qt/QtGui/qevent.h \
+		/opt/anaconda3/include/qt/QtCore/qvariant.h \
+		/opt/anaconda3/include/qt/QtCore/qmap.h \
+		/opt/anaconda3/include/qt/QtCore/qdebug.h \
+		/opt/anaconda3/include/qt/QtCore/qtextstream.h \
+		/opt/anaconda3/include/qt/QtCore/qlocale.h \
+		/opt/anaconda3/include/qt/QtCore/qset.h \
+		/opt/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/opt/anaconda3/include/qt/QtCore/qurl.h \
+		/opt/anaconda3/include/qt/QtCore/qurlquery.h \
+		/opt/anaconda3/include/qt/QtCore/qfile.h \
+		/opt/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/opt/anaconda3/include/qt/QtGui/qvector2d.h \
+		/opt/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		userdata.h \
+		/opt/anaconda3/include/qt/QtCore/QString \
+		/opt/anaconda3/include/qt/QtCore/QJsonObject \
+		/opt/anaconda3/include/qt/QtCore/qjsonobject.h \
+		/opt/anaconda3/include/qt/QtCore/qjsonvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qcborvalue.h \
+		/opt/anaconda3/include/qt/QtCore/qdatetime.h \
+		/opt/anaconda3/include/qt/QtCore/qcborcommon.h \
+		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
+		/opt/anaconda3/include/qt/QtCore/quuid.h \
+		/opt/anaconda3/include/qt/QtCore/QDebug \
+		ui_home.h \
+		/opt/anaconda3/include/qt/QtCore/QVariant \
+		/opt/anaconda3/include/qt/QtWidgets/QApplication \
+		/opt/anaconda3/include/qt/QtWidgets/qapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qeventloop.h \
+		/opt/anaconda3/include/qt/QtWidgets/qdesktopwidget.h \
+		/opt/anaconda3/include/qt/QtGui/qguiapplication.h \
+		/opt/anaconda3/include/qt/QtGui/qinputmethod.h \
+		/opt/anaconda3/include/qt/QtWidgets/QLabel \
+		/opt/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/opt/anaconda3/include/qt/QtWidgets/qframe.h \
+		/opt/anaconda3/include/qt/QtWidgets/QPushButton \
+		/opt/anaconda3/include/qt/QtWidgets/qpushbutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/opt/anaconda3/include/qt/QtGui/qicon.h \
+		/opt/anaconda3/include/qt/QtWidgets/QSpacerItem \
+		/opt/anaconda3/include/qt/QtWidgets/qlayoutitem.h \
+		/opt/anaconda3/include/qt/QtWidgets/QVBoxLayout \
+		/opt/anaconda3/include/qt/QtWidgets/qboxlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qgridlayout.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o home.o home.cpp
 
 main.o: main.cpp /opt/anaconda3/include/qt/QtWidgets/QApplication \
 		/opt/anaconda3/include/qt/QtWidgets/qapplication.h \
@@ -1331,7 +2852,9 @@ main.o: main.cpp /opt/anaconda3/include/qt/QtWidgets/QApplication \
 		/opt/anaconda3/include/qt/QtCore/qcborcommon.h \
 		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
 		/opt/anaconda3/include/qt/QtCore/quuid.h \
-		/opt/anaconda3/include/qt/QtCore/QDebug
+		/opt/anaconda3/include/qt/QtCore/QDebug \
+		home.h \
+		examroommanagement.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
@@ -1460,7 +2983,25 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
 		/opt/anaconda3/include/qt/QtCore/quuid.h \
 		/opt/anaconda3/include/qt/QtCore/QDebug \
-		ui_mainwindow.h
+		home.h \
+		examroommanagement.h \
+		ui_mainwindow.h \
+		/opt/anaconda3/include/qt/QtCore/QVariant \
+		/opt/anaconda3/include/qt/QtWidgets/QApplication \
+		/opt/anaconda3/include/qt/QtWidgets/qapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qeventloop.h \
+		/opt/anaconda3/include/qt/QtWidgets/qdesktopwidget.h \
+		/opt/anaconda3/include/qt/QtGui/qguiapplication.h \
+		/opt/anaconda3/include/qt/QtGui/qinputmethod.h \
+		/opt/anaconda3/include/qt/QtWidgets/QStackedWidget \
+		/opt/anaconda3/include/qt/QtWidgets/qstackedwidget.h \
+		/opt/anaconda3/include/qt/QtWidgets/qframe.h \
+		/opt/anaconda3/include/qt/QtWidgets/QVBoxLayout \
+		/opt/anaconda3/include/qt/QtWidgets/qboxlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayoutitem.h \
+		/opt/anaconda3/include/qt/QtWidgets/qgridlayout.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
 signin.o: signin.cpp signin.h \
@@ -1584,6 +3125,32 @@ signin.o: signin.cpp signin.h \
 		/opt/anaconda3/include/qt/QtCore/quuid.h \
 		/opt/anaconda3/include/qt/QtCore/QDebug \
 		ui_signin.h \
+		/opt/anaconda3/include/qt/QtCore/QVariant \
+		/opt/anaconda3/include/qt/QtWidgets/QApplication \
+		/opt/anaconda3/include/qt/QtWidgets/qapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qeventloop.h \
+		/opt/anaconda3/include/qt/QtWidgets/qdesktopwidget.h \
+		/opt/anaconda3/include/qt/QtGui/qguiapplication.h \
+		/opt/anaconda3/include/qt/QtGui/qinputmethod.h \
+		/opt/anaconda3/include/qt/QtWidgets/QLabel \
+		/opt/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/opt/anaconda3/include/qt/QtWidgets/qframe.h \
+		/opt/anaconda3/include/qt/QtWidgets/QLineEdit \
+		/opt/anaconda3/include/qt/QtWidgets/qlineedit.h \
+		/opt/anaconda3/include/qt/QtGui/qtextcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qtextformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpen.h \
+		/opt/anaconda3/include/qt/QtGui/qtextoption.h \
+		/opt/anaconda3/include/qt/QtWidgets/QPushButton \
+		/opt/anaconda3/include/qt/QtWidgets/qpushbutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/opt/anaconda3/include/qt/QtGui/qicon.h \
+		/opt/anaconda3/include/qt/QtWidgets/QVBoxLayout \
+		/opt/anaconda3/include/qt/QtWidgets/qboxlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayoutitem.h \
+		/opt/anaconda3/include/qt/QtWidgets/qgridlayout.h \
 		config.h \
 		/opt/anaconda3/include/qt/QtCore/QJsonDocument \
 		/opt/anaconda3/include/qt/QtCore/qjsondocument.h \
@@ -1704,6 +3271,39 @@ signup.o: signup.cpp signup.h \
 		/opt/anaconda3/include/qt/QtNetwork/qtnetwork-config.h \
 		/opt/anaconda3/include/qt/QtNetwork/qabstractsocket.h \
 		ui_signup.h \
+		/opt/anaconda3/include/qt/QtCore/QVariant \
+		/opt/anaconda3/include/qt/QtWidgets/QApplication \
+		/opt/anaconda3/include/qt/QtWidgets/qapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qcoreapplication.h \
+		/opt/anaconda3/include/qt/QtCore/qeventloop.h \
+		/opt/anaconda3/include/qt/QtWidgets/qdesktopwidget.h \
+		/opt/anaconda3/include/qt/QtGui/qguiapplication.h \
+		/opt/anaconda3/include/qt/QtGui/qinputmethod.h \
+		/opt/anaconda3/include/qt/QtWidgets/QDateTimeEdit \
+		/opt/anaconda3/include/qt/QtWidgets/qdatetimeedit.h \
+		/opt/anaconda3/include/qt/QtCore/qdatetime.h \
+		/opt/anaconda3/include/qt/QtCore/qcalendar.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractspinbox.h \
+		/opt/anaconda3/include/qt/QtGui/qvalidator.h \
+		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
+		/opt/anaconda3/include/qt/QtWidgets/QLabel \
+		/opt/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/opt/anaconda3/include/qt/QtWidgets/qframe.h \
+		/opt/anaconda3/include/qt/QtWidgets/QLineEdit \
+		/opt/anaconda3/include/qt/QtWidgets/qlineedit.h \
+		/opt/anaconda3/include/qt/QtGui/qtextcursor.h \
+		/opt/anaconda3/include/qt/QtGui/qtextformat.h \
+		/opt/anaconda3/include/qt/QtGui/qpen.h \
+		/opt/anaconda3/include/qt/QtGui/qtextoption.h \
+		/opt/anaconda3/include/qt/QtWidgets/QPushButton \
+		/opt/anaconda3/include/qt/QtWidgets/qpushbutton.h \
+		/opt/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/opt/anaconda3/include/qt/QtGui/qicon.h \
+		/opt/anaconda3/include/qt/QtWidgets/QVBoxLayout \
+		/opt/anaconda3/include/qt/QtWidgets/qboxlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayout.h \
+		/opt/anaconda3/include/qt/QtWidgets/qlayoutitem.h \
+		/opt/anaconda3/include/qt/QtWidgets/qgridlayout.h \
 		/opt/anaconda3/include/qt/QtWidgets/QMessageBox \
 		/opt/anaconda3/include/qt/QtWidgets/qmessagebox.h \
 		/opt/anaconda3/include/qt/QtWidgets/qdialog.h \
@@ -1711,14 +3311,27 @@ signup.o: signup.cpp signup.h \
 		/opt/anaconda3/include/qt/QtCore/qjsondocument.h \
 		/opt/anaconda3/include/qt/QtCore/qjsonvalue.h \
 		/opt/anaconda3/include/qt/QtCore/qcborvalue.h \
-		/opt/anaconda3/include/qt/QtCore/qdatetime.h \
 		/opt/anaconda3/include/qt/QtCore/qcborcommon.h \
-		/opt/anaconda3/include/qt/QtCore/qregularexpression.h \
 		/opt/anaconda3/include/qt/QtCore/quuid.h \
 		/opt/anaconda3/include/qt/QtCore/QJsonObject \
 		/opt/anaconda3/include/qt/QtCore/qjsonobject.h \
 		config.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o signup.o signup.cpp
+
+moc_createexamroom.o: moc_createexamroom.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_createexamroom.o moc_createexamroom.cpp
+
+moc_createquestion.o: moc_createquestion.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_createquestion.o moc_createquestion.cpp
+
+moc_examroomdialog.o: moc_examroomdialog.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_examroomdialog.o moc_examroomdialog.cpp
+
+moc_examroommanagement.o: moc_examroommanagement.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_examroommanagement.o moc_examroommanagement.cpp
+
+moc_home.o: moc_home.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_home.o moc_home.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

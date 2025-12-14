@@ -5,6 +5,8 @@
 #include <QTcpSocket>
 #include "signup.h"
 #include "signin.h"
+#include "home.h"
+#include "examroommanagement.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,12 +22,16 @@ public:
 private slots:
     void showSignup();
     void showSignin();
+    void showHome();
+    void showExamRoomManagement();
 
 private:
     Ui::MainWindow *ui;
     QTcpSocket *tcpSocket;
     Signup *signupForm;
     Signin *signinForm;
+    Home *homeForm;
+    ExamRoomManagement *examRoomManagementForm;
 };
 
 #endif // MAINWINDOW_H
