@@ -12,8 +12,9 @@
 int signup(const char *email, const char *password, const char *username, const char *dob)
 {
     MYSQL *conn = get_db_connection();
-    char query[256];
-    snprintf(query, sizeof(query), "INSERT INTO user (email, pass, name, dob) VALUES ('%s', '%s', '%s', '%s')", email, password, username, dob);
+    char query[512];
+    // Default role là 'student', có thể thay đổi bằng cách thêm field role vào request
+    snprintf(query, sizeof(query), "INSERT INTO user (email, pass, name, dob, role) VALUES ('%s', '%s', '%s', '%s', 'student')", email, password, username, dob);
     // printf("Query: %s\n", query);
 
     if (mysql_query(conn, query))
@@ -40,36 +41,36 @@ int signup(const char *email, const char *password, const char *username, const 
     return 1;
 }
 
-int login(const char *email, const char *password)
+LoginResult login(const char *email, const char *password)
 {
-    int user_id;
+    LoginResult result = {-1, ""};
     MYSQL *conn = get_db_connection();
-    char query[256];
-    snprintf(query, sizeof(query), "SELECT * FROM user WHERE email='%s' AND pass='%s'", email, password);
-    // printf("Query: %s\n", query);
+    char query[512];
+    snprintf(query, sizeof(query), "SELECT id, role FROM user WHERE email='%s' AND pass='%s'", email, password);
 
     if (mysql_query(conn, query))
     {
         fprintf(stderr, "Login failed. Error: %s\n", mysql_error(conn));
-        return 0;
+        return result;
     }
 
     MYSQL_RES *res = mysql_store_result(conn);
     if (res == NULL)
     {
         fprintf(stderr, "mysql_store_result() failed. Error: %s\n", mysql_error(conn));
-        return 0;
+        return result;
     }
 
     int num_rows = mysql_num_rows(res);
     if (num_rows > 0)
     {
         MYSQL_ROW row = mysql_fetch_row(res);
-        user_id = atoi(row[0]); // Assuming the first column is the user id
+        result.user_id = atoi(row[0]);
+        strncpy(result.role, row[1], sizeof(result.role) - 1);
 
         // Log the login activity
         char *timestamp = get_current_time();
-        snprintf(query, sizeof(query), "INSERT INTO log (log_content, log_time) VALUES ('User logged in with email: %s', '%s')", email, timestamp);
+        snprintf(query, sizeof(query), "INSERT INTO log (log_content, log_time) VALUES ('User logged in with email: %s (role: %s)', '%s')", email, result.role, timestamp);
         if (mysql_query(conn, query))
         {
             fprintf(stderr, "Logging failed. Error: %s\n", mysql_error(conn));
@@ -77,18 +78,12 @@ int login(const char *email, const char *password)
 
         // Log to file
         char log_message[256];
-        snprintf(log_message, sizeof(log_message), "User logged in with email: %s", email);
+        snprintf(log_message, sizeof(log_message), "User logged in with email: %s (role: %s)", email, result.role);
         log_to_file(log_message, timestamp);
 
         free(timestamp);
     }
-    else
-    {
-        user_id = -1;
-    }
 
-    // print_mysql_result(res);
     mysql_free_result(res);
-
-    return user_id;
+    return result;
 }

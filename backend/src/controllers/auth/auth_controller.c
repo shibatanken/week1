@@ -26,18 +26,18 @@ void handle_login(int client_socket, ControlMessage *msg)
         }
     }
 
-    int user_id = login(email, password);
+    LoginResult login_result = login(email, password);
     char response[2048];
     char timestamp[50];
 
     time_t now = time(NULL);
     strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%S", localtime(&now));
 
-    if (user_id != -1)
+    if (login_result.user_id != -1)
     {
-        snprintf(response, sizeof(response), "NOTIFICATION LOGIN_SUCCESS %s\n{\"user_id\": %d}", timestamp, user_id);
+        snprintf(response, sizeof(response), "NOTIFICATION LOGIN_SUCCESS %s\n{\"user_id\": %d, \"role\": \"%s\"}", 
+                 timestamp, login_result.user_id, login_result.role);
     }
-    // {\" \": \" \"}
     else
     {
         snprintf(response, sizeof(response), "NOTIFICATION LOGIN_FAILURE %s\n{\"message\": \"User not found or wrong password\"}", timestamp);

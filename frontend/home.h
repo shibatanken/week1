@@ -17,11 +17,11 @@ public:
     void updateUserInfo();
 
 signals:
-    void showExamRoomManagement();
     void logout();
+    void showClassList();
 
 private slots:
-    void on_examRoomButton_clicked();
+    void on_classListButton_clicked();
     void on_logoutButton_clicked();
 
 private:

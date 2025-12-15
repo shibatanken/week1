@@ -7,7 +7,6 @@ Home::Home(QWidget *parent)
 {
     ui->setupUi(this);
     
-    connect(ui->examRoomButton, &QPushButton::clicked, this, &Home::on_examRoomButton_clicked);
     connect(ui->logoutButton, &QPushButton::clicked, this, &Home::on_logoutButton_clicked);
 }
 
@@ -16,15 +15,16 @@ Home::~Home() {
 }
 
 void Home::updateUserInfo() {
-    QString userName = UserData::instance().getUserName();
-    QString email = UserData::instance().getEmail();
+    QJsonObject userData = UserData::instance().getUserData();
+    QString userName = userData.contains("name") ? userData["name"].toString() : "";
+    QString email = userData.contains("email") ? userData["email"].toString() : "";
     
     ui->welcomeLabel->setText("Chào mừng, " + userName + "!");
     ui->emailLabel->setText("Email: " + email);
 }
 
-void Home::on_examRoomButton_clicked() {
-    emit showExamRoomManagement();
+void Home::on_classListButton_clicked() {
+    emit showClassList();
 }
 
 void Home::on_logoutButton_clicked() {

@@ -18,3 +18,69 @@
 2025-12-13 23:12:58 - Room created: toán
 2025-12-14 00:39:22 - User logged in with email: haidang@gmail.com
 2025-12-14 00:40:04 - Room created: thi toán
+2025-12-14 22:46:43 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-14 22:47:12 - Teacher 9 created class: IT1121
+2025-12-14 22:47:18 - Student 1 added to class 1
+2025-12-14 22:47:27 - Student 8 added to class 1
+2025-12-14 22:47:32 - Student 7 added to class 1
+2025-12-14 22:47:41 - Student 2 added to class 1
+2025-12-14 22:47:49 - Student 1 removed from class 1
+2025-12-14 22:47:52 - Student 8 removed from class 1
+2025-12-14 22:47:54 - Student 7 removed from class 1
+2025-12-14 22:47:57 - Student 2 removed from class 1
+2025-12-14 22:48:37 - Student 1 added to class 1
+2025-12-14 22:48:46 - Student 8 added to class 1
+2025-12-14 22:48:54 - Student 8 removed from class 1
+2025-12-14 22:48:57 - Student 1 removed from class 1
+2025-12-14 22:49:04 - Student 1 added to class 1
+2025-12-14 23:03:28 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-14 23:05:11 - User logged in with email: haidang@gmail.com (role: student)
+2025-12-14 23:06:36 - User logged in with email: student1@test.com (role: student)
+2025-12-14 23:24:27 - User logged in with email: student1@test.com (role: student)
+2025-12-14 23:32:29 - User signed up with email: 
+2025-12-14 23:33:51 - User logged in with email: student1@test.com (role: student)
+2025-12-14 23:34:40 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-14 23:34:52 - Student 11 added to class 1
+2025-12-14 23:35:02 - Student 8 added to class 1
+2025-12-14 23:35:06 - Student 8 removed from class 1
+2025-12-14 23:35:09 - Student 11 removed from class 1
+2025-12-14 23:35:11 - Student 1 removed from class 1
+2025-12-14 23:35:30 - User logged in with email: student1@test.com (role: student)
+2025-12-14 23:39:01 - User logged in with email: teacher2@test.com (role: teacher)
+2025-12-14 23:43:13 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-14 23:43:16 - Student 11 added to class 1
+2025-12-14 23:43:20 - Student 1 added to class 1
+2025-12-14 23:43:26 - Student 8 added to class 1
+2025-12-14 23:43:44 - User logged in with email: student1@test.com (role: student)
+2025-12-15 00:06:34 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 00:13:10 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 00:17:22 - User logged in with email: teacher2@test.com (role: teacher)
+2025-12-15 00:17:51 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 00:18:01 - Student 11 removed from class 1
+2025-12-15 00:18:08 - Student 11 added to class 1
+2025-12-15 00:18:13 - Student 11 removed from class 1
+2025-12-15 00:18:19 - Student 11 added to class 1
+2025-12-15 00:18:24 - Student 7 added to class 1
+2025-12-15 00:18:28 - Student 11 removed from class 1
+2025-12-15 00:18:32 - Student 8 removed from class 1
+2025-12-15 00:18:36 - Student 1 removed from class 1
+2025-12-15 00:18:42 - Student 11 added to class 1
+2025-12-15 00:19:12 - Student 11 removed from class 1
+2025-12-15 00:19:31 - Student 11 added to class 1
+2025-12-15 00:19:42 - Student 1 added to class 1
+2025-12-15 06:36:41 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 06:37:04 - Student 8 added to class 1
+2025-12-15 06:37:07 - Student 8 removed from class 1
+2025-12-15 06:37:09 - Student 1 removed from class 1
+2025-12-15 06:37:13 - Student 11 removed from class 1
+2025-12-15 06:52:31 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 06:53:14 - User logged in with email: student1@test.com (role: student)
+2025-12-15 06:54:46 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 06:55:47 - User logged in with email: teacher2@test.com (role: teacher)
+2025-12-15 06:56:01 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 06:58:02 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 06:58:34 - Created exam: kiểm tra toán in class 1
+2025-12-15 07:00:00 - Created exam: kiểm tra toán in class 1
+2025-12-15 07:00:42 - Student 1 added to class 1
+2025-12-15 07:00:50 - Student 10 added to class 1
+2025-12-15 07:01:10 - User logged in with email: student1@test.com (role: student)

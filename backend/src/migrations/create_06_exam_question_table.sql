@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS exam_question (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    exam_id INT NOT NULL,
+    content TEXT NOT NULL,
+    difficulty INT NOT NULL DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (exam_id) REFERENCES exam(id) ON DELETE CASCADE
+);

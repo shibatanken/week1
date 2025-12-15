@@ -6,37 +6,37 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++17
 
 SOURCES += \
-    createexamroom.cpp \
-    createquestion.cpp \
-    examroomdialog.cpp \
-    examroommanagement.cpp \
     home.cpp \
     main.cpp \
     mainwindow.cpp \
     signin.cpp \
-    signup.cpp
+    signup.cpp \
+    classlist.cpp \
+    classdetail.cpp \
+    classmembers.cpp \
+    createexam.cpp
 
 HEADERS += \
     config.h \
-    createexamroom.h \
-    createquestion.h \
-    examroomdialog.h \
-    examroommanagement.h \
     home.h \
     mainwindow.h \
     signin.h \
     signup.h \
-    userdata.h
+    userdata.h \
+    classlist.h \
+    classdetail.h \
+    classmembers.h \
+    createexam.h
 
 FORMS += \
-    createexamroom.ui \
-    createquestion.ui \
-    examroomdialog.ui \
-    examroommanagement.ui \
     home.ui \
     mainwindow.ui \
     signin.ui \
-    signup.ui
+    signup.ui \
+    classlist.ui \
+    classdetail.ui \
+    classmembers.ui \
+    createexam.ui
 
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

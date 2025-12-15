@@ -1,4 +1,7 @@
 #include "../data_structures/index.h"
+#include "../controllers/auth/auth_controller.h"
+#include "../controllers/class/class_controller.h"
+#include "../controllers/exam/exam_controller.h"
 #include "../controllers/controller.h"
 #include <netinet/in.h>
 #include <pthread.h>
@@ -10,6 +13,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+
 
 pthread_mutex_t lock;
 
@@ -26,6 +30,7 @@ void *pthread_routine(void *arg);
 
 void handle_control_message(int socket, ControlMessage *msg)
 {
+    // Authentication
     if (strcmp(msg->type, LOGIN) == 0)
     {
         handle_login(socket, msg);
@@ -34,6 +39,74 @@ void handle_control_message(int socket, ControlMessage *msg)
     {
         handle_signup(socket, msg);
     }
+    // Class Management
+    else if (strcmp(msg->type, CREATE_CLASS) == 0)
+    {
+        handle_create_class(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_CLASS_LIST) == 0)
+    {
+        handle_get_class_list(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_CLASS_DETAIL) == 0)
+    {
+        handle_get_class_detail(socket, msg);
+    }
+    else if (strcmp(msg->type, ADD_STUDENT_TO_CLASS) == 0)
+    {
+        handle_add_student_to_class(socket, msg);
+    }
+    else if (strcmp(msg->type, REMOVE_STUDENT_FROM_CLASS) == 0)
+    {
+        handle_remove_student_from_class(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_STUDENTS_IN_CLASS) == 0)
+    {
+        handle_get_students_in_class(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_STUDENTS_NOT_IN_CLASS) == 0)
+    {
+        handle_get_students_not_in_class(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_MY_CLASSES) == 0)
+    {
+        handle_get_my_classes(socket, msg);
+    }
+    // Exam Management (mới)
+    else if (strcmp(msg->type, CREATE_EXAM) == 0)
+    {
+        handle_create_exam(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_EXAMS_IN_CLASS) == 0)
+    {
+        handle_get_exams_in_class(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_EXAM_DETAIL) == 0)
+    {
+        handle_get_exam_detail(socket, msg);
+    }
+    else if (strcmp(msg->type, DELETE_EXAM) == 0)
+    {
+        handle_delete_exam(socket, msg);
+    }
+    else if (strcmp(msg->type, UPDATE_EXAM_STATUS) == 0)
+    {
+        handle_update_exam_status(socket, msg);
+    }
+    // Exam Question Management (mới)
+    else if (strcmp(msg->type, ADD_EXAM_QUESTION) == 0)
+    {
+        handle_add_exam_question(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_EXAM_QUESTIONS) == 0)
+    {
+        handle_get_exam_questions(socket, msg);
+    }
+    else if (strcmp(msg->type, DELETE_EXAM_QUESTION) == 0)
+    {
+        handle_delete_exam_question(socket, msg);
+    }
+    // Legacy - Room (giữ lại cho tương thích)
     else if (strcmp(msg->type, GET_ROOM_LIST) == 0)
     {
         handle_get_room_list(socket, msg);

@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_Home_t {
     QByteArrayData data[6];
-    char stringdata0[86];
+    char stringdata0[78];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,15 +33,15 @@ struct qt_meta_stringdata_Home_t {
 static const qt_meta_stringdata_Home_t qt_meta_stringdata_Home = {
     {
 QT_MOC_LITERAL(0, 0, 4), // "Home"
-QT_MOC_LITERAL(1, 5, 22), // "showExamRoomManagement"
-QT_MOC_LITERAL(2, 28, 0), // ""
-QT_MOC_LITERAL(3, 29, 6), // "logout"
-QT_MOC_LITERAL(4, 36, 25), // "on_examRoomButton_clicked"
-QT_MOC_LITERAL(5, 62, 23) // "on_logoutButton_clicked"
+QT_MOC_LITERAL(1, 5, 6), // "logout"
+QT_MOC_LITERAL(2, 12, 0), // ""
+QT_MOC_LITERAL(3, 13, 13), // "showClassList"
+QT_MOC_LITERAL(4, 27, 26), // "on_classListButton_clicked"
+QT_MOC_LITERAL(5, 54, 23) // "on_logoutButton_clicked"
 
     },
-    "Home\0showExamRoomManagement\0\0logout\0"
-    "on_examRoomButton_clicked\0"
+    "Home\0logout\0\0showClassList\0"
+    "on_classListButton_clicked\0"
     "on_logoutButton_clicked"
 };
 #undef QT_MOC_LITERAL
@@ -84,9 +84,9 @@ void Home::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void *
         auto *_t = static_cast<Home *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->showExamRoomManagement(); break;
-        case 1: _t->logout(); break;
-        case 2: _t->on_examRoomButton_clicked(); break;
+        case 0: _t->logout(); break;
+        case 1: _t->showClassList(); break;
+        case 2: _t->on_classListButton_clicked(); break;
         case 3: _t->on_logoutButton_clicked(); break;
         default: ;
         }
@@ -94,14 +94,14 @@ void Home::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void *
         int *result = reinterpret_cast<int *>(_a[0]);
         {
             using _t = void (Home::*)();
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&Home::showExamRoomManagement)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&Home::logout)) {
                 *result = 0;
                 return;
             }
         }
         {
             using _t = void (Home::*)();
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&Home::logout)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&Home::showClassList)) {
                 *result = 1;
                 return;
             }
@@ -151,13 +151,13 @@ int Home::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void Home::showExamRoomManagement()
+void Home::logout()
 {
     QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
 }
 
 // SIGNAL 1
-void Home::logout()
+void Home::showClassList()
 {
     QMetaObject::activate(this, &staticMetaObject, 1, nullptr);
 }

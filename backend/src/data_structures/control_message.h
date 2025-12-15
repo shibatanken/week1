@@ -1,9 +1,34 @@
 #ifndef CONTROL_MESSAGE_H
 #define CONTROL_MESSAGE_H
 
-// Control Types
+// Control Types - Authentication
 #define LOGIN "LOGIN"
 #define SIGN_UP "SIGN_UP"
+
+// Control Types - Class Management
+#define CREATE_CLASS "CREATE_CLASS"
+#define GET_CLASS_LIST "GET_CLASS_LIST"
+#define GET_CLASS_DETAIL "GET_CLASS_DETAIL"
+#define ADD_STUDENT_TO_CLASS "ADD_STUDENT_TO_CLASS"
+#define REMOVE_STUDENT_FROM_CLASS "REMOVE_STUDENT_FROM_CLASS"
+#define GET_STUDENTS_IN_CLASS "GET_STUDENTS_IN_CLASS"
+#define GET_STUDENTS_NOT_IN_CLASS "GET_STUDENTS_NOT_IN_CLASS"
+#define DELETE_CLASS "DELETE_CLASS"
+#define GET_MY_CLASSES "GET_MY_CLASSES"
+
+// Control Types - Exam Management (mới)
+#define CREATE_EXAM "CREATE_EXAM"
+#define GET_EXAMS_IN_CLASS "GET_EXAMS_IN_CLASS"
+#define GET_EXAM_DETAIL "GET_EXAM_DETAIL"
+#define DELETE_EXAM "DELETE_EXAM"
+#define UPDATE_EXAM_STATUS "UPDATE_EXAM_STATUS"
+
+// Control Types - Exam Question Management (mới)
+#define ADD_EXAM_QUESTION "ADD_EXAM_QUESTION"
+#define GET_EXAM_QUESTIONS "GET_EXAM_QUESTIONS"
+#define DELETE_EXAM_QUESTION "DELETE_EXAM_QUESTION"
+
+// Legacy - Room (có thể xóa sau)
 #define CREATE_ROOM "CREATE_ROOM"
 #define GET_ROOM_LIST "GET_ROOM_LIST"
 #define ADD_QUESTION "ADD_QUESTION"
@@ -13,7 +38,7 @@
 typedef struct
 {
     char type[50];
-    char body[2048];
+    char body[4096];
 } ControlMessage;
 
 #endif // CONTROL_MESSAGE_H
