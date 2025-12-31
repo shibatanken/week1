@@ -14,4 +14,9 @@ int add_exam_answer(int question_id, const char *content, int is_correct);
 char *get_exam_questions(int exam_id);
 int delete_exam_question(int question_id);
 
+// Exam Scoring
+int submit_exam_answers(int exam_id, int user_id, const char *start_time, const char *end_time, const char *answers_json);
+char *get_exam_results(int exam_id, int user_id);
+char *get_exam_scores(int exam_id);
+
 #endif // EXAM_SERVICE_H

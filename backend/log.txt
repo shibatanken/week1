@@ -84,3 +84,5 @@
 2025-12-15 07:00:42 - Student 1 added to class 1
 2025-12-15 07:00:50 - Student 10 added to class 1
 2025-12-15 07:01:10 - User logged in with email: student1@test.com (role: student)
+2025-12-31 21:56:16 - User logged in with email: student1@test.com (role: student)
+2025-12-31 22:27:16 - User logged in with email: teacher1@test.com (role: teacher)

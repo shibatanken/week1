@@ -364,3 +364,135 @@ void handle_delete_exam_question(int client_socket, ControlMessage *msg)
     write(client_socket, response, strlen(response));
     close(client_socket);
 }
+
+// Nộp bài kiểm tra
+void handle_submit_exam_answers(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 10);
+
+    int exam_id = -1, user_id = -1;
+    char start_time[64] = "", end_time[64] = "";
+    char *answers_json = NULL;
+
+    for (int i = 0; i < pair_count; i++)
+    {
+        if (strcmp(pairs[i].key, "exam_id") == 0)
+        {
+            exam_id = atoi(pairs[i].value);
+        }
+        else if (strcmp(pairs[i].key, "user_id") == 0)
+        {
+            user_id = atoi(pairs[i].value);
+        }
+        else if (strcmp(pairs[i].key, "start_time") == 0)
+        {
+            strncpy(start_time, pairs[i].value, sizeof(start_time) - 1);
+        }
+        else if (strcmp(pairs[i].key, "end_time") == 0)
+        {
+            strncpy(end_time, pairs[i].value, sizeof(end_time) - 1);
+        }
+        else if (strcmp(pairs[i].key, "answers") == 0)
+        {
+            answers_json = pairs[i].value;
+        }
+    }
+
+    int user_exam_id = submit_exam_answers(exam_id, user_id, start_time, end_time, answers_json);
+
+    char response[2048];
+    char timestamp[50];
+    time_t now = time(NULL);
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%S", localtime(&now));
+
+    if (user_exam_id == 0)
+    {
+        snprintf(response, sizeof(response),
+                 "NOTIFICATION SUBMIT_EXAM_FAILURE %s\n{\"message\": \"Failed to submit exam answers\"}",
+                 timestamp);
+    }
+    else
+    {
+        snprintf(response, sizeof(response),
+                 "NOTIFICATION SUBMIT_EXAM_SUCCESS %s\n{\"message\": \"Exam submitted successfully\", \"user_exam_id\": %d}",
+                 timestamp, user_exam_id);
+    }
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+}
+
+// Lấy kết quả bài kiểm tra của sinh viên
+void handle_get_exam_results(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 2);
+
+    int exam_id = -1, user_id = -1;
+
+    for (int i = 0; i < pair_count; i++)
+    {
+        if (strcmp(pairs[i].key, "exam_id") == 0)
+        {
+            exam_id = atoi(pairs[i].value);
+        }
+        else if (strcmp(pairs[i].key, "user_id") == 0)
+        {
+            user_id = atoi(pairs[i].value);
+        }
+    }
+
+    char *result = get_exam_results(exam_id, user_id);
+    char response[8192];
+    memset(response, 0, sizeof(response));
+
+    if (result == NULL)
+    {
+        snprintf(response, sizeof(response), "DATA JSON EXAM_RESULTS\n{\"message\": \"No results found\"}");
+    }
+    else
+    {
+        snprintf(response, sizeof(response), "DATA JSON EXAM_RESULTS\n%s", result);
+        free(result);
+    }
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+}
+
+// Lấy danh sách điểm của tất cả sinh viên (teacher view)
+void handle_get_exam_scores(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 1);
+
+    int exam_id = -1;
+
+    for (int i = 0; i < pair_count; i++)
+    {
+        if (strcmp(pairs[i].key, "exam_id") == 0)
+        {
+            exam_id = atoi(pairs[i].value);
+        }
+    }
+
+    char *result = get_exam_scores(exam_id);
+    char *response;
+
+    if (result == NULL)
+    {
+        response = strdup("DATA JSON EXAM_SCORES\n{\"data\": []}");
+    }
+    else
+    {
+        size_t response_size = strlen(result) + 64;
+        response = (char *)malloc(response_size);
+        snprintf(response, response_size, "DATA JSON EXAM_SCORES\n{\"data\": %s}", result);
+        free(result);
+    }
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+    free(response);
+}

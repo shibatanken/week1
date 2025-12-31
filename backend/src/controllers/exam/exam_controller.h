@@ -15,4 +15,9 @@ void handle_add_exam_question(int client_socket, ControlMessage *msg);
 void handle_get_exam_questions(int client_socket, ControlMessage *msg);
 void handle_delete_exam_question(int client_socket, ControlMessage *msg);
 
+// Exam scoring controllers
+void handle_submit_exam_answers(int client_socket, ControlMessage *msg);
+void handle_get_exam_results(int client_socket, ControlMessage *msg);
+void handle_get_exam_scores(int client_socket, ControlMessage *msg);
+
 #endif // EXAM_CONTROLLER_H

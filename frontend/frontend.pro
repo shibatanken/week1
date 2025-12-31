@@ -14,7 +14,9 @@ SOURCES += \
     classlist.cpp \
     classdetail.cpp \
     classmembers.cpp \
-    createexam.cpp
+    createexam.cpp \
+    examresults.cpp \
+    examscores.cpp
 
 HEADERS += \
     config.h \
@@ -26,7 +28,9 @@ HEADERS += \
     classlist.h \
     classdetail.h \
     classmembers.h \
-    createexam.h
+    createexam.h \
+    examresults.h \
+    examscores.h
 
 FORMS += \
     home.ui \
@@ -36,7 +40,9 @@ FORMS += \
     classlist.ui \
     classdetail.ui \
     classmembers.ui \
-    createexam.ui
+    createexam.ui \
+    examresults.ui \
+    examscores.ui
 
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

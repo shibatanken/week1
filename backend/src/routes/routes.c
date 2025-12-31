@@ -106,6 +106,19 @@ void handle_control_message(int socket, ControlMessage *msg)
     {
         handle_delete_exam_question(socket, msg);
     }
+    // Exam Scoring (mới)
+    else if (strcmp(msg->type, SUBMIT_EXAM_ANSWERS) == 0)
+    {
+        handle_submit_exam_answers(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_EXAM_RESULTS) == 0)
+    {
+        handle_get_exam_results(socket, msg);
+    }
+    else if (strcmp(msg->type, GET_EXAM_SCORES) == 0)
+    {
+        handle_get_exam_scores(socket, msg);
+    }
     // Legacy - Room (giữ lại cho tương thích)
     else if (strcmp(msg->type, GET_ROOM_LIST) == 0)
     {

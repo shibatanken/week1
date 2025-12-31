@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -I/opt/homebrew/opt/mysql-client/include -I/opt/homebrew/opt/cjson/include
-LDFLAGS = -L/opt/homebrew/opt/mysql-client/lib -lmysqlclient -L/opt/homebrew/opt/cjson/lib -lcjson
+CFLAGS = -Wall $(shell pkg-config --cflags mysqlclient 2>/dev/null || mysql_config --cflags 2>/dev/null || echo "-I/usr/include/mysql")
+LDFLAGS = $(shell pkg-config --libs mysqlclient 2>/dev/null || mysql_config --libs 2>/dev/null || echo "-L/usr/lib/x86_64-linux-gnu -lmysqlclient") -lcjson -lpthread
 
 SRCS = src/main.c \
        src/db/connect-db.c \
@@ -25,25 +25,25 @@ TARGET = server
 all: $(TARGET)
 
 $(TARGET): $(SRCS)
-    $(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
 
 clean:
-    rm -f $(TARGET)
+	rm -f $(TARGET)
 
 run: $(TARGET)
-    ./$(TARGET)
+	./$(TARGET)
 
 migrate:
-    @echo "Running migrations..."
-    @for file in src/migrations/*.sql; do \
-        echo "Executing $$file"; \
-        mysql -u quizz -pQuizz2003@ quizz_db < $$file; \
-    done
-    @echo "Migrations completed!"
+	@echo "Running migrations..."
+	@for file in src/migrations/*.sql; do \
+		echo "Executing $$file"; \
+		mysql -u quizz -pQuizz2003@ quizz_db < $$file; \
+	done
+	@echo "Migrations completed!"
 
 seed:
-    @echo "Seeding demo data..."
-    @mysql -u quizz -pQuizz2003@ quizz_db < src/seeder/demo_data.sql
-    @echo "Seeding completed!"
+	@echo "Seeding demo data..."
+	@mysql -u quizz -pQuizz2003@ quizz_db < src/seeder/demo_data.sql
+	@echo "Seeding completed!"
 
 .PHONY: all clean run migrate seed
