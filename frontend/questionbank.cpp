@@ -72,46 +72,67 @@ void QuestionBank::setupUi() {
 
 void QuestionBank::loadQuestions() {
     m_listWidget->clear();
+    m_listWidget->addItem("Đang tải...");
     
-    QTcpSocket socket;
-    socket.connectToHost(IPADDRESS, 8081);
-    if (!socket.waitForConnected(3000)) {
-        QMessageBox::warning(this, "Lỗi", "Không thể kết nối server");
-        return;
-    }
-
-    QJsonObject json;
-    json["class_id"] = m_classId;
-    QJsonDocument doc(json);
-    QString req = QString("CONTROL GET_QUESTION_BANK\n%1").arg(QString(doc.toJson(QJsonDocument::Compact)));
+    // Dùng async để tránh block UI
+    QTcpSocket *socket = new QTcpSocket(this);
     
-    socket.write(req.toUtf8());
-    socket.flush();
+    connect(socket, &QTcpSocket::connected, this, [this, socket]() {
+        QJsonObject json;
+        json["class_id"] = m_classId;
+        QJsonDocument doc(json);
+        QString req = QString("CONTROL GET_QUESTION_BANK\n%1").arg(QString(doc.toJson(QJsonDocument::Compact)));
+        socket->write(req.toUtf8());
+        socket->flush();
+    });
     
-    if (socket.waitForReadyRead(3000)) {
-        QByteArray resp = socket.readAll();
+    connect(socket, &QTcpSocket::readyRead, this, [this, socket]() {
+        QByteArray resp = socket->readAll();
         QString respStr(resp);
+        
+        m_listWidget->clear();
         
         int idx = respStr.indexOf('{');
         if (idx != -1) {
             QJsonDocument d = QJsonDocument::fromJson(respStr.mid(idx).toUtf8());
             QJsonArray arr = d.object()["data"].toArray();
+            
+            if (arr.isEmpty()) {
+                m_listWidget->addItem("(Không có câu hỏi nào)");
+            }
+            
             for (const auto &val : arr) {
                 QJsonObject obj = val.toObject();
                 QString content = obj["content"].toString();
                 int id = obj["id"].toInt();
+                QString optA = obj["option_a"].toString();
+                QString optB = obj["option_b"].toString();
+                QString optC = obj["option_c"].toString();
+                QString optD = obj["option_d"].toString();
+                QString correct = obj["correct_option"].toString();
                 
                 QListWidgetItem *item = new QListWidgetItem(content + " (ID: " + QString::number(id) + ")");
                 item->setData(Qt::UserRole, id);
-                item->setData(Qt::UserRole + 1, obj["option_a"].toString());
-                item->setData(Qt::UserRole + 2, obj["option_b"].toString());
-                item->setData(Qt::UserRole + 3, obj["option_c"].toString());
-                item->setData(Qt::UserRole + 4, obj["option_d"].toString());
-                item->setData(Qt::UserRole + 5, obj["correct_option"].toString());
+                item->setData(Qt::UserRole + 1, optA);
+                item->setData(Qt::UserRole + 2, optB);
+                item->setData(Qt::UserRole + 3, optC);
+                item->setData(Qt::UserRole + 4, optD);
+                item->setData(Qt::UserRole + 5, correct);
                 m_listWidget->addItem(item);
             }
         }
-    }
+        
+        socket->close();
+        socket->deleteLater();
+    });
+    
+    connect(socket, &QTcpSocket::errorOccurred, this, [this, socket](QAbstractSocket::SocketError) {
+        m_listWidget->clear();
+        m_listWidget->addItem("(Lỗi kết nối server)");
+        socket->deleteLater();
+    });
+    
+    socket->connectToHost(IPADDRESS, 8081);
 }
 
 void QuestionBank::onAddQuestionClicked() {

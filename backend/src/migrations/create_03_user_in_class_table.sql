@@ -11,3 +11,4 @@ CREATE TABLE IF NOT EXISTS user_in_class (
     UNIQUE KEY unique_user_class (user_id, class_id) -- Mỗi user chỉ join 1 lần
 );
 
+

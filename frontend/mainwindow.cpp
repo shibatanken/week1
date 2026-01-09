@@ -60,6 +60,9 @@ MainWindow::MainWindow(QWidget *parent)
         showClassDetail(currentClassId);
     });
     connect(classDetailForm, &ClassDetail::openCreateExam, this, &MainWindow::showCreateExam);
+    connect(classDetailForm, &ClassDetail::openExamDetail, this, &MainWindow::showEditExam);
+    connect(classDetailForm, &ClassDetail::startExamForStudent, this, &MainWindow::showExamTaking);
+    connect(classDetailForm, &ClassDetail::openPracticeMode, this, &MainWindow::showPracticeMode);
     connect(createExamForm, &CreateExam::backToClassDetail, [this]() {
         showClassDetail(currentClassId);
     });
@@ -69,6 +72,14 @@ MainWindow::MainWindow(QWidget *parent)
         showClassDetail(currentClassId);
     });
     connect(examTakingForm, &ExamTaking::examFinished, this, &MainWindow::showExamResult);
+    connect(examTakingForm, &ExamTaking::openAppeal, [this](int submissionId, int examId, QString examName) {
+        Q_UNUSED(examId);
+        Q_UNUSED(examName);
+        appealManagerForm->setSubmissionId(submissionId);
+        appealManagerForm->setMode(false); // Student mode
+        appealManagerForm->loadAppeals();
+        ui->stackedWidget->setCurrentWidget(appealManagerForm);
+    });
     connect(examListForm, &ExamList::backToClassList, this, &MainWindow::showClassList);
     connect(examListForm, &ExamList::startExam, this, &MainWindow::showExamTaking);
     connect(examListForm, &ExamList::viewExamResult, this, &MainWindow::showExamResult);
@@ -129,6 +140,12 @@ void MainWindow::showClassMembers(int classId, QString className) {
 void MainWindow::showCreateExam(int classId) {
     currentClassId = classId;
     createExamForm->setClassId(classId);
+    ui->stackedWidget->setCurrentWidget(createExamForm);
+}
+
+void MainWindow::showEditExam(int examId) {
+    currentExamId = examId;
+    createExamForm->setExamId(examId);
     ui->stackedWidget->setCurrentWidget(createExamForm);
 }
 

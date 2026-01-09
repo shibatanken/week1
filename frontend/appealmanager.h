@@ -19,6 +19,7 @@ public:
     
     void loadAppeals();
     void setMode(bool isTeacher);
+    void setSubmissionId(int submissionId);
 
 signals:
     void backPressed();
@@ -33,6 +34,7 @@ private:
     QTcpSocket *tcpSocket;
     QJsonArray appeals;
     bool isTeacherMode;
+    int currentSubmissionId;
     
     void displayAppeals();
     void displayAppealForm();

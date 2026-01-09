@@ -302,14 +302,44 @@
          <property name="placeholderText">
           <string>Chi tiết kết quả...</string>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>200</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnBackToList">
-         <property name="text">
-          <string>← Quay lại danh sách</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QPushButton" name="btnBackToList">
+           <property name="text">
+            <string>← Quay lại danh sách</string>
+           </property>
+           <property name="styleSheet">
+            <string>padding: 10px 20px;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnAppeal">
+           <property name="text">
+            <string>📝 Khiếu nại kết quả</string>
+           </property>
+           <property name="styleSheet">
+            <string>background-color: #ff9800; color: white; font-weight: bold; padding: 10px 20px;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <spacer>
@@ -325,16 +355,7 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>btnBackToList</sender>
-   <signal>clicked()</signal>
-   <receiver>ExamTaking</receiver>
-   <slot>backToExamList()</slot>
-  </connection>
- </connections>
- <slots>
-  <slot>backToExamList()</slot>
- </slots>
+ <connections/>
+ <slots/>
 </ui>
 

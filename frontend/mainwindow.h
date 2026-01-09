@@ -35,6 +35,7 @@ private slots:
     void showClassDetail(int classId);
     void showClassMembers(int classId, QString className);
     void showCreateExam(int classId);
+    void showEditExam(int examId);
     void showHome();
     
     // New slots

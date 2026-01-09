@@ -28,6 +28,7 @@ private slots:
     void on_backButton_clicked();
     void on_saveExamButton_clicked();
     void on_addQuestionButton_clicked();
+    void on_publishButton_clicked();
     void onAddAnswerButtonClicked();
     void onDeleteQuestionClicked();
     void onDeleteAnswerClicked();
@@ -43,7 +44,12 @@ private:
     void createExam();
     void saveQuestion(int questionIndex);
     void loadExamQuestions();
+    void loadExamInfo();
     void importQuestion(int questionId);
+    void deleteQuestionFromExam(int questionId);
+    void publishExam();
+    
+    QString currentExamStatus;
 };
 
 #endif // CREATEEXAM_H

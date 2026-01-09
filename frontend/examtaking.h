@@ -26,6 +26,7 @@ public:
 signals:
     void backToExamList();
     void examFinished(int submissionId);
+    void openAppeal(int submissionId, int examId, QString examName);
 
 private slots:
     void onReadyRead();
@@ -34,6 +35,8 @@ private slots:
     void onNextClicked();
     void onSubmitClicked();
     void onAnswerSelected(int questionIndex, QString answer);
+    void onBackToListClicked();
+    void onAppealClicked();
 
 private:
     Ui::ExamTaking *ui;

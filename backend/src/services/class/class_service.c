@@ -506,3 +506,4 @@ int delete_class(int class_id, int teacher_id)
     return 1;
 }
 
+

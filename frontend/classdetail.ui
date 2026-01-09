@@ -120,6 +120,19 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="practiceButton">
+       <property name="text">
+        <string>📚 Luyện tập</string>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string>background-color: #17a2b8; color: white; padding: 8px 15px; border-radius: 4px;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="createExamButton">
        <property name="text">
         <string>➕ Tạo bài kiểm tra</string>

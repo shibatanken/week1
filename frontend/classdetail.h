@@ -25,11 +25,14 @@ signals:
     void openCreateExam(int classId);
     void openClassMembers(int classId, QString className);
     void openExamDetail(int examId);
+    void startExamForStudent(int examId, QString examName, int timeLimit);
+    void openPracticeMode(int classId, QString className);
 
 private slots:
     void on_backButton_clicked();
     void on_createExamButton_clicked();
     void on_membersButton_clicked();
+    void on_practiceButton_clicked();
     void loadClassDetail();
     void loadExamsInClass();
     void onExamItemClicked(QListWidgetItem *item);
@@ -45,3 +48,4 @@ private:
 };
 
 #endif // CLASSDETAIL_H
+

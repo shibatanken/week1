@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <cjson/cJSON.h>
 
 // Create exam
@@ -456,15 +457,26 @@ char *get_submission_status(int exam_id, int user_id)
     MYSQL_ROW row = mysql_fetch_row(res);
     cJSON *obj = cJSON_CreateObject();
     cJSON_AddNumberToObject(obj, "submission_id", atoi(row[0]));
-    cJSON_AddStringToObject(obj, "status", row[1]);
-    cJSON_AddNumberToObject(obj, "score", atof(row[2]));
-    cJSON_AddNumberToObject(obj, "total_questions", atoi(row[3]));
-    cJSON_AddNumberToObject(obj, "correct_answers", atoi(row[4]));
+    cJSON_AddStringToObject(obj, "status", row[1] ? row[1] : "");
+    // Handle NULL score - use 0.0 if NULL
+    if (row[2] == NULL) {
+        cJSON_AddNumberToObject(obj, "score", 0.0);
+    } else {
+        double score = atof(row[2]);
+        // Check for NaN (NaN != NaN is true)
+        if (score != score) {
+            cJSON_AddNumberToObject(obj, "score", 0.0);
+        } else {
+            cJSON_AddNumberToObject(obj, "score", score);
+        }
+    }
+    cJSON_AddNumberToObject(obj, "total_questions", row[3] ? atoi(row[3]) : 0);
+    cJSON_AddNumberToObject(obj, "correct_answers", row[4] ? atoi(row[4]) : 0);
     cJSON_AddStringToObject(obj, "started_at", row[5] ? row[5] : "");
     cJSON_AddStringToObject(obj, "submitted_at", row[6] ? row[6] : "");
-    cJSON_AddStringToObject(obj, "exam_name", row[7]);
-    cJSON_AddNumberToObject(obj, "time_limit", atoi(row[8]));
-    cJSON_AddStringToObject(obj, "exam_status", row[9]);
+    cJSON_AddStringToObject(obj, "exam_name", row[7] ? row[7] : "");
+    cJSON_AddNumberToObject(obj, "time_limit", row[8] ? atoi(row[8]) : 0);
+    cJSON_AddStringToObject(obj, "exam_status", row[9] ? row[9] : "");
     
     mysql_free_result(res);
     char *json_string = cJSON_Print(obj);
@@ -578,9 +590,10 @@ char *get_exam_result(int submission_id)
     cJSON_AddStringToObject(obj, "student_name", row[8]);
     mysql_free_result(res);
     
-    // Get detailed answers
+    // Get detailed answers with all options
     snprintf(query, sizeof(query),
-             "SELECT a.question_id, q.content, a.user_answer, q.correct_option, a.is_correct "
+             "SELECT a.question_id, q.content, a.user_answer, q.correct_option, a.is_correct, "
+             "q.option_a, q.option_b, q.option_c, q.option_d "
              "FROM exam_answers a "
              "JOIN exam_questions q ON a.question_id = q.id "
              "WHERE a.submission_id = %d ORDER BY q.id", submission_id);
@@ -596,6 +609,10 @@ char *get_exam_result(int submission_id)
                 cJSON_AddStringToObject(answer_obj, "user_answer", row[2] ? row[2] : "");
                 cJSON_AddStringToObject(answer_obj, "correct_option", row[3]);
                 cJSON_AddBoolToObject(answer_obj, "is_correct", atoi(row[4]));
+                cJSON_AddStringToObject(answer_obj, "option_a", row[5] ? row[5] : "");
+                cJSON_AddStringToObject(answer_obj, "option_b", row[6] ? row[6] : "");
+                cJSON_AddStringToObject(answer_obj, "option_c", row[7] ? row[7] : "");
+                cJSON_AddStringToObject(answer_obj, "option_d", row[8] ? row[8] : "");
                 cJSON_AddItemToArray(answers_array, answer_obj);
             }
             cJSON_AddItemToObject(obj, "answers", answers_array);

@@ -12,17 +12,24 @@
 #include <QMessageBox>
 #include <QTextEdit>
 #include <QInputDialog>
+#include <QComboBox>
 
 AppealManager::AppealManager(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::AppealManager),
     tcpSocket(new QTcpSocket(this)),
-    isTeacherMode(false)
+    isTeacherMode(false),
+    currentSubmissionId(-1)
 {
     ui->setupUi(this);
     
     connect(ui->btnBack, &QPushButton::clicked, this, &AppealManager::backPressed);
     connect(ui->btnRefresh, &QPushButton::clicked, this, &AppealManager::loadAppeals);
+}
+
+void AppealManager::setSubmissionId(int submissionId)
+{
+    currentSubmissionId = submissionId;
 }
 
 AppealManager::~AppealManager()
@@ -184,7 +191,69 @@ void AppealManager::displayAppeals()
 
 void AppealManager::onSubmitAppeal()
 {
-    // This would be called from exam result page
+    // This is called from dynamically created form
+    // The actual submission is handled in displayAppealForm via lambda
+}
+
+void AppealManager::displayAppealForm()
+{
+    // Clear existing
+    QLayoutItem *child;
+    while ((child = ui->appealsLayout->takeAt(0)) != nullptr) {
+        if (child->widget()) delete child->widget();
+        delete child;
+    }
+    
+    QLabel *formTitle = new QLabel("📝 Gửi khiếu nại mới");
+    formTitle->setStyleSheet("font-size: 16px; font-weight: bold; margin-bottom: 10px;");
+    ui->appealsLayout->addWidget(formTitle);
+    
+    QLabel *questionLabel = new QLabel("Chọn câu hỏi cần khiếu nại:");
+    ui->appealsLayout->addWidget(questionLabel);
+    
+    QComboBox *cmbQuestion = new QComboBox();
+    cmbQuestion->setObjectName("cmbQuestion");
+    // TODO: Populate with questions from submission
+    ui->appealsLayout->addWidget(cmbQuestion);
+    
+    QLabel *reasonLabel = new QLabel("Lý do khiếu nại:");
+    ui->appealsLayout->addWidget(reasonLabel);
+    
+    QTextEdit *txtReason = new QTextEdit();
+    txtReason->setObjectName("txtReason");
+    txtReason->setPlaceholderText("Nhập lý do khiếu nại của bạn...");
+    txtReason->setMaximumHeight(100);
+    ui->appealsLayout->addWidget(txtReason);
+    
+    QPushButton *submitBtn = new QPushButton("📤 Gửi khiếu nại");
+    submitBtn->setStyleSheet("background-color: #ff9800; color: white; font-weight: bold; padding: 10px 20px;");
+    connect(submitBtn, &QPushButton::clicked, [this, cmbQuestion, txtReason]() {
+        QString reason = txtReason->toPlainText().trimmed();
+        int questionId = cmbQuestion->currentData().toInt();
+        
+        if (reason.isEmpty()) {
+            QMessageBox::warning(this, "Lỗi", "Vui lòng nhập lý do khiếu nại!");
+            return;
+        }
+        
+        tcpSocket->connectToHost(IPADDRESS, PORT);
+        if (tcpSocket->waitForConnected(3000)) {
+            QJsonObject json;
+            json["submission_id"] = currentSubmissionId;
+            json["question_id"] = questionId;
+            json["user_id"] = UserData::instance().getUserId();
+            json["reason"] = reason;
+            
+            QString request = QString("CONTROL SUBMIT_APPEAL\n%1").arg(QString(QJsonDocument(json).toJson(QJsonDocument::Compact)));
+            tcpSocket->write(request.toUtf8());
+            tcpSocket->flush();
+            
+            connect(tcpSocket, &QTcpSocket::readyRead, this, &AppealManager::onReadyRead);
+        }
+    });
+    ui->appealsLayout->addWidget(submitBtn);
+    
+    ui->appealsLayout->addStretch();
 }
 
 void AppealManager::onReviewAppeal(int appealId, QString status)

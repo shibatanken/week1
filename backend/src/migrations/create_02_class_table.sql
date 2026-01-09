@@ -10,3 +10,4 @@ CREATE TABLE IF NOT EXISTS class (
     FOREIGN KEY (teacher_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
+

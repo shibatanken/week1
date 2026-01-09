@@ -66,15 +66,9 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QPlainTextEdit" name="descriptionEdit">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>80</height>
-         </size>
-        </property>
+       <widget class="QLineEdit" name="descriptionEdit">
         <property name="placeholderText">
-         <string>Nhập mô tả bài kiểm tra...</string>
+         <string>Nhập mô tả ngắn...</string>
         </property>
        </widget>
       </item>
@@ -117,6 +111,22 @@
           </property>
           <property name="styleSheet">
            <string>background-color: #28a745; color: white; padding: 8px 20px; border-radius: 4px;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="publishButton">
+          <property name="text">
+           <string>🚀 Công bố đề thi</string>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="styleSheet">
+           <string>background-color: #ff9800; color: white; padding: 8px 20px; border-radius: 4px;</string>
+          </property>
+          <property name="enabled">
+           <bool>false</bool>
           </property>
          </widget>
         </item>

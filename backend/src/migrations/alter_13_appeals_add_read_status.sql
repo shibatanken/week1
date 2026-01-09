@@ -1,0 +1,2 @@
+ALTER TABLE appeals ADD COLUMN student_read BOOLEAN DEFAULT FALSE;
+
