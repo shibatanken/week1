@@ -3,11 +3,6 @@
 
 #include <QWidget>
 #include <QTcpSocket>
-#include <QListWidget>
-#include <QPlainTextEdit>
-#include <QRadioButton>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QButtonGroup>
 
 namespace Ui {
@@ -23,14 +18,13 @@ public:
     ~CreateQuestion();
 
 public slots:
-    void setRoomId(int roomId);
+    void setClassId(int classId);
+    void setRoomId(int roomId); // Compatibility wrapper
 
 signals:
     void questionCreated();
 
 private slots:
-    void onAddAnswerButtonClicked();
-    void onDeleteAnswerButtonClicked();
     void onSaveQuestionClicked();
     void updateSaveButtonState();
     void handleCreateQuestion();
@@ -39,9 +33,8 @@ private slots:
 private:
     Ui::CreateQuestion *ui;
     QTcpSocket *tcpSocket;
-    QListWidget *answerListWidget;
     QButtonGroup *radioButtonGroup;
-    int roomId = 0;
+    int classId = 0;
 };
 
 #endif // CREATEQUESTION_H

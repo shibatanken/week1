@@ -3,8 +3,8 @@
 
 #include <QWidget>
 #include <QTcpSocket>
-#include <QJsonObject>
-#include <QJsonArray>
+#include <QPushButton>
+#include <QListWidgetItem>
 
 namespace Ui {
 class ClassDetail;
@@ -21,18 +21,19 @@ public:
     void setClassId(int classId);
 
 signals:
-    void showClassList();
-    void showClassMembers(int classId, QString className);
-    void showCreateExam(int classId);
-    void showExamDetail(int examId);
+    void backToClassList();
+    void openCreateExam(int classId);
+    void openClassMembers(int classId, QString className);
+    void openExamDetail(int examId);
 
 private slots:
     void on_backButton_clicked();
-    void on_membersButton_clicked();
     void on_createExamButton_clicked();
+    void on_membersButton_clicked();
+    void loadClassDetail();
+    void loadExamsInClass();
+    void onExamItemClicked(QListWidgetItem *item);
     void on_refreshButton_clicked();
-    void handleExamItemClicked(int examId);
-    void handleDeleteExam(int examId);
 
 private:
     Ui::ClassDetail *ui;
@@ -40,9 +41,7 @@ private:
     int currentClassId;
     QString currentClassName;
     
-    void loadClassDetail();
-    void loadExamsInClass();
-    void populateExamList(const QJsonArray &exams);
+    QPushButton *questionBankBtn;
 };
 
 #endif // CLASSDETAIL_H

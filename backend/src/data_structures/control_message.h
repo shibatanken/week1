@@ -16,19 +16,26 @@
 #define DELETE_CLASS "DELETE_CLASS"
 #define GET_MY_CLASSES "GET_MY_CLASSES"
 
-// Control Types - Exam Management (mới)
+// Control Types - Exam Management (new)
 #define CREATE_EXAM "CREATE_EXAM"
 #define GET_EXAMS_IN_CLASS "GET_EXAMS_IN_CLASS"
 #define GET_EXAM_DETAIL "GET_EXAM_DETAIL"
 #define DELETE_EXAM "DELETE_EXAM"
 #define UPDATE_EXAM_STATUS "UPDATE_EXAM_STATUS"
 
-// Control Types - Exam Question Management (mới)
-#define ADD_EXAM_QUESTION "ADD_EXAM_QUESTION"
+// Control Types - Exam Question Management (new)
+#define ADD_EXAM_QUESTION "ADD_EXAM_QUESTION" // Legacy: mapped to bank or exam depending on usage, better usage: Bank
 #define GET_EXAM_QUESTIONS "GET_EXAM_QUESTIONS"
 #define DELETE_EXAM_QUESTION "DELETE_EXAM_QUESTION"
 
-// Legacy - Room (có thể xóa sau)
+// NEW COMMANDS for Refactoring
+#define ADD_QUESTION_TO_EXAM "ADD_QUESTION_TO_EXAM"
+#define ADD_QUESTION_TO_BANK "ADD_QUESTION_TO_BANK" // Explicit Bank
+#define IMPORT_QUESTION_FROM_BANK "IMPORT_QUESTION_FROM_BANK" // Bank -> Exam
+#define GET_QUESTION_BANK "GET_QUESTION_BANK" // List Bank
+#define DELETE_QUESTION_FROM_BANK "DELETE_QUESTION_FROM_BANK"
+
+// Legacy - Room (can be removed later)
 #define CREATE_ROOM "CREATE_ROOM"
 #define GET_ROOM_LIST "GET_ROOM_LIST"
 #define ADD_QUESTION "ADD_QUESTION"

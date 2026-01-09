@@ -3,6 +3,7 @@
 #include "../controllers/class/class_controller.h"
 #include "../controllers/exam/exam_controller.h"
 #include "../controllers/controller.h"
+#include "routes.h"
 #include <netinet/in.h>
 #include <pthread.h>
 #include <signal.h>
@@ -13,7 +14,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-
 
 pthread_mutex_t lock;
 
@@ -30,224 +30,142 @@ void *pthread_routine(void *arg);
 
 void handle_control_message(int socket, ControlMessage *msg)
 {
-    // Authentication
-    if (strcmp(msg->type, LOGIN) == 0)
-    {
-        handle_login(socket, msg);
-    }
-    else if (strcmp(msg->type, SIGN_UP) == 0)
-    {
-        handle_signup(socket, msg);
-    }
-    // Class Management
-    else if (strcmp(msg->type, CREATE_CLASS) == 0)
-    {
-        handle_create_class(socket, msg);
-    }
-    else if (strcmp(msg->type, GET_CLASS_LIST) == 0)
-    {
-        handle_get_class_list(socket, msg);
-    }
-    else if (strcmp(msg->type, GET_CLASS_DETAIL) == 0)
-    {
-        handle_get_class_detail(socket, msg);
-    }
-    else if (strcmp(msg->type, ADD_STUDENT_TO_CLASS) == 0)
-    {
-        handle_add_student_to_class(socket, msg);
-    }
-    else if (strcmp(msg->type, REMOVE_STUDENT_FROM_CLASS) == 0)
-    {
-        handle_remove_student_from_class(socket, msg);
-    }
-    else if (strcmp(msg->type, GET_STUDENTS_IN_CLASS) == 0)
-    {
-        handle_get_students_in_class(socket, msg);
-    }
-    else if (strcmp(msg->type, GET_STUDENTS_NOT_IN_CLASS) == 0)
-    {
-        handle_get_students_not_in_class(socket, msg);
-    }
-    else if (strcmp(msg->type, GET_MY_CLASSES) == 0)
-    {
-        handle_get_my_classes(socket, msg);
-    }
-    // Exam Management (mới)
-    else if (strcmp(msg->type, CREATE_EXAM) == 0)
-    {
-        handle_create_exam(socket, msg);
-    }
-    else if (strcmp(msg->type, GET_EXAMS_IN_CLASS) == 0)
-    {
-        handle_get_exams_in_class(socket, msg);
-    }
-    else if (strcmp(msg->type, GET_EXAM_DETAIL) == 0)
-    {
-        handle_get_exam_detail(socket, msg);
-    }
-    else if (strcmp(msg->type, DELETE_EXAM) == 0)
-    {
-        handle_delete_exam(socket, msg);
-    }
-    else if (strcmp(msg->type, UPDATE_EXAM_STATUS) == 0)
-    {
-        handle_update_exam_status(socket, msg);
-    }
-    // Exam Question Management (mới)
-    else if (strcmp(msg->type, ADD_EXAM_QUESTION) == 0)
-    {
-        handle_add_exam_question(socket, msg);
-    }
-    else if (strcmp(msg->type, GET_EXAM_QUESTIONS) == 0)
-    {
-        handle_get_exam_questions(socket, msg);
-    }
-    else if (strcmp(msg->type, DELETE_EXAM_QUESTION) == 0)
-    {
-        handle_delete_exam_question(socket, msg);
-    }
-    // Legacy - Room (giữ lại cho tương thích)
-    else if (strcmp(msg->type, GET_ROOM_LIST) == 0)
-    {
-        handle_get_room_list(socket, msg);
-    }
-    else if (strcmp(msg->type, CREATE_ROOM) == 0)
-    {
-        handle_create_room(socket, msg);
-    }
-    else if (strcmp(msg->type, ADD_QUESTION) == 0)
-    {
-        handle_add_question(socket, msg);
-    }
-    else if (strcmp(msg->type, GET_ROOM_QUESTION) == 0)
-    {
-        handle_get_room_question(socket, msg);
-    }
+    // Debug print
+    printf("Debug: Processing message type '%s'\n", msg->type);
+
+    if (strcmp(msg->type, LOGIN) == 0) handle_login(socket, msg);
+    else if (strcmp(msg->type, SIGN_UP) == 0) handle_signup(socket, msg);
+    else if (strcmp(msg->type, CREATE_CLASS) == 0) handle_create_class(socket, msg);
+    else if (strcmp(msg->type, GET_CLASS_LIST) == 0) handle_get_class_list(socket, msg);
+    else if (strcmp(msg->type, GET_CLASS_DETAIL) == 0) handle_get_class_detail(socket, msg);
+    else if (strcmp(msg->type, ADD_STUDENT_TO_CLASS) == 0) handle_add_student_to_class(socket, msg);
+    else if (strcmp(msg->type, REMOVE_STUDENT_FROM_CLASS) == 0) handle_remove_student_from_class(socket, msg);
+    else if (strcmp(msg->type, GET_STUDENTS_IN_CLASS) == 0) handle_get_students_in_class(socket, msg);
+    else if (strcmp(msg->type, GET_STUDENTS_NOT_IN_CLASS) == 0) handle_get_students_not_in_class(socket, msg);
+    else if (strcmp(msg->type, GET_MY_CLASSES) == 0) handle_get_my_classes(socket, msg);
+    else if (strcmp(msg->type, CREATE_EXAM) == 0) handle_create_exam(socket, msg);
+    else if (strcmp(msg->type, GET_EXAMS_IN_CLASS) == 0) handle_get_exams_in_class(socket, msg);
+    else if (strcmp(msg->type, GET_EXAM_DETAIL) == 0) handle_get_exam_detail(socket, msg);
+    else if (strcmp(msg->type, DELETE_EXAM) == 0) handle_delete_exam(socket, msg);
+    else if (strcmp(msg->type, UPDATE_EXAM_STATUS) == 0) handle_update_exam_status(socket, msg);
+    
+    // Exam Question Management
+    else if (strcmp(msg->type, ADD_EXAM_QUESTION) == 0) handle_add_exam_question(socket, msg);
+    else if (strcmp(msg->type, GET_EXAM_QUESTIONS) == 0) handle_get_exam_questions(socket, msg);
+    else if (strcmp(msg->type, DELETE_EXAM_QUESTION) == 0) handle_delete_exam_question(socket, msg);
+    
+    // NEW ROUTES
+    else if (strcmp(msg->type, ADD_QUESTION_TO_EXAM) == 0) handle_add_question_to_exam(socket, msg);
+    else if (strcmp(msg->type, ADD_QUESTION_TO_BANK) == 0) handle_add_question_to_bank(socket, msg);
+    else if (strcmp(msg->type, IMPORT_QUESTION_FROM_BANK) == 0) handle_import_question_from_bank(socket, msg);
+    else if (strcmp(msg->type, GET_QUESTION_BANK) == 0) handle_get_question_bank(socket, msg);
+    else if (strcmp(msg->type, DELETE_QUESTION_FROM_BANK) == 0) handle_delete_question_from_bank(socket, msg);
+    
+    else printf("Unknown message type: '%s'\n", msg->type);
 }
 
-void handle_data_message(int socket, DataMessage *msg)
+void *pthread_routine(void *arg)
 {
-    // Placeholder
+    pthread_arg_t *pthread_arg = (pthread_arg_t *)arg;
+    int client_socket = pthread_arg->new_socket_fd;
+    struct sockaddr_in client_address = pthread_arg->client_address;
+    free(arg);
+
+    char buffer[4096];
+    ControlMessage msg;
+    memset(&msg, 0, sizeof(msg));
+
+    printf("Handling connection from %s:%d\n", inet_ntoa(client_address.sin_addr), ntohs(client_address.sin_port));
+
+    while (1)
+    {
+        memset(buffer, 0, sizeof(buffer));
+        int bytes_read = read(client_socket, buffer, sizeof(buffer) - 1);
+        if (bytes_read <= 0)
+        {
+            break; 
+        }
+
+        // Parse line by line to support CONTROL COMMAND\nBODY
+        char *line = strtok(buffer, "\n");
+        if (line == NULL) continue;
+        
+        // Fix: Strip "CONTROL " prefix if present
+        if (strncmp(line, "CONTROL ", 8) == 0) {
+            strncpy(msg.type, line + 8, sizeof(msg.type) - 1);
+        } else {
+            strncpy(msg.type, line, sizeof(msg.type) - 1);
+        }
+        
+        // The body starts after the first newline. 
+        // buffer contains the read data, strtok put a \0 at the end of line.
+        // So body starts at buffer + strlen(line) + 1.
+        char *body_start = buffer + strlen(line) + 1;
+        
+        if (body_start < buffer + bytes_read) {
+             strncpy(msg.body, body_start, sizeof(msg.body) - 1);
+        } else {
+             memset(msg.body, 0, sizeof(msg.body));
+        }
+
+        printf("Received raw command: %s. Parsed type: %s\n", line, msg.type);
+        handle_control_message(client_socket, &msg);
+        break; 
+    }
+    
+    close(client_socket);
+    return NULL;
 }
 
-void handle_notification_message(int socket, NotificationMessage *msg)
+void setup_routes(int socket_fd)
 {
-    // Placeholder
-}
-
-void setup_routes(int server_fd)
-{
-    struct sockaddr_in address;
-    int new_socket;
-    pthread_attr_t pthread_attr;
-    pthread_arg_t *pthread_arg;
-    pthread_t pthread;
+    struct sockaddr_in address, client_address;
     socklen_t client_address_len;
+    pthread_t thread_id;
+    int new_socket_fd;
 
-    memset(&address, 0, sizeof address);
-    address.sin_family = AF_INET;
-    address.sin_port = htons(PORT);
-    address.sin_addr.s_addr = INADDR_ANY;
-
-    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
-    {
-        perror("bind failed");
-        close(server_fd);
-        exit(EXIT_FAILURE);
-    }
-
-    if (listen(server_fd, BACKLOG) < 0)
-    {
-        perror("listen failed");
-        close(server_fd);
-        exit(EXIT_FAILURE);
-    }
     if (pthread_mutex_init(&lock, NULL) != 0)
     {
-        printf("\n Mutex init has failed\n");
+        printf("Mutex init failed\n");
         return;
     }
 
-    if (pthread_attr_init(&pthread_attr) != 0)
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(PORT);
+
+    if (bind(socket_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
-        perror("pthread_attr_init");
-        exit(1);
+        perror("Bind failed");
+        exit(EXIT_FAILURE);
     }
-    if (pthread_attr_setdetachstate(&pthread_attr, PTHREAD_CREATE_DETACHED) != 0)
+
+    if (listen(socket_fd, BACKLOG) < 0)
     {
-        perror("pthread_attr_setdetachstate");
-        exit(1);
+        perror("Listen failed");
+        exit(EXIT_FAILURE);
     }
 
     printf("Server listening on port %d\n", PORT);
 
     while (1)
     {
-        pthread_arg = (pthread_arg_t *)malloc(sizeof *pthread_arg);
-        if (!pthread_arg)
+        client_address_len = sizeof(client_address);
+        if ((new_socket_fd = accept(socket_fd, (struct sockaddr *)&client_address, &client_address_len)) < 0)
         {
-            perror("malloc");
+            perror("Accept failed");
             continue;
         }
 
-        client_address_len = sizeof pthread_arg->client_address;
-        if ((new_socket = accept(server_fd, (struct sockaddr *)&pthread_arg->client_address, &client_address_len)) < 0)
-        {
-            perror("accept failed");
-            close(server_fd);
-            exit(EXIT_FAILURE);
-        }
+        pthread_arg_t *pthread_arg = (pthread_arg_t *)malloc(sizeof(pthread_arg_t));
+        pthread_arg->new_socket_fd = new_socket_fd;
+        pthread_arg->client_address = client_address;
 
-        pthread_arg->new_socket_fd = new_socket;
-
-        if (pthread_create(&pthread, &pthread_attr, pthread_routine, (void *)pthread_arg) != 0)
+        if (pthread_create(&thread_id, NULL, pthread_routine, (void *)pthread_arg) != 0)
         {
-            perror("pthread_create");
+            perror("Thread create failed");
             free(pthread_arg);
-            continue;
         }
+        pthread_detach(thread_id);
     }
-}
-
-void *pthread_routine(void *arg)
-{
-    pthread_arg_t *pthread_arg = (pthread_arg_t *)arg;
-    int new_socket_fd = pthread_arg->new_socket_fd;
-
-    char buffer[4096];
-    memset(buffer, 0, sizeof(buffer));
-    read(new_socket_fd, buffer, sizeof(buffer));
-    printf("Received message: %s\n", buffer);
-
-    char *header = strtok(buffer, "\n");
-    char *body = header + strlen(header) + 1;
-
-    printf("header: %s - body: %s\n", header, body);
-    pthread_mutex_lock(&lock);
-    if (strncmp(header, "CONTROL", 7) == 0)
-    {
-        ControlMessage msg;
-        sscanf(header, "CONTROL %s", msg.type);
-        strncpy(msg.body, body, sizeof(msg.body) - 1);
-        handle_control_message(new_socket_fd, &msg);
-    }
-    else if (strncmp(header, "DATA", 4) == 0)
-    {
-        DataMessage msg;
-        sscanf(header, "DATA %s %s %d", msg.type, msg.data_type, &msg.data_size);
-        strncpy(msg.body, body, sizeof(msg.body) - 1);
-        handle_data_message(new_socket_fd, &msg);
-    }
-    else if (strncmp(header, "NOTIFICATION", 12) == 0)
-    {
-        NotificationMessage msg;
-        sscanf(header, "NOTIFICATION %s %s", msg.type, msg.timestamp);
-        strncpy(msg.body, body, sizeof(msg.body) - 1);
-        handle_notification_message(new_socket_fd, &msg);
-    }
-    pthread_mutex_unlock(&lock);
-
-    close(new_socket_fd);
-    free(pthread_arg);
-    return NULL;
 }

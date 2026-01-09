@@ -14,7 +14,9 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QVBoxLayout>
@@ -33,18 +35,26 @@ public:
     QLabel *difficultyLabel;
     QComboBox *difficultyComboBox;
     QSpacerItem *horizontalSpacer;
-    QHBoxLayout *answerHeaderLayout;
     QLabel *answersLabel;
-    QSpacerItem *horizontalSpacer2;
-    QPushButton *addAnswerButton;
-    QWidget *answerContainer;
+    QHBoxLayout *optionALayout;
+    QRadioButton *radioA;
+    QLineEdit *optionA;
+    QHBoxLayout *optionBLayout;
+    QRadioButton *radioB;
+    QLineEdit *optionB;
+    QHBoxLayout *optionCLayout;
+    QRadioButton *radioC;
+    QLineEdit *optionC;
+    QHBoxLayout *optionDLayout;
+    QRadioButton *radioD;
+    QLineEdit *optionD;
     QPushButton *saveButton;
 
     void setupUi(QWidget *CreateQuestion)
     {
         if (CreateQuestion->objectName().isEmpty())
             CreateQuestion->setObjectName(QString::fromUtf8("CreateQuestion"));
-        CreateQuestion->resize(650, 500);
+        CreateQuestion->resize(650, 600);
         verticalLayout = new QVBoxLayout(CreateQuestion);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         titleLabel = new QLabel(CreateQuestion);
@@ -95,32 +105,72 @@ public:
 
         verticalLayout->addLayout(difficultyLayout);
 
-        answerHeaderLayout = new QHBoxLayout();
-        answerHeaderLayout->setObjectName(QString::fromUtf8("answerHeaderLayout"));
         answersLabel = new QLabel(CreateQuestion);
         answersLabel->setObjectName(QString::fromUtf8("answersLabel"));
         answersLabel->setFont(font1);
 
-        answerHeaderLayout->addWidget(answersLabel);
+        verticalLayout->addWidget(answersLabel);
 
-        horizontalSpacer2 = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        optionALayout = new QHBoxLayout();
+        optionALayout->setObjectName(QString::fromUtf8("optionALayout"));
+        radioA = new QRadioButton(CreateQuestion);
+        radioA->setObjectName(QString::fromUtf8("radioA"));
+        radioA->setChecked(true);
 
-        answerHeaderLayout->addItem(horizontalSpacer2);
+        optionALayout->addWidget(radioA);
 
-        addAnswerButton = new QPushButton(CreateQuestion);
-        addAnswerButton->setObjectName(QString::fromUtf8("addAnswerButton"));
-        addAnswerButton->setCursor(QCursor(Qt::PointingHandCursor));
+        optionA = new QLineEdit(CreateQuestion);
+        optionA->setObjectName(QString::fromUtf8("optionA"));
 
-        answerHeaderLayout->addWidget(addAnswerButton);
+        optionALayout->addWidget(optionA);
 
 
-        verticalLayout->addLayout(answerHeaderLayout);
+        verticalLayout->addLayout(optionALayout);
 
-        answerContainer = new QWidget(CreateQuestion);
-        answerContainer->setObjectName(QString::fromUtf8("answerContainer"));
-        answerContainer->setMinimumSize(QSize(0, 200));
+        optionBLayout = new QHBoxLayout();
+        optionBLayout->setObjectName(QString::fromUtf8("optionBLayout"));
+        radioB = new QRadioButton(CreateQuestion);
+        radioB->setObjectName(QString::fromUtf8("radioB"));
 
-        verticalLayout->addWidget(answerContainer);
+        optionBLayout->addWidget(radioB);
+
+        optionB = new QLineEdit(CreateQuestion);
+        optionB->setObjectName(QString::fromUtf8("optionB"));
+
+        optionBLayout->addWidget(optionB);
+
+
+        verticalLayout->addLayout(optionBLayout);
+
+        optionCLayout = new QHBoxLayout();
+        optionCLayout->setObjectName(QString::fromUtf8("optionCLayout"));
+        radioC = new QRadioButton(CreateQuestion);
+        radioC->setObjectName(QString::fromUtf8("radioC"));
+
+        optionCLayout->addWidget(radioC);
+
+        optionC = new QLineEdit(CreateQuestion);
+        optionC->setObjectName(QString::fromUtf8("optionC"));
+
+        optionCLayout->addWidget(optionC);
+
+
+        verticalLayout->addLayout(optionCLayout);
+
+        optionDLayout = new QHBoxLayout();
+        optionDLayout->setObjectName(QString::fromUtf8("optionDLayout"));
+        radioD = new QRadioButton(CreateQuestion);
+        radioD->setObjectName(QString::fromUtf8("radioD"));
+
+        optionDLayout->addWidget(radioD);
+
+        optionD = new QLineEdit(CreateQuestion);
+        optionD->setObjectName(QString::fromUtf8("optionD"));
+
+        optionDLayout->addWidget(optionD);
+
+
+        verticalLayout->addLayout(optionDLayout);
 
         saveButton = new QPushButton(CreateQuestion);
         saveButton->setObjectName(QString::fromUtf8("saveButton"));
@@ -145,8 +195,15 @@ public:
         difficultyComboBox->setItemText(1, QCoreApplication::translate("CreateQuestion", "Trung b\303\254nh", nullptr));
         difficultyComboBox->setItemText(2, QCoreApplication::translate("CreateQuestion", "Kh\303\263", nullptr));
 
-        answersLabel->setText(QCoreApplication::translate("CreateQuestion", "C\303\241c \304\221\303\241p \303\241n:", nullptr));
-        addAnswerButton->setText(QCoreApplication::translate("CreateQuestion", "+ Th\303\252m \304\221\303\241p \303\241n", nullptr));
+        answersLabel->setText(QCoreApplication::translate("CreateQuestion", "C\303\241c \304\221\303\241p \303\241n (Ch\341\273\215n \304\221\303\241p \303\241n \304\221\303\272ng):", nullptr));
+        radioA->setText(QCoreApplication::translate("CreateQuestion", "A", nullptr));
+        optionA->setPlaceholderText(QCoreApplication::translate("CreateQuestion", "Nh\341\272\255p \304\221\303\241p \303\241n A", nullptr));
+        radioB->setText(QCoreApplication::translate("CreateQuestion", "B", nullptr));
+        optionB->setPlaceholderText(QCoreApplication::translate("CreateQuestion", "Nh\341\272\255p \304\221\303\241p \303\241n B", nullptr));
+        radioC->setText(QCoreApplication::translate("CreateQuestion", "C", nullptr));
+        optionC->setPlaceholderText(QCoreApplication::translate("CreateQuestion", "Nh\341\272\255p \304\221\303\241p \303\241n C", nullptr));
+        radioD->setText(QCoreApplication::translate("CreateQuestion", "D", nullptr));
+        optionD->setPlaceholderText(QCoreApplication::translate("CreateQuestion", "Nh\341\272\255p \304\221\303\241p \303\241n D", nullptr));
         saveButton->setText(QCoreApplication::translate("CreateQuestion", "L\306\260u c\303\242u h\341\273\217i", nullptr));
         saveButton->setStyleSheet(QCoreApplication::translate("CreateQuestion", "background-color: #6600FF; color: white; padding: 8px;", nullptr));
     } // retranslateUi

@@ -8,7 +8,7 @@
 #include <string.h>
 #include <cjson/cJSON.h>
 
-// Tạo bài kiểm tra mới
+// Create exam
 int create_exam(const char *exam_name, const char *description, int class_id, int time_limit, const char *start_time, const char *end_time)
 {
     MYSQL *conn = get_db_connection();
@@ -22,17 +22,12 @@ int create_exam(const char *exam_name, const char *description, int class_id, in
     
     if (start_time != NULL && end_time != NULL && strlen(start_time) > 0 && strlen(end_time) > 0)
     {
-        // Convert ISO format to MySQL format
         char start_mysql[64], end_mysql[64];
         strncpy(start_mysql, start_time, sizeof(start_mysql) - 1);
         strncpy(end_mysql, end_time, sizeof(end_mysql) - 1);
         
-        for (int i = 0; start_mysql[i]; i++) {
-            if (start_mysql[i] == 'T') start_mysql[i] = ' ';
-        }
-        for (int i = 0; end_mysql[i]; i++) {
-            if (end_mysql[i] == 'T') end_mysql[i] = ' ';
-        }
+        for (int i = 0; start_mysql[i]; i++) { if (start_mysql[i] == 'T') start_mysql[i] = ' '; }
+        for (int i = 0; end_mysql[i]; i++) { if (end_mysql[i] == 'T') end_mysql[i] = ' '; }
 
         snprintf(query, sizeof(query),
                  "INSERT INTO exam (exam_name, description, class_id, time_limit, start_time, end_time, status) "
@@ -53,7 +48,6 @@ int create_exam(const char *exam_name, const char *description, int class_id, in
         return 0;
     }
 
-    // Log activity
     char *timestamp = get_current_time();
     char log_message[256];
     snprintf(log_message, sizeof(log_message), "Created exam: %s in class %d", exam_name, class_id);
@@ -63,21 +57,17 @@ int create_exam(const char *exam_name, const char *description, int class_id, in
     return (int)mysql_insert_id(conn);
 }
 
-// Lấy danh sách bài kiểm tra trong lớp
+// Get exams in class
 char *get_exams_in_class(int class_id)
 {
     MYSQL *conn = get_db_connection();
-    if (conn == NULL)
-    {
-        fprintf(stderr, "Database connection failed.\n");
-        return NULL;
-    }
+    if (conn == NULL) return NULL;
 
     char query[512];
     snprintf(query, sizeof(query),
              "SELECT e.id, e.exam_name, e.description, e.time_limit, e.status, "
              "e.start_time, e.end_time, e.created_at, "
-             "(SELECT COUNT(*) FROM exam_question WHERE exam_id = e.id) AS question_count "
+             "(SELECT COUNT(*) FROM exam_questions WHERE exam_id = e.id) AS question_count "
              "FROM exam e WHERE e.class_id = %d ORDER BY e.created_at DESC",
              class_id);
 
@@ -88,11 +78,7 @@ char *get_exams_in_class(int class_id)
     }
 
     MYSQL_RES *res = mysql_store_result(conn);
-    if (res == NULL)
-    {
-        fprintf(stderr, "mysql_store_result() failed. Error: %s\n", mysql_error(conn));
-        return NULL;
-    }
+    if (res == NULL) return NULL;
 
     cJSON *json_array = cJSON_CreateArray();
     MYSQL_ROW row;
@@ -113,14 +99,12 @@ char *get_exams_in_class(int class_id)
     }
 
     mysql_free_result(res);
-
     char *json_string = cJSON_Print(json_array);
     cJSON_Delete(json_array);
-
     return json_string;
 }
 
-// Lấy chi tiết bài kiểm tra
+// Get exam detail
 char *get_exam_detail(int exam_id)
 {
     MYSQL *conn = get_db_connection();
@@ -143,7 +127,6 @@ char *get_exam_detail(int exam_id)
     }
 
     MYSQL_ROW row = mysql_fetch_row(res);
-
     cJSON *exam_obj = cJSON_CreateObject();
     cJSON_AddNumberToObject(exam_obj, "id", atoi(row[0]));
     cJSON_AddStringToObject(exam_obj, "exam_name", row[1]);
@@ -157,91 +140,111 @@ char *get_exam_detail(int exam_id)
     cJSON_AddStringToObject(exam_obj, "class_name", row[9]);
 
     mysql_free_result(res);
-
     char *json_string = cJSON_Print(exam_obj);
     cJSON_Delete(exam_obj);
-
     return json_string;
 }
 
-// Xóa bài kiểm tra
+// Delete exam
 int delete_exam(int exam_id)
 {
     MYSQL *conn = get_db_connection();
     if (conn == NULL) return 0;
-
     char query[256];
     snprintf(query, sizeof(query), "DELETE FROM exam WHERE id = %d", exam_id);
-
-    if (mysql_query(conn, query))
-    {
-        fprintf(stderr, "Delete exam failed. Error: %s\n", mysql_error(conn));
-        return 0;
-    }
-
+    if (mysql_query(conn, query)) return 0;
     return 1;
 }
 
-// Cập nhật trạng thái bài kiểm tra
+// Update exam status
 int update_exam_status(int exam_id, const char *status)
 {
     MYSQL *conn = get_db_connection();
     if (conn == NULL) return 0;
-
     char query[256];
     snprintf(query, sizeof(query), "UPDATE exam SET status = '%s' WHERE id = %d", status, exam_id);
-
-    if (mysql_query(conn, query))
-    {
-        fprintf(stderr, "Update exam status failed. Error: %s\n", mysql_error(conn));
-        return 0;
-    }
-
+    if (mysql_query(conn, query)) return 0;
     return 1;
 }
 
-// Thêm câu hỏi vào bài kiểm tra
-int add_exam_question(int exam_id, const char *content, int difficulty, int *question_id)
+// Add question to class (Bank)
+int add_question_to_class(int class_id, const char *content, const char *opt_a, const char *opt_b, const char *opt_c, const char *opt_d, const char *correct_option)
 {
     MYSQL *conn = get_db_connection();
     if (conn == NULL) return 0;
 
-    char query[1024];
+    char query[4096];
     snprintf(query, sizeof(query),
-             "INSERT INTO exam_question (exam_id, content, difficulty) VALUES (%d, '%s', %d)",
-             exam_id, content, difficulty);
+             "INSERT INTO questions (class_id, content, option_a, option_b, option_c, option_d, correct_option) "
+             "VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s')",
+             class_id, content, opt_a, opt_b, opt_c, opt_d, correct_option);
+
+    if (mysql_query(conn, query))
+    {
+        fprintf(stderr, "Add question failed. Error: %s\n", mysql_error(conn));
+        return 0;
+    }
+    return 1;
+}
+
+// Get bank questions
+char *get_questions_by_class(int class_id)
+{
+    MYSQL *conn = get_db_connection();
+    if (conn == NULL) return NULL;
+
+    char query[512];
+    snprintf(query, sizeof(query),
+             "SELECT id, content, option_a, option_b, option_c, option_d, correct_option, created_at FROM questions WHERE class_id = %d ORDER BY created_at DESC",
+             class_id);
+
+    if (mysql_query(conn, query)) return NULL;
+
+    MYSQL_RES *res = mysql_store_result(conn);
+    if (res == NULL) return NULL;
+
+    cJSON *json_array = cJSON_CreateArray();
+    MYSQL_ROW row;
+    while ((row = mysql_fetch_row(res)))
+    {
+        cJSON *question_obj = cJSON_CreateObject();
+        cJSON_AddNumberToObject(question_obj, "id", atoi(row[0]));
+        cJSON_AddStringToObject(question_obj, "content", row[1]);
+        cJSON_AddStringToObject(question_obj, "option_a", row[2]);
+        cJSON_AddStringToObject(question_obj, "option_b", row[3]);
+        cJSON_AddStringToObject(question_obj, "option_c", row[4]);
+        cJSON_AddStringToObject(question_obj, "option_d", row[5]);
+        cJSON_AddStringToObject(question_obj, "correct_option", row[6]);
+        cJSON_AddStringToObject(question_obj, "created_at", row[7]);
+        cJSON_AddItemToArray(json_array, question_obj);
+    }
+    mysql_free_result(res);
+    char *json_string = cJSON_Print(json_array);
+    cJSON_Delete(json_array);
+    return json_string;
+}
+
+// Add question to exam (Exam Questions)
+int add_question_to_exam(int exam_id, const char *content, const char *opt_a, const char *opt_b, const char *opt_c, const char *opt_d, const char *correct_option)
+{
+    MYSQL *conn = get_db_connection();
+    if (conn == NULL) return 0;
+
+    char query[4096];
+    snprintf(query, sizeof(query),
+             "INSERT INTO exam_questions (exam_id, content, option_a, option_b, option_c, option_d, correct_option) "
+             "VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s')",
+             exam_id, content, opt_a, opt_b, opt_c, opt_d, correct_option);
 
     if (mysql_query(conn, query))
     {
         fprintf(stderr, "Add exam question failed. Error: %s\n", mysql_error(conn));
         return 0;
     }
-
-    *question_id = (int)mysql_insert_id(conn);
     return 1;
 }
 
-// Thêm đáp án cho câu hỏi
-int add_exam_answer(int question_id, const char *content, int is_correct)
-{
-    MYSQL *conn = get_db_connection();
-    if (conn == NULL) return 0;
-
-    char query[512];
-    snprintf(query, sizeof(query),
-             "INSERT INTO exam_answer (question_id, content, is_correct) VALUES (%d, '%s', %d)",
-             question_id, content, is_correct);
-
-    if (mysql_query(conn, query))
-    {
-        fprintf(stderr, "Add exam answer failed. Error: %s\n", mysql_error(conn));
-        return 0;
-    }
-
-    return 1;
-}
-
-// Lấy danh sách câu hỏi của bài kiểm tra
+// Get exam questions
 char *get_exam_questions(int exam_id)
 {
     MYSQL *conn = get_db_connection();
@@ -249,7 +252,7 @@ char *get_exam_questions(int exam_id)
 
     char query[512];
     snprintf(query, sizeof(query),
-             "SELECT id, content, difficulty, created_at FROM exam_question WHERE exam_id = %d ORDER BY id",
+             "SELECT id, content, option_a, option_b, option_c, option_d, correct_option FROM exam_questions WHERE exam_id = %d ORDER BY created_at ASC",
              exam_id);
 
     if (mysql_query(conn, query)) return NULL;
@@ -259,68 +262,51 @@ char *get_exam_questions(int exam_id)
 
     cJSON *json_array = cJSON_CreateArray();
     MYSQL_ROW row;
-
     while ((row = mysql_fetch_row(res)))
     {
         cJSON *question_obj = cJSON_CreateObject();
-        int question_id = atoi(row[0]);
-        cJSON_AddNumberToObject(question_obj, "id", question_id);
+        cJSON_AddNumberToObject(question_obj, "id", atoi(row[0]));
         cJSON_AddStringToObject(question_obj, "content", row[1]);
-        cJSON_AddNumberToObject(question_obj, "difficulty", atoi(row[2]));
-        cJSON_AddStringToObject(question_obj, "created_at", row[3]);
-
-        // Lấy danh sách đáp án
-        char answer_query[256];
-        snprintf(answer_query, sizeof(answer_query),
-                 "SELECT id, content, is_correct FROM exam_answer WHERE question_id = %d", question_id);
-
-        if (mysql_query(conn, answer_query) == 0)
-        {
-            MYSQL_RES *answer_res = mysql_store_result(conn);
-            if (answer_res != NULL)
-            {
-                cJSON *answers_array = cJSON_CreateArray();
-                MYSQL_ROW answer_row;
-
-                while ((answer_row = mysql_fetch_row(answer_res)))
-                {
-                    cJSON *answer_obj = cJSON_CreateObject();
-                    cJSON_AddNumberToObject(answer_obj, "id", atoi(answer_row[0]));
-                    cJSON_AddStringToObject(answer_obj, "content", answer_row[1]);
-                    cJSON_AddBoolToObject(answer_obj, "is_correct", atoi(answer_row[2]));
-                    cJSON_AddItemToArray(answers_array, answer_obj);
-                }
-
-                cJSON_AddItemToObject(question_obj, "answers", answers_array);
-                mysql_free_result(answer_res);
-            }
-        }
-
+        cJSON_AddStringToObject(question_obj, "option_a", row[2]);
+        cJSON_AddStringToObject(question_obj, "option_b", row[3]);
+        cJSON_AddStringToObject(question_obj, "option_c", row[4]);
+        cJSON_AddStringToObject(question_obj, "option_d", row[5]);
+        cJSON_AddStringToObject(question_obj, "correct_option", row[6]);
         cJSON_AddItemToArray(json_array, question_obj);
     }
-
     mysql_free_result(res);
-
     char *json_string = cJSON_Print(json_array);
     cJSON_Delete(json_array);
-
     return json_string;
 }
 
-// Xóa câu hỏi
-int delete_exam_question(int question_id)
+// Import question
+int import_question_from_bank(int exam_id, int question_id)
 {
     MYSQL *conn = get_db_connection();
     if (conn == NULL) return 0;
 
-    char query[256];
-    snprintf(query, sizeof(query), "DELETE FROM exam_question WHERE id = %d", question_id);
+    char query[512];
+    snprintf(query, sizeof(query),
+             "INSERT INTO exam_questions (exam_id, content, option_a, option_b, option_c, option_d, correct_option) "
+             "SELECT %d, content, option_a, option_b, option_c, option_d, correct_option FROM questions WHERE id = %d",
+             exam_id, question_id);
 
     if (mysql_query(conn, query))
     {
-        fprintf(stderr, "Delete exam question failed. Error: %s\n", mysql_error(conn));
+        fprintf(stderr, "Import question failed. Error: %s\n", mysql_error(conn));
         return 0;
     }
+    return 1;
+}
 
+// Delete question from bank
+int delete_question_from_class(int question_id)
+{
+    MYSQL *conn = get_db_connection();
+    if (conn == NULL) return 0;
+    char query[256];
+    snprintf(query, sizeof(query), "DELETE FROM questions WHERE id = %d", question_id);
+    if (mysql_query(conn, query)) return 0;
     return 1;
 }

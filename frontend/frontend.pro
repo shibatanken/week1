@@ -14,7 +14,8 @@ SOURCES += \
     classlist.cpp \
     classdetail.cpp \
     classmembers.cpp \
-    createexam.cpp
+    createexam.cpp \
+    questionbank.cpp
 
 HEADERS += \
     config.h \
@@ -26,7 +27,8 @@ HEADERS += \
     classlist.h \
     classdetail.h \
     classmembers.h \
-    createexam.h
+    createexam.h \
+    questionbank.h
 
 FORMS += \
     home.ui \

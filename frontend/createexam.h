@@ -4,9 +4,6 @@
 #include <QWidget>
 #include <QTcpSocket>
 #include <QListWidget>
-#include <QButtonGroup>
-#include <QPlainTextEdit>
-#include <QRadioButton>
 #include <QPushButton>
 
 namespace Ui {
@@ -22,12 +19,10 @@ public:
     ~CreateExam();
     
     void setClassId(int classId);
-    void setExamId(int examId);
-    void resetForm();
+    void setExamId(int examId); // For edit mode (optional)
 
 signals:
     void backToClassDetail();
-    void examCreated();
 
 private slots:
     void on_backButton_clicked();
@@ -42,10 +37,13 @@ private:
     QTcpSocket *tcpSocket;
     int currentClassId;
     int currentExamId;
+    QPushButton *importBankBtn;
     
-    void loadExamQuestions();
+    void resetForm();
     void createExam();
     void saveQuestion(int questionIndex);
+    void loadExamQuestions();
+    void importQuestion(int questionId);
 };
 
 #endif // CREATEEXAM_H

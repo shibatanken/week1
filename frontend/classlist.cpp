@@ -216,7 +216,6 @@ void ClassList::updateUIByRole()
 {
     QString userRole = UserData::instance().getRole();
     
-    // Ẩn nút "Tạo lớp mới" nếu là student
     if (userRole == "student") {
         ui->createClassButton->hide();
     } else {

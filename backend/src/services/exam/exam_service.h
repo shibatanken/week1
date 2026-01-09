@@ -8,10 +8,14 @@ char *get_exam_detail(int exam_id);
 int delete_exam(int exam_id);
 int update_exam_status(int exam_id, const char *status);
 
-// Exam Question CRUD
-int add_exam_question(int exam_id, const char *content, int difficulty, int *question_id);
-int add_exam_answer(int question_id, const char *content, int is_correct);
+// Question Bank (Class Level)
+int add_question_to_class(int class_id, const char *content, const char *opt_a, const char *opt_b, const char *opt_c, const char *opt_d, const char *correct_option);
+char *get_questions_by_class(int class_id);
+int delete_question_from_class(int question_id);
+
+// Exam Questions (Exam Level)
+int add_question_to_exam(int exam_id, const char *content, const char *opt_a, const char *opt_b, const char *opt_c, const char *opt_d, const char *correct_option);
 char *get_exam_questions(int exam_id);
-int delete_exam_question(int question_id);
+int import_question_from_bank(int exam_id, int question_id);
 
 #endif // EXAM_SERVICE_H

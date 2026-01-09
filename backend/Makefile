@@ -25,25 +25,10 @@ TARGET = server
 all: $(TARGET)
 
 $(TARGET): $(SRCS)
-    $(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
 
 clean:
-    rm -f $(TARGET)
+	rm -f $(TARGET)
 
 run: $(TARGET)
-    ./$(TARGET)
-
-migrate:
-    @echo "Running migrations..."
-    @for file in src/migrations/*.sql; do \
-        echo "Executing $$file"; \
-        mysql -u quizz -pQuizz2003@ quizz_db < $$file; \
-    done
-    @echo "Migrations completed!"
-
-seed:
-    @echo "Seeding demo data..."
-    @mysql -u quizz -pQuizz2003@ quizz_db < src/seeder/demo_data.sql
-    @echo "Seeding completed!"
-
-.PHONY: all clean run migrate seed
+	./$(TARGET)

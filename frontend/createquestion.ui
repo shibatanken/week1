@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>650</width>
-    <height>500</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,136 +16,80 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="titleLabel">
-     <property name="text">
-      <string>Tạo Câu Hỏi Mới</string>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
+     <property name="text"><string>Tạo Câu Hỏi Mới</string></property>
+     <property name="font"><font><pointsize>16</pointsize><weight>75</weight><bold>true</bold></font></property>
+     <property name="alignment"><set>Qt::AlignCenter</set></property>
     </widget>
    </item>
    <item>
     <widget class="QLabel" name="questionLabel">
-     <property name="text">
-      <string>Nội dung câu hỏi:</string>
-     </property>
-     <property name="font">
-      <font><bold>true</bold></font>
-     </property>
+     <property name="text"><string>Nội dung câu hỏi:</string></property>
+     <property name="font"><font><bold>true</bold></font></property>
     </widget>
    </item>
    <item>
     <widget class="QTextEdit" name="questionTextEdit">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>80</height>
-      </size>
-     </property>
-     <property name="placeholderText">
-      <string>Nhập nội dung câu hỏi...</string>
-     </property>
+     <property name="minimumSize"><size><width>0</width><height>80</height></size></property>
+     <property name="placeholderText"><string>Nhập nội dung câu hỏi...</string></property>
     </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="difficultyLayout">
      <item>
       <widget class="QLabel" name="difficultyLabel">
-       <property name="text">
-        <string>Độ khó:</string>
-       </property>
-       <property name="font">
-        <font><bold>true</bold></font>
-       </property>
+       <property name="text"><string>Độ khó:</string></property>
+       <property name="font"><font><bold>true</bold></font></property>
       </widget>
      </item>
      <item>
       <widget class="QComboBox" name="difficultyComboBox">
-       <item>
-        <property name="text">
-         <string>Dễ</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Trung bình</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Khó</string>
-        </property>
-       </item>
+       <item><property name="text"><string>Dễ</string></property></item>
+       <item><property name="text"><string>Trung bình</string></property></item>
+       <item><property name="text"><string>Khó</string></property></item>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </spacer>
-     </item>
+     <item><spacer name="horizontalSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer></item>
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="answerHeaderLayout">
-     <item>
-      <widget class="QLabel" name="answersLabel">
-       <property name="text">
-        <string>Các đáp án:</string>
-       </property>
-       <property name="font">
-        <font><bold>true</bold></font>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="addAnswerButton">
-       <property name="text">
-        <string>+ Thêm đáp án</string>
-       </property>
-       <property name="cursor">
-        <cursorShape>PointingHandCursor</cursorShape>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QWidget" name="answerContainer" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>200</height>
-      </size>
-     </property>
+    <widget class="QLabel" name="answersLabel">
+     <property name="text"><string>Các đáp án (Chọn đáp án đúng):</string></property>
+     <property name="font"><font><bold>true</bold></font></property>
     </widget>
+   </item>
+   
+   <item>
+    <layout class="QHBoxLayout" name="optionALayout">
+      <item><widget class="QRadioButton" name="radioA"><property name="text"><string>A</string></property><property name="checked"><bool>true</bool></property></widget></item>
+      <item><widget class="QLineEdit" name="optionA"><property name="placeholderText"><string>Nhập đáp án A</string></property></widget></item>
+    </layout>
+   </item>
+
+   <item>
+    <layout class="QHBoxLayout" name="optionBLayout">
+      <item><widget class="QRadioButton" name="radioB"><property name="text"><string>B</string></property></widget></item>
+      <item><widget class="QLineEdit" name="optionB"><property name="placeholderText"><string>Nhập đáp án B</string></property></widget></item>
+    </layout>
+   </item>
+
+   <item>
+    <layout class="QHBoxLayout" name="optionCLayout">
+     <item><widget class="QRadioButton" name="radioC"><property name="text"><string>C</string></property></widget></item>
+     <item><widget class="QLineEdit" name="optionC"><property name="placeholderText"><string>Nhập đáp án C</string></property></widget></item>
+    </layout>
+   </item>
+
+   <item>
+    <layout class="QHBoxLayout" name="optionDLayout">
+     <item><widget class="QRadioButton" name="radioD"><property name="text"><string>D</string></property></widget></item>
+     <item><widget class="QLineEdit" name="optionD"><property name="placeholderText"><string>Nhập đáp án D</string></property></widget></item>
+    </layout>
    </item>
    <item>
     <widget class="QPushButton" name="saveButton">
-     <property name="text">
-      <string>Lưu câu hỏi</string>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="styleSheet">
-      <string>background-color: #6600FF; color: white; padding: 8px;</string>
-     </property>
+     <property name="text"><string>Lưu câu hỏi</string></property>
+     <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+     <property name="styleSheet"><string>background-color: #6600FF; color: white; padding: 8px;</string></property>
     </widget>
    </item>
   </layout>

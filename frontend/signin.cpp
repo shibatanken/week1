@@ -37,10 +37,17 @@ void Signin::on_signinButton_clicked() {
 
     QString dataString = QString("CONTROL LOGIN\n%1").arg(QString(jsonData));
 
+    tcpSocket->abort(); // Close previous connection if any
     tcpSocket->connectToHost(IPADDRESS, 8081);
-    if (tcpSocket->waitForConnected()) {
+    
+    // Change wait time to 3000ms (3s) to be faster/more responsive
+    if (tcpSocket->waitForConnected(3000)) {
         tcpSocket->write(dataString.toUtf8());
         tcpSocket->flush();
+    } else {
+        QMessageBox::critical(this, "Lỗi kết nối", 
+            QString("Không thể kết nối đến server (%1:8081).\nLỗi: %2\n\nHãy chắc chắn rằng Backend Server đang chạy.")
+            .arg(IPADDRESS).arg(tcpSocket->errorString()));
     }
 }
 
@@ -49,7 +56,8 @@ void Signin::onReadyRead() {
     QString responseString(response);
 
     if (responseString.startsWith("NOTIFICATION LOGIN_FAILURE")) {
-        ui->responseLabel->setText("Đăng nhập thất bại");
+        // Parse reason if available? Usually just LOGIN_FAILURE
+        ui->responseLabel->setText("Đăng nhập thất bại. Kiểm tra email/mật khẩu.");
         ui->responseLabel->setStyleSheet("QLabel { color : red; }");
         qDebug() << "Login Response:" << responseString;
     } else if (responseString.startsWith("NOTIFICATION LOGIN_SUCCESS")) {
@@ -71,12 +79,17 @@ void Signin::onReadyRead() {
                 // Reset form
                 ui->emailLineEdit->setText("");
                 ui->passwordLineEdit->setText("");
+                
+                // Disconnect socket so it doesn't linger? 
+                // Using tcpSocket->disconnectFromHost(); might be good practice 
+                // but we rely on next connectToHost to abort. 
+                // The server closes its end mostly anyway.
 
                 emit loginSuccess();
             }
         }
     } else {
-        ui->responseLabel->setText("Unknown response from server");
+        ui->responseLabel->setText("Phản hồi không xác định từ server");
         ui->responseLabel->setStyleSheet("QLabel { color : orange; }");
     }
 }

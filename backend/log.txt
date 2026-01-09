@@ -84,3 +84,44 @@
 2025-12-15 07:00:42 - Student 1 added to class 1
 2025-12-15 07:00:50 - Student 10 added to class 1
 2025-12-15 07:01:10 - User logged in with email: student1@test.com (role: student)
+2025-12-15 14:27:31 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 14:28:17 - Created exam: Kiểm tra địa lý in class 1
+2025-12-15 14:59:05 - Student 11 added to class 1
+2025-12-15 15:01:04 - User logged in with email: student1@test.com (role: student)
+2025-12-15 15:05:46 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 15:07:42 - User logged in with email: student1@test.com (role: student)
+2025-12-15 15:12:14 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 15:19:19 - User logged in with email: teacher2@test.com (role: teacher)
+2025-12-15 15:19:36 - Teacher 12 created class: Lập trình mạng
+2025-12-15 15:34:17 - User logged in with email: teacher2@test.com (role: teacher)
+2025-12-15 15:34:59 - Teacher 12 created class: bóng bàn
+2025-12-15 15:36:00 - Created exam: thi giữa kì in class 3
+2025-12-15 15:41:38 - User logged in with email: student1@test.com (role: student)
+2025-12-15 15:42:33 - User logged in with email: teacher1@test.com (role: teacher)
+2025-12-15 15:42:53 - Student 11 removed from class 1
+2025-12-15 15:42:56 - Student 10 removed from class 1
+2025-12-15 15:43:36 - Student 10 added to class 1
+2025-12-15 15:44:05 - User logged in with email: student1@test.com (role: student)
+2025-12-15 15:44:46 - User logged in with email: teacher2@test.com (role: teacher)
+2025-12-15 15:44:52 - Student 10 added to class 3
+2025-12-15 15:45:13 - User logged in with email: student1@test.com (role: student)
+2026-01-09 00:41:23 - User logged in with email: teacher1@test.com (role: teacher)
+2026-01-09 00:41:46 - Created exam: kiemtr1 in class 1
+2026-01-09 01:57:29 - User logged in with email: teacher1@test.com (role: teacher)
+2026-01-09 01:57:46 - Created exam: bababa in class 1
+2026-01-09 02:00:10 - User logged in with email: teacher1@test.com (role: teacher)
+2026-01-09 02:00:28 - Created exam: dfsdaf in class 1
+2026-01-09 02:06:07 - User logged in with email: teacher1@test.com (role: teacher)
+2026-01-09 02:06:15 - Created exam: dfsdfsadfsd in class 1
+2026-01-09 02:07:42 - Created exam: dsadsad in class 1
+2026-01-09 02:09:53 - User logged in with email: teacher1@test.com (role: teacher)
+2026-01-09 02:10:02 - Created exam: rewr in class 1
+2026-01-09 02:14:01 - User logged in with email: teacher1@test.com (role: teacher)
+2026-01-09 02:14:11 - Created exam: fsdfsd in class 1
+2026-01-09 02:21:52 - User logged in with email: teacher1@test.com (role: teacher)
+2026-01-09 02:21:58 - Created exam: fsdfdsf in class 1
+2026-01-09 02:26:39 - User logged in with email: teacher1@test.com (role: teacher)
+2026-01-09 02:26:47 - Created exam: fsdfds in class 1
+2026-01-09 07:13:28 - User logged in with email: teacher1@test.com (role: teacher)
+2026-01-09 07:13:44 - Created exam: dfasdas in class 1
+2026-01-09 07:13:45 - Created exam: dfasdas in class 1

@@ -16,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // Add forms to the stacked widget
     ui->stackedWidget->addWidget(signupForm);
     ui->stackedWidget->addWidget(signinForm);
     ui->stackedWidget->addWidget(classListForm);
@@ -25,35 +24,26 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(createExamForm);
     ui->stackedWidget->addWidget(homeForm);
 
-    // Connect auth signals
     connect(signupForm, &Signup::showSignin, this, &MainWindow::showSignin);
     connect(signinForm, &Signin::showSignup, this, &MainWindow::showSignup);
     
-    // Connect class signals
     connect(signinForm, &Signin::loginSuccess, this, &MainWindow::showClassList);
     connect(classListForm, &ClassList::showClassDetail, this, &MainWindow::showClassDetail);
-    connect(classDetailForm, &ClassDetail::showClassList, this, &MainWindow::showClassList);
+    connect(classDetailForm, &ClassDetail::backToClassList, this, &MainWindow::showClassList);
     
-    // Connect class members signals
-    connect(classDetailForm, &ClassDetail::showClassMembers, this, &MainWindow::showClassMembers);
+    connect(classDetailForm, &ClassDetail::openClassMembers, this, &MainWindow::showClassMembers);
     connect(classMembersForm, &ClassMembers::backToClassDetail, [this]() {
         showClassDetail(currentClassId);
     });
     
-    // Connect create exam signals
-    connect(classDetailForm, &ClassDetail::showCreateExam, this, &MainWindow::showCreateExam);
+    connect(classDetailForm, &ClassDetail::openCreateExam, this, &MainWindow::showCreateExam);
     connect(createExamForm, &CreateExam::backToClassDetail, [this]() {
         showClassDetail(currentClassId);
     });
-    connect(createExamForm, &CreateExam::examCreated, []() {
-        // Refresh classDetail sau khi tạo exam
-    });
     
-    // Connect home signals
     connect(homeForm, &Home::logout, this, &MainWindow::showSignin);
     connect(classListForm, &ClassList::logout, this, &MainWindow::showSignin);
 
-    // Show the signin form initially
     ui->stackedWidget->setCurrentWidget(signinForm);
 }
 
@@ -70,7 +60,7 @@ void MainWindow::showSignin() {
 }
 
 void MainWindow::showClassList() {
-    classListForm->loadClassList();  // Sửa từ loadClasses() thành loadClassList()
+    classListForm->loadClassList();
     ui->stackedWidget->setCurrentWidget(classListForm);
 }
 

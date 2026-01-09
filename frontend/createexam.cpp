@@ -1,6 +1,7 @@
 #include "createexam.h"
 #include "ui_createexam.h"
 #include "config.h"
+#include "questionbank.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -15,6 +16,10 @@
 #include <QDebug>
 #include <QScrollArea>
 #include <QGroupBox>
+#include <QButtonGroup>
+#include <QGridLayout>
+#include <QRadioButton>
+#include <QTcpSocket>
 
 CreateExam::CreateExam(QWidget *parent) :
     QWidget(parent),
@@ -24,6 +29,30 @@ CreateExam::CreateExam(QWidget *parent) :
     currentExamId(-1)
 {
     ui->setupUi(this);
+    
+    importBankBtn = new QPushButton("Nhập từ Ngân hàng", this);
+    importBankBtn->setCursor(Qt::PointingHandCursor);
+    importBankBtn->setEnabled(false); 
+    ui->questionHeaderLayout->insertWidget(2, importBankBtn);
+    
+    connect(importBankBtn, &QPushButton::clicked, [this](){
+         if(currentClassId == -1 || currentExamId <= 0) {
+             QMessageBox::warning(this, "Lỗi", "Vui lòng lưu bài kiểm tra trước");
+             return;
+         }
+         QuestionBank dlg(currentClassId, true, this);
+         if(dlg.exec() == QDialog::Accepted) {
+             int qId = dlg.getSelectedQuestionId();
+             importQuestion(qId);
+         }
+    });
+
+    // Disable add button initially
+    ui->addQuestionButton->setEnabled(false);
+    
+    // Connect signals
+    connect(ui->saveExamButton, &QPushButton::clicked, this, &CreateExam::on_saveExamButton_clicked);
+    connect(ui->addQuestionButton, &QPushButton::clicked, this, &CreateExam::on_addQuestionButton_clicked);
 }
 
 CreateExam::~CreateExam()
@@ -50,6 +79,8 @@ void CreateExam::resetForm()
     ui->descriptionEdit->clear();
     ui->timeLimitSpinBox->setValue(60);
     ui->questionListWidget->clear();
+    ui->addQuestionButton->setEnabled(false);
+    importBankBtn->setEnabled(false);
 }
 
 void CreateExam::on_backButton_clicked()
@@ -92,7 +123,6 @@ void CreateExam::createExam()
             QString responseString(response);
             
             if (responseString.contains("CREATE_EXAM_SUCCESS")) {
-                // Parse exam_id từ response
                 int jsonStartIndex = responseString.indexOf('{');
                 if (jsonStartIndex != -1) {
                     QString jsonString = responseString.mid(jsonStartIndex);
@@ -103,6 +133,7 @@ void CreateExam::createExam()
                 
                 QMessageBox::information(this, "Thành công", "Đã tạo bài kiểm tra! Bây giờ bạn có thể thêm câu hỏi.");
                 ui->addQuestionButton->setEnabled(true);
+                importBankBtn->setEnabled(true);
             } else {
                 QMessageBox::warning(this, "Lỗi", "Không thể tạo bài kiểm tra!");
             }
@@ -120,27 +151,16 @@ void CreateExam::on_addQuestionButton_clicked()
         return;
     }
     
-    // Tạo widget cho câu hỏi
     QListWidgetItem *item = new QListWidgetItem(ui->questionListWidget);
     QWidget *questionWidget = new QWidget();
     QVBoxLayout *mainLayout = new QVBoxLayout(questionWidget);
     mainLayout->setContentsMargins(10, 10, 10, 10);
     
-    // Header với nút xóa
     QHBoxLayout *headerLayout = new QHBoxLayout();
-    QLabel *questionLabel = new QLabel(QString("Câu hỏi %1:").arg(ui->questionListWidget->count()));
+    QLabel *questionLabel = new QLabel(QString("Câu hỏi %1:").arg(ui->questionListWidget->count() + 1));
     questionLabel->setStyleSheet("font-weight: bold; font-size: 13px;");
     headerLayout->addWidget(questionLabel);
     headerLayout->addStretch();
-    
-    // Độ khó
-    QComboBox *difficultyCombo = new QComboBox();
-    difficultyCombo->addItem("Dễ", 1);
-    difficultyCombo->addItem("Trung bình", 2);
-    difficultyCombo->addItem("Khó", 3);
-    difficultyCombo->setObjectName("difficultyCombo");
-    headerLayout->addWidget(new QLabel("Độ khó:"));
-    headerLayout->addWidget(difficultyCombo);
     
     QPushButton *deleteQuestionBtn = new QPushButton("🗑 Xóa câu hỏi");
     deleteQuestionBtn->setStyleSheet("background-color: #dc3545; color: white; padding: 5px 10px;");
@@ -150,39 +170,53 @@ void CreateExam::on_addQuestionButton_clicked()
     
     mainLayout->addLayout(headerLayout);
     
-    // Nội dung câu hỏi
     QPlainTextEdit *contentEdit = new QPlainTextEdit();
     contentEdit->setPlaceholderText("Nhập nội dung câu hỏi...");
     contentEdit->setMaximumHeight(80);
     contentEdit->setObjectName("contentEdit");
     mainLayout->addWidget(contentEdit);
     
-    // Danh sách đáp án
-    QLabel *answerLabel = new QLabel("Đáp án:");
-    answerLabel->setStyleSheet("font-weight: bold;");
+    QLabel *answerLabel = new QLabel("Nhập 4 phương án và chọn một đáp án đúng:");
+    answerLabel->setStyleSheet("font-weight: bold; margin-top: 10px;");
     mainLayout->addWidget(answerLabel);
+
+    QGridLayout *optionsLayout = new QGridLayout();
+    QButtonGroup *radioGroup = new QButtonGroup(questionWidget);
+    radioGroup->setObjectName("radioGroup");
+
+    optionsLayout->addWidget(new QLabel("A."), 0, 0);
+    QLineEdit *optionA = new QLineEdit(); optionA->setPlaceholderText("Nhập đáp án A"); optionA->setObjectName("optionA"); optionsLayout->addWidget(optionA, 0, 1);
+    QRadioButton *checkA = new QRadioButton("Đúng"); checkA->setObjectName("checkA"); radioGroup->addButton(checkA); optionsLayout->addWidget(checkA, 0, 2);
+
+    optionsLayout->addWidget(new QLabel("B."), 1, 0);
+    QLineEdit *optionB = new QLineEdit(); optionB->setPlaceholderText("Nhập đáp án B"); optionB->setObjectName("optionB"); optionsLayout->addWidget(optionB, 1, 1);
+    QRadioButton *checkB = new QRadioButton("Đúng"); checkB->setObjectName("checkB"); radioGroup->addButton(checkB); optionsLayout->addWidget(checkB, 1, 2);
+
+    optionsLayout->addWidget(new QLabel("C."), 2, 0);
+    QLineEdit *optionC = new QLineEdit(); optionC->setPlaceholderText("Nhập đáp án C"); optionC->setObjectName("optionC"); optionsLayout->addWidget(optionC, 2, 1);
+    QRadioButton *checkC = new QRadioButton("Đúng"); checkC->setObjectName("checkC"); radioGroup->addButton(checkC); optionsLayout->addWidget(checkC, 2, 2);
+
+    optionsLayout->addWidget(new QLabel("D."), 3, 0);
+    QLineEdit *optionD = new QLineEdit(); optionD->setPlaceholderText("Nhập đáp án D"); optionD->setObjectName("optionD"); optionsLayout->addWidget(optionD, 3, 1);
+    QRadioButton *checkD = new QRadioButton("Đúng"); checkD->setObjectName("checkD"); radioGroup->addButton(checkD); optionsLayout->addWidget(checkD, 3, 2);
+
+    mainLayout->addLayout(optionsLayout);
     
-    QListWidget *answerList = new QListWidget();
-    answerList->setMaximumHeight(150);
-    answerList->setObjectName("answerList");
-    mainLayout->addWidget(answerList);
-    
-    // Nút thêm đáp án
-    QPushButton *addAnswerBtn = new QPushButton("➕ Thêm đáp án");
-    addAnswerBtn->setStyleSheet("background-color: #17a2b8; color: white; padding: 5px 15px;");
-    addAnswerBtn->setCursor(Qt::PointingHandCursor);
-    connect(addAnswerBtn, &QPushButton::clicked, this, &CreateExam::onAddAnswerButtonClicked);
-    mainLayout->addWidget(addAnswerBtn);
-    
-    // Nút lưu câu hỏi
     QPushButton *saveQuestionBtn = new QPushButton("💾 Lưu câu hỏi");
-    saveQuestionBtn->setStyleSheet("background-color: #28a745; color: white; padding: 8px 20px;");
+    saveQuestionBtn->setStyleSheet("background-color: #28a745; color: white; padding: 8px 20px; margin-top: 10px;");
     saveQuestionBtn->setCursor(Qt::PointingHandCursor);
     saveQuestionBtn->setObjectName("saveQuestionBtn");
-    int questionIndex = ui->questionListWidget->count() - 1;
-    connect(saveQuestionBtn, &QPushButton::clicked, [this, questionIndex]() {
-        saveQuestion(questionIndex);
+    
+    connect(saveQuestionBtn, &QPushButton::clicked, this, [this, questionWidget]() {
+        for(int i=0; i<ui->questionListWidget->count(); ++i) {
+             QListWidgetItem* item = ui->questionListWidget->item(i);
+             if (ui->questionListWidget->itemWidget(item) == questionWidget) {
+                 saveQuestion(i);
+                 return;
+             }
+        }
     });
+
     mainLayout->addWidget(saveQuestionBtn);
     
     questionWidget->setLayout(mainLayout);
@@ -193,41 +227,7 @@ void CreateExam::on_addQuestionButton_clicked()
     ui->questionListWidget->setItemWidget(item, questionWidget);
 }
 
-void CreateExam::onAddAnswerButtonClicked()
-{
-    QPushButton *btn = qobject_cast<QPushButton*>(sender());
-    if (!btn) return;
-    
-    QWidget *questionWidget = btn->parentWidget();
-    QListWidget *answerList = questionWidget->findChild<QListWidget*>("answerList");
-    if (!answerList) return;
-    
-    QListWidgetItem *item = new QListWidgetItem(answerList);
-    QWidget *answerWidget = new QWidget();
-    QHBoxLayout *layout = new QHBoxLayout(answerWidget);
-    layout->setContentsMargins(5, 5, 5, 5);
-    
-    QLineEdit *answerEdit = new QLineEdit();
-    answerEdit->setPlaceholderText("Nhập đáp án...");
-    answerEdit->setObjectName("answerEdit");
-    layout->addWidget(answerEdit);
-    
-    QRadioButton *correctRadio = new QRadioButton("Đáp án đúng");
-    correctRadio->setObjectName("correctRadio");
-    layout->addWidget(correctRadio);
-    
-    QPushButton *deleteBtn = new QPushButton("X");
-    deleteBtn->setFixedSize(25, 25);
-    deleteBtn->setStyleSheet("background-color: #dc3545; color: white;");
-    deleteBtn->setCursor(Qt::PointingHandCursor);
-    connect(deleteBtn, &QPushButton::clicked, this, &CreateExam::onDeleteAnswerClicked);
-    layout->addWidget(deleteBtn);
-    
-    answerWidget->setLayout(layout);
-    item->setSizeHint(QSize(0, 40));
-    answerList->addItem(item);
-    answerList->setItemWidget(item, answerWidget);
-}
+void CreateExam::onAddAnswerButtonClicked() {}
 
 void CreateExam::onDeleteQuestionClicked()
 {
@@ -245,23 +245,7 @@ void CreateExam::onDeleteQuestionClicked()
     }
 }
 
-void CreateExam::onDeleteAnswerClicked()
-{
-    QPushButton *btn = qobject_cast<QPushButton*>(sender());
-    if (!btn) return;
-    
-    QWidget *answerWidget = btn->parentWidget();
-    QListWidget *answerList = qobject_cast<QListWidget*>(answerWidget->parentWidget()->parentWidget());
-    if (!answerList) return;
-    
-    for (int i = 0; i < answerList->count(); i++) {
-        QListWidgetItem *item = answerList->item(i);
-        if (answerList->itemWidget(item) == answerWidget) {
-            delete answerList->takeItem(i);
-            break;
-        }
-    }
-}
+void CreateExam::onDeleteAnswerClicked() {}
 
 void CreateExam::saveQuestion(int questionIndex)
 {
@@ -270,62 +254,47 @@ void CreateExam::saveQuestion(int questionIndex)
     QListWidgetItem *item = ui->questionListWidget->item(questionIndex);
     QWidget *questionWidget = ui->questionListWidget->itemWidget(item);
     
-    // Lấy nội dung câu hỏi
     QPlainTextEdit *contentEdit = questionWidget->findChild<QPlainTextEdit*>("contentEdit");
-    QComboBox *difficultyCombo = questionWidget->findChild<QComboBox*>("difficultyCombo");
-    QListWidget *answerList = questionWidget->findChild<QListWidget*>("answerList");
+    QLineEdit *optA = questionWidget->findChild<QLineEdit*>("optionA");
+    QLineEdit *optB = questionWidget->findChild<QLineEdit*>("optionB");
+    QLineEdit *optC = questionWidget->findChild<QLineEdit*>("optionC");
+    QLineEdit *optD = questionWidget->findChild<QLineEdit*>("optionD");
+    QRadioButton *radA = questionWidget->findChild<QRadioButton*>("checkA");
+    QRadioButton *radB = questionWidget->findChild<QRadioButton*>("checkB");
+    QRadioButton *radC = questionWidget->findChild<QRadioButton*>("checkC");
+    QRadioButton *radD = questionWidget->findChild<QRadioButton*>("checkD");
     
-    if (!contentEdit || !difficultyCombo || !answerList) return;
+    if (!contentEdit || !optA || !optB || !optC || !optD) return;
     
     QString content = contentEdit->toPlainText().trimmed();
-    if (content.isEmpty()) {
-        QMessageBox::warning(this, "Lỗi", "Vui lòng nhập nội dung câu hỏi!");
-        return;
-    }
+    QString strA = optA->text().trimmed();
+    QString strB = optB->text().trimmed();
+    QString strC = optC->text().trimmed();
+    QString strD = optD->text().trimmed();
+
+    if (content.isEmpty()) { QMessageBox::warning(this, "Lỗi", "Vui lòng nhập nội dung câu hỏi!"); return; }
+    if (strA.isEmpty() || strB.isEmpty() || strC.isEmpty() || strD.isEmpty()) { QMessageBox::warning(this, "Lỗi", "Vui lòng nhập đủ 4 đáp án!"); return; }
+
+    QString correctOption = "";
+    if (radA && radA->isChecked()) correctOption = "A";
+    else if (radB && radB->isChecked()) correctOption = "B";
+    else if (radC && radC->isChecked()) correctOption = "C";
+    else if (radD && radD->isChecked()) correctOption = "D";
+
+    if (correctOption.isEmpty()) { QMessageBox::warning(this, "Lỗi", "Vui lòng chọn đáp án đúng!"); return; }
     
-    if (answerList->count() < 2) {
-        QMessageBox::warning(this, "Lỗi", "Vui lòng thêm ít nhất 2 đáp án!");
-        return;
-    }
-    
-    // Tạo JSON cho câu hỏi
     QJsonObject json;
     json["exam_id"] = currentExamId;
     json["content"] = content;
-    json["difficulty"] = difficultyCombo->currentData().toInt();
-    
-    // Tạo danh sách đáp án
-    QJsonArray answersArray;
-    bool hasCorrectAnswer = false;
-    
-    for (int i = 0; i < answerList->count(); i++) {
-        QWidget *answerWidget = answerList->itemWidget(answerList->item(i));
-        QLineEdit *answerEdit = answerWidget->findChild<QLineEdit*>("answerEdit");
-        QRadioButton *correctRadio = answerWidget->findChild<QRadioButton*>("correctRadio");
-        
-        if (answerEdit && correctRadio) {
-            QString answerContent = answerEdit->text().trimmed();
-            if (!answerContent.isEmpty()) {
-                QJsonObject answerObj;
-                answerObj["content"] = answerContent;
-                answerObj["is_correct"] = correctRadio->isChecked();
-                answersArray.append(answerObj);
-                
-                if (correctRadio->isChecked()) hasCorrectAnswer = true;
-            }
-        }
-    }
-    
-    if (!hasCorrectAnswer) {
-        QMessageBox::warning(this, "Lỗi", "Vui lòng chọn ít nhất 1 đáp án đúng!");
-        return;
-    }
-    
-    json["answer_list"] = QString(QJsonDocument(answersArray).toJson(QJsonDocument::Compact));
+    json["option_a"] = strA;
+    json["option_b"] = strB;
+    json["option_c"] = strC;
+    json["option_d"] = strD;
+    json["correct_option"] = correctOption;
     
     QJsonDocument doc(json);
     QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
-    QString dataString = QString("CONTROL ADD_EXAM_QUESTION\n%1").arg(QString(jsonData));
+    QString dataString = QString("CONTROL ADD_QUESTION_TO_EXAM\n%1").arg(QString(jsonData));
     
     QTcpSocket *saveSocket = new QTcpSocket(this);
     saveSocket->connectToHost(IPADDRESS, 8081);
@@ -338,10 +307,11 @@ void CreateExam::saveQuestion(int questionIndex)
             QByteArray response = saveSocket->readAll();
             QString responseString(response);
             
-            if (responseString.contains("ADD_EXAM_QUESTION_SUCCESS")) {
-                QMessageBox::information(this, "Thành công", "Đã lưu câu hỏi!");
-                
-                // Disable nút lưu sau khi đã lưu
+            if (responseString.contains("ADD_QUESTION_TO_EXAM_SUCCESS")) {
+                QMessageBox::information(this, "Thành công", "Đã lưu câu hỏi vào đề thi!");
+                contentEdit->setReadOnly(true);
+                optA->setReadOnly(true); optB->setReadOnly(true); optC->setReadOnly(true); optD->setReadOnly(true);
+                radA->setEnabled(false); radB->setEnabled(false); radC->setEnabled(false); radD->setEnabled(false);
                 QPushButton *saveBtn = questionWidget->findChild<QPushButton*>("saveQuestionBtn");
                 if (saveBtn) {
                     saveBtn->setEnabled(false);
@@ -349,16 +319,38 @@ void CreateExam::saveQuestion(int questionIndex)
                     saveBtn->setStyleSheet("background-color: #6c757d; color: white; padding: 8px 20px;");
                 }
             } else {
-                QMessageBox::warning(this, "Lỗi", "Không thể lưu câu hỏi!");
+                QMessageBox::warning(this, "Lỗi", "Không thể lưu câu hỏi! Server trả về: " + responseString);
             }
         }
     }
-    
     saveSocket->close();
     delete saveSocket;
 }
 
-void CreateExam::loadExamQuestions()
-{
-    // Để load câu hỏi khi edit exam (nếu cần)
+void CreateExam::loadExamQuestions() {}
+
+void CreateExam::importQuestion(int questionId) {
+    QJsonObject json;
+    json["exam_id"] = currentExamId;
+    json["question_id"] = questionId;
+    QJsonDocument doc(json);
+    QString req = QString("CONTROL IMPORT_QUESTION_FROM_BANK\n%1").arg(QString(doc.toJson(QJsonDocument::Compact)));
+    
+    QTcpSocket socket;
+    socket.connectToHost(IPADDRESS, 8081);
+    if(socket.waitForConnected(3000)) {
+        socket.write(req.toUtf8());
+        socket.flush();
+        if(socket.waitForReadyRead(3000)) {
+            QString res(socket.readAll());
+            if(res.contains("SUCCESS")) {
+                QMessageBox::information(this, "Thành công", "Đã nhập câu hỏi vào đề thi");
+                QListWidgetItem *item = new QListWidgetItem("Câu hỏi được nhập từ ngân hàng (ID: " + QString::number(questionId) + ")");
+                item->setBackground(Qt::lightGray);
+                ui->questionListWidget->addItem(item);
+            } else {
+                 QMessageBox::warning(this, "Lỗi", "Không thể nhập câu hỏi: " + res);
+            }
+        }
+    }
 }
