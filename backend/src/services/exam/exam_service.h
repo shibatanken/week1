@@ -16,6 +16,16 @@ int delete_question_from_class(int question_id);
 // Exam Questions (Exam Level)
 int add_question_to_exam(int exam_id, const char *content, const char *opt_a, const char *opt_b, const char *opt_c, const char *opt_d, const char *correct_option);
 char *get_exam_questions(int exam_id);
+char *get_exam_questions_for_student(int exam_id); // Không có correct_option
 int import_question_from_bank(int exam_id, int question_id);
+
+// Student Exam Flow
+int start_exam(int exam_id);  // Teacher starts exam -> status = ongoing
+int join_exam(int exam_id, int user_id);  // Student joins -> tạo submission
+char *get_submission_status(int exam_id, int user_id);  // Kiểm tra đã join chưa
+int submit_answer(int submission_id, int question_id, const char *answer);
+int submit_exam(int submission_id);  // Auto-grade và tính điểm
+char *get_exam_result(int submission_id);
+char *get_my_exam_history(int user_id);
 
 #endif // EXAM_SERVICE_H

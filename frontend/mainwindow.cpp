@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "userdata.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -12,7 +13,14 @@ MainWindow::MainWindow(QWidget *parent)
     , classMembersForm(new ClassMembers(this))
     , createExamForm(new CreateExam(this))
     , homeForm(new Home(this))
+    , examTakingForm(new ExamTaking(this))
+    , examListForm(new ExamList(this))
+    , practiceModeForm(new PracticeMode(this))
+    , appealManagerForm(new AppealManager(this))
+    , adminDashboardForm(new AdminDashboard(this))
+    , statisticsViewForm(new StatisticsView(this))
     , currentClassId(-1)
+    , currentExamId(-1)
 {
     ui->setupUi(this);
 
@@ -23,24 +31,63 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(classMembersForm);
     ui->stackedWidget->addWidget(createExamForm);
     ui->stackedWidget->addWidget(homeForm);
+    ui->stackedWidget->addWidget(examTakingForm);
+    ui->stackedWidget->addWidget(examListForm);
+    ui->stackedWidget->addWidget(practiceModeForm);
+    ui->stackedWidget->addWidget(appealManagerForm);
+    ui->stackedWidget->addWidget(adminDashboardForm);
+    ui->stackedWidget->addWidget(statisticsViewForm);
 
+    // Auth connections
     connect(signupForm, &Signup::showSignin, this, &MainWindow::showSignin);
     connect(signinForm, &Signin::showSignup, this, &MainWindow::showSignup);
+    connect(signinForm, &Signin::loginSuccess, [this]() {
+        QString role = UserData::instance().getRole();
+        if (role == "admin") {
+            showAdminDashboard();
+        } else {
+            showClassList();
+        }
+    });
     
-    connect(signinForm, &Signin::loginSuccess, this, &MainWindow::showClassList);
+    // Class connections
     connect(classListForm, &ClassList::showClassDetail, this, &MainWindow::showClassDetail);
     connect(classDetailForm, &ClassDetail::backToClassList, this, &MainWindow::showClassList);
-    
     connect(classDetailForm, &ClassDetail::openClassMembers, this, &MainWindow::showClassMembers);
     connect(classMembersForm, &ClassMembers::backToClassDetail, [this]() {
         showClassDetail(currentClassId);
     });
-    
     connect(classDetailForm, &ClassDetail::openCreateExam, this, &MainWindow::showCreateExam);
     connect(createExamForm, &CreateExam::backToClassDetail, [this]() {
         showClassDetail(currentClassId);
     });
     
+    // Exam connections
+    connect(examTakingForm, &ExamTaking::backToExamList, [this]() {
+        showClassDetail(currentClassId);
+    });
+    connect(examTakingForm, &ExamTaking::examFinished, this, &MainWindow::showExamResult);
+    connect(examListForm, &ExamList::backToClassList, this, &MainWindow::showClassList);
+    connect(examListForm, &ExamList::startExam, this, &MainWindow::showExamTaking);
+    connect(examListForm, &ExamList::viewExamResult, this, &MainWindow::showExamResult);
+    
+    // Practice connections
+    connect(practiceModeForm, &PracticeMode::backToClassDetail, [this]() {
+        showClassDetail(currentClassId);
+    });
+    
+    // Appeal connections
+    connect(appealManagerForm, &AppealManager::backPressed, this, &MainWindow::showClassList);
+    
+    // Admin connections
+    connect(adminDashboardForm, &AdminDashboard::logout, this, &MainWindow::showSignin);
+    
+    // Statistics connections
+    connect(statisticsViewForm, &StatisticsView::backPressed, [this]() {
+        showClassDetail(currentClassId);
+    });
+    
+    // Logout connections
     connect(homeForm, &Home::logout, this, &MainWindow::showSignin);
     connect(classListForm, &ClassList::logout, this, &MainWindow::showSignin);
 
@@ -56,6 +103,7 @@ void MainWindow::showSignup() {
 }
 
 void MainWindow::showSignin() {
+    UserData::instance().reset();
     ui->stackedWidget->setCurrentWidget(signinForm);
 }
 
@@ -85,4 +133,52 @@ void MainWindow::showCreateExam(int classId) {
 void MainWindow::showHome() {
     homeForm->updateUserInfo();
     ui->stackedWidget->setCurrentWidget(homeForm);
+}
+
+void MainWindow::showExamTaking(int examId, QString examName, int timeLimit) {
+    currentExamId = examId;
+    examTakingForm->setExamInfo(examId, examName, timeLimit);
+    examTakingForm->startExam();
+    ui->stackedWidget->setCurrentWidget(examTakingForm);
+}
+
+void MainWindow::showExamList() {
+    examListForm->loadExams();
+    ui->stackedWidget->setCurrentWidget(examListForm);
+}
+
+void MainWindow::showExamResult(int submissionId) {
+    // Could load result into a dedicated view
+    Q_UNUSED(submissionId);
+    showExamList();
+}
+
+void MainWindow::showPracticeMode(int classId, QString className) {
+    currentClassId = classId;
+    practiceModeForm->setClassInfo(classId, className);
+    ui->stackedWidget->setCurrentWidget(practiceModeForm);
+}
+
+void MainWindow::showAppealManager() {
+    bool isTeacher = UserData::instance().isTeacher();
+    appealManagerForm->setMode(isTeacher);
+    appealManagerForm->loadAppeals();
+    ui->stackedWidget->setCurrentWidget(appealManagerForm);
+}
+
+void MainWindow::showAdminDashboard() {
+    adminDashboardForm->loadData();
+    ui->stackedWidget->setCurrentWidget(adminDashboardForm);
+}
+
+void MainWindow::showStatistics(int examId) {
+    currentExamId = examId;
+    statisticsViewForm->loadExamStatistics(examId);
+    ui->stackedWidget->setCurrentWidget(statisticsViewForm);
+}
+
+void MainWindow::showClassStatistics(int classId) {
+    currentClassId = classId;
+    statisticsViewForm->loadClassStatistics(classId);
+    ui->stackedWidget->setCurrentWidget(statisticsViewForm);
 }

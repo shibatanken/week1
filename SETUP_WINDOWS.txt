@@ -1,0 +1,70 @@
+HƯỚNG DẪN SETUP TRÊN WINDOWS
+================================
+
+YÊU CẦU:
+--------
+1. MySQL Server (hoặc XAMPP/WAMP có MySQL)
+2. MinGW-w64 (đã có ✓)
+3. libmysqlclient và cjson
+
+BƯỚC 1: Cài MySQL
+------------------
+Download: https://dev.mysql.com/downloads/mysql/
+Hoặc dùng XAMPP: https://www.apachefriends.org/
+
+BƯỚC 2: Tạo database
+---------------------
+mysql -u root -p
+> CREATE DATABASE quizz_db;
+> CREATE USER 'quizz'@'localhost' IDENTIFIED BY 'Quizz2003@';
+> GRANT ALL PRIVILEGES ON quizz_db.* TO 'quizz'@'localhost';
+> EXIT;
+
+BƯỚC 3: Update connect-db.c
+----------------------------
+Sửa file backend/src/db/connect-db.c:
+- DB_HOST: "localhost"
+- DB_USER: "quizz"
+- DB_PASS: "Quizz2003@"
+- DB_NAME: "quizz_db"
+
+BƯỚC 4: Build backend
+---------------------
+cd week1/backend
+gcc -I"C:\Program Files\MySQL\MySQL Server 8.0\include" ^
+    src/main.c src/db/connect-db.c src/routes/routes.c ^
+    src/controllers/auth/auth_controller.c ^
+    src/controllers/class/class_controller.c ^
+    src/services/auth/auth_service.c ^
+    src/services/class/class_service.c ^
+    src/utils/*.c ^
+    -L"C:\Program Files\MySQL\MySQL Server 8.0\lib" ^
+    -lmysqlclient -lcjson -o server.exe
+
+(Chỉnh path MySQL theo máy bạn)
+
+BƯỚC 5: Run migrations
+----------------------
+cd src/migrations
+mysql -u quizz -pQuizz2003@ quizz_db < create_01_user_table.sql
+mysql -u quizz -pQuizz2003@ quizz_db < create_02_class_table.sql
+mysql -u quizz -pQuizz2003@ quizz_db < create_03_user_in_class_table.sql
+
+BƯỚC 6: Seed data
+-----------------
+cd ../seeder
+mysql -u quizz -pQuizz2003@ quizz_db < demo_data.sql
+
+BƯỚC 7: Run server
+------------------
+cd ../..
+server.exe
+
+TÙY CHỌN 2: Dùng WSL (Linux trên Windows)
+==========================================
+wsl --install
+wsl
+# Sau đó làm theo hướng dẫn Linux trong README.md
+
+
+

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'createquestion.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 6.10.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -53,23 +53,22 @@ public:
     void setupUi(QWidget *CreateQuestion)
     {
         if (CreateQuestion->objectName().isEmpty())
-            CreateQuestion->setObjectName(QString::fromUtf8("CreateQuestion"));
+            CreateQuestion->setObjectName("CreateQuestion");
         CreateQuestion->resize(650, 600);
         verticalLayout = new QVBoxLayout(CreateQuestion);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName("verticalLayout");
         titleLabel = new QLabel(CreateQuestion);
-        titleLabel->setObjectName(QString::fromUtf8("titleLabel"));
+        titleLabel->setObjectName("titleLabel");
         QFont font;
         font.setPointSize(16);
         font.setBold(true);
-        font.setWeight(75);
         titleLabel->setFont(font);
         titleLabel->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(titleLabel);
 
         questionLabel = new QLabel(CreateQuestion);
-        questionLabel->setObjectName(QString::fromUtf8("questionLabel"));
+        questionLabel->setObjectName("questionLabel");
         QFont font1;
         font1.setBold(true);
         questionLabel->setFont(font1);
@@ -77,15 +76,15 @@ public:
         verticalLayout->addWidget(questionLabel);
 
         questionTextEdit = new QTextEdit(CreateQuestion);
-        questionTextEdit->setObjectName(QString::fromUtf8("questionTextEdit"));
+        questionTextEdit->setObjectName("questionTextEdit");
         questionTextEdit->setMinimumSize(QSize(0, 80));
 
         verticalLayout->addWidget(questionTextEdit);
 
         difficultyLayout = new QHBoxLayout();
-        difficultyLayout->setObjectName(QString::fromUtf8("difficultyLayout"));
+        difficultyLayout->setObjectName("difficultyLayout");
         difficultyLabel = new QLabel(CreateQuestion);
-        difficultyLabel->setObjectName(QString::fromUtf8("difficultyLabel"));
+        difficultyLabel->setObjectName("difficultyLabel");
         difficultyLabel->setFont(font1);
 
         difficultyLayout->addWidget(difficultyLabel);
@@ -94,11 +93,11 @@ public:
         difficultyComboBox->addItem(QString());
         difficultyComboBox->addItem(QString());
         difficultyComboBox->addItem(QString());
-        difficultyComboBox->setObjectName(QString::fromUtf8("difficultyComboBox"));
+        difficultyComboBox->setObjectName("difficultyComboBox");
 
         difficultyLayout->addWidget(difficultyComboBox);
 
-        horizontalSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(0, 0, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         difficultyLayout->addItem(horizontalSpacer);
 
@@ -106,21 +105,21 @@ public:
         verticalLayout->addLayout(difficultyLayout);
 
         answersLabel = new QLabel(CreateQuestion);
-        answersLabel->setObjectName(QString::fromUtf8("answersLabel"));
+        answersLabel->setObjectName("answersLabel");
         answersLabel->setFont(font1);
 
         verticalLayout->addWidget(answersLabel);
 
         optionALayout = new QHBoxLayout();
-        optionALayout->setObjectName(QString::fromUtf8("optionALayout"));
+        optionALayout->setObjectName("optionALayout");
         radioA = new QRadioButton(CreateQuestion);
-        radioA->setObjectName(QString::fromUtf8("radioA"));
+        radioA->setObjectName("radioA");
         radioA->setChecked(true);
 
         optionALayout->addWidget(radioA);
 
         optionA = new QLineEdit(CreateQuestion);
-        optionA->setObjectName(QString::fromUtf8("optionA"));
+        optionA->setObjectName("optionA");
 
         optionALayout->addWidget(optionA);
 
@@ -128,14 +127,14 @@ public:
         verticalLayout->addLayout(optionALayout);
 
         optionBLayout = new QHBoxLayout();
-        optionBLayout->setObjectName(QString::fromUtf8("optionBLayout"));
+        optionBLayout->setObjectName("optionBLayout");
         radioB = new QRadioButton(CreateQuestion);
-        radioB->setObjectName(QString::fromUtf8("radioB"));
+        radioB->setObjectName("radioB");
 
         optionBLayout->addWidget(radioB);
 
         optionB = new QLineEdit(CreateQuestion);
-        optionB->setObjectName(QString::fromUtf8("optionB"));
+        optionB->setObjectName("optionB");
 
         optionBLayout->addWidget(optionB);
 
@@ -143,14 +142,14 @@ public:
         verticalLayout->addLayout(optionBLayout);
 
         optionCLayout = new QHBoxLayout();
-        optionCLayout->setObjectName(QString::fromUtf8("optionCLayout"));
+        optionCLayout->setObjectName("optionCLayout");
         radioC = new QRadioButton(CreateQuestion);
-        radioC->setObjectName(QString::fromUtf8("radioC"));
+        radioC->setObjectName("radioC");
 
         optionCLayout->addWidget(radioC);
 
         optionC = new QLineEdit(CreateQuestion);
-        optionC->setObjectName(QString::fromUtf8("optionC"));
+        optionC->setObjectName("optionC");
 
         optionCLayout->addWidget(optionC);
 
@@ -158,14 +157,14 @@ public:
         verticalLayout->addLayout(optionCLayout);
 
         optionDLayout = new QHBoxLayout();
-        optionDLayout->setObjectName(QString::fromUtf8("optionDLayout"));
+        optionDLayout->setObjectName("optionDLayout");
         radioD = new QRadioButton(CreateQuestion);
-        radioD->setObjectName(QString::fromUtf8("radioD"));
+        radioD->setObjectName("radioD");
 
         optionDLayout->addWidget(radioD);
 
         optionD = new QLineEdit(CreateQuestion);
-        optionD->setObjectName(QString::fromUtf8("optionD"));
+        optionD->setObjectName("optionD");
 
         optionDLayout->addWidget(optionD);
 
@@ -173,8 +172,8 @@ public:
         verticalLayout->addLayout(optionDLayout);
 
         saveButton = new QPushButton(CreateQuestion);
-        saveButton->setObjectName(QString::fromUtf8("saveButton"));
-        saveButton->setCursor(QCursor(Qt::PointingHandCursor));
+        saveButton->setObjectName("saveButton");
+        saveButton->setCursor(QCursor(Qt::CursorShape::PointingHandCursor));
 
         verticalLayout->addWidget(saveButton);
 

@@ -316,3 +316,210 @@ void handle_delete_exam_question(int client_socket, ControlMessage *msg)
 {
     handle_delete_question_from_bank(client_socket, msg);
 }
+
+// ============= STUDENT EXAM FLOW HANDLERS =============
+
+// Teacher starts an exam
+void handle_start_exam(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 1);
+    int exam_id = -1;
+    for (int i = 0; i < pair_count; i++) {
+        if (strcmp(pairs[i].key, "exam_id") == 0) exam_id = atoi(pairs[i].value);
+    }
+
+    int result = start_exam(exam_id);
+    char response[2048];
+    char timestamp[50];
+    time_t now = time(NULL);
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%S", localtime(&now));
+
+    if (result == 0) {
+        snprintf(response, sizeof(response), "NOTIFICATION START_EXAM_FAILURE %s\n{\"message\": \"Failed to start exam\"}", timestamp);
+    } else {
+        snprintf(response, sizeof(response), "NOTIFICATION START_EXAM_SUCCESS %s\n{\"message\": \"Exam started\", \"exam_id\": %d}", timestamp, exam_id);
+    }
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+}
+
+// Student joins an exam
+void handle_join_exam(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 2);
+    int exam_id = -1, user_id = -1;
+    for (int i = 0; i < pair_count; i++) {
+        if (strcmp(pairs[i].key, "exam_id") == 0) exam_id = atoi(pairs[i].value);
+        else if (strcmp(pairs[i].key, "user_id") == 0) user_id = atoi(pairs[i].value);
+    }
+
+    int submission_id = join_exam(exam_id, user_id);
+    char response[2048];
+    char timestamp[50];
+    time_t now = time(NULL);
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%S", localtime(&now));
+
+    if (submission_id == 0) {
+        snprintf(response, sizeof(response), "NOTIFICATION JOIN_EXAM_FAILURE %s\n{\"message\": \"Failed to join exam\"}", timestamp);
+    } else {
+        snprintf(response, sizeof(response), "NOTIFICATION JOIN_EXAM_SUCCESS %s\n{\"submission_id\": %d, \"exam_id\": %d}", timestamp, submission_id, exam_id);
+    }
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+}
+
+// Student gets exam questions (without answers)
+void handle_get_exam_for_student(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 2);
+    int exam_id = -1, user_id = -1;
+    for (int i = 0; i < pair_count; i++) {
+        if (strcmp(pairs[i].key, "exam_id") == 0) exam_id = atoi(pairs[i].value);
+        else if (strcmp(pairs[i].key, "user_id") == 0) user_id = atoi(pairs[i].value);
+    }
+
+    // Get submission status first
+    char *status = get_submission_status(exam_id, user_id);
+    char *questions = get_exam_questions_for_student(exam_id);
+    
+    char *response;
+    size_t response_size = 16384;
+    response = (char *)malloc(response_size);
+    memset(response, 0, response_size);
+
+    if (questions == NULL) {
+        snprintf(response, response_size, "DATA JSON EXAM_FOR_STUDENT\n{\"questions\": [], \"submission\": %s}", 
+                 status ? status : "null");
+    } else {
+        snprintf(response, response_size, "DATA JSON EXAM_FOR_STUDENT\n{\"questions\": %s, \"submission\": %s}", 
+                 questions, status ? status : "null");
+        free(questions);
+    }
+    if (status) free(status);
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+    free(response);
+}
+
+// Student submits answer for one question
+void handle_submit_answer(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 3);
+    int submission_id = -1, question_id = -1;
+    char answer[5] = "";
+    
+    for (int i = 0; i < pair_count; i++) {
+        if (strcmp(pairs[i].key, "submission_id") == 0) submission_id = atoi(pairs[i].value);
+        else if (strcmp(pairs[i].key, "question_id") == 0) question_id = atoi(pairs[i].value);
+        else if (strcmp(pairs[i].key, "answer") == 0) strncpy(answer, pairs[i].value, sizeof(answer) - 1);
+    }
+
+    int result = submit_answer(submission_id, question_id, answer);
+    char response[2048];
+    char timestamp[50];
+    time_t now = time(NULL);
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%S", localtime(&now));
+
+    if (result == 0) {
+        snprintf(response, sizeof(response), "NOTIFICATION SUBMIT_ANSWER_FAILURE %s\n{\"message\": \"Failed to submit answer\"}", timestamp);
+    } else {
+        snprintf(response, sizeof(response), "NOTIFICATION SUBMIT_ANSWER_SUCCESS %s\n{\"question_id\": %d, \"answer\": \"%s\"}", timestamp, question_id, answer);
+    }
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+}
+
+// Student submits entire exam
+void handle_submit_exam(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 1);
+    int submission_id = -1;
+    for (int i = 0; i < pair_count; i++) {
+        if (strcmp(pairs[i].key, "submission_id") == 0) submission_id = atoi(pairs[i].value);
+    }
+
+    int result = submit_exam(submission_id);
+    char response[2048];
+    char timestamp[50];
+    time_t now = time(NULL);
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%S", localtime(&now));
+
+    if (result == 0) {
+        snprintf(response, sizeof(response), "NOTIFICATION SUBMIT_EXAM_FAILURE %s\n{\"message\": \"Failed to submit exam\"}", timestamp);
+    } else {
+        // Get result immediately
+        char *exam_result = get_exam_result(submission_id);
+        if (exam_result) {
+            snprintf(response, sizeof(response), "NOTIFICATION SUBMIT_EXAM_SUCCESS %s\n%s", timestamp, exam_result);
+            free(exam_result);
+        } else {
+            snprintf(response, sizeof(response), "NOTIFICATION SUBMIT_EXAM_SUCCESS %s\n{\"message\": \"Exam submitted\"}", timestamp);
+        }
+    }
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+}
+
+// Get exam result
+void handle_get_exam_result(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 1);
+    int submission_id = -1;
+    for (int i = 0; i < pair_count; i++) {
+        if (strcmp(pairs[i].key, "submission_id") == 0) submission_id = atoi(pairs[i].value);
+    }
+
+    char *result = get_exam_result(submission_id);
+    char *response;
+    
+    if (result == NULL) {
+        response = strdup("DATA JSON EXAM_RESULT\n{}");
+    } else {
+        size_t response_size = strlen(result) + 64;
+        response = (char *)malloc(response_size);
+        snprintf(response, response_size, "DATA JSON EXAM_RESULT\n%s", result);
+        free(result);
+    }
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+    free(response);
+}
+
+// Get exam history
+void handle_get_my_exam_history(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 1);
+    int user_id = -1;
+    for (int i = 0; i < pair_count; i++) {
+        if (strcmp(pairs[i].key, "user_id") == 0) user_id = atoi(pairs[i].value);
+    }
+
+    char *result = get_my_exam_history(user_id);
+    char *response;
+    
+    if (result == NULL) {
+        response = strdup("DATA JSON EXAM_HISTORY\n{\"data\": []}");
+    } else {
+        size_t response_size = strlen(result) + 64;
+        response = (char *)malloc(response_size);
+        snprintf(response, response_size, "DATA JSON EXAM_HISTORY\n{\"data\": %s}", result);
+        free(result);
+    }
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+    free(response);
+}

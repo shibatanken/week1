@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AdminDashboard</class>
+ <widget class="QWidget" name="AdminDashboard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Admin Dashboard</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <!-- Header -->
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QLabel" name="lblTitle">
+       <property name="text">
+        <string>🛡️ Admin Dashboard</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+         <bold>true</bold>
+        </font>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnRefresh">
+       <property name="text">
+        <string>🔄 Làm mới</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnLogout">
+       <property name="text">
+        <string>🚪 Đăng xuất</string>
+       </property>
+       <property name="styleSheet">
+        <string>background-color: #f44336; color: white;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <!-- Tab Widget -->
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <!-- Pending Users Tab -->
+     <widget class="QWidget" name="tabPending">
+      <attribute name="title">
+       <string>Duyệt tài khoản</string>
+      </attribute>
+      <layout class="QVBoxLayout">
+       <item>
+        <widget class="QLabel" name="lblPendingCount">
+         <property name="text">
+          <string>Đang chờ duyệt: 0</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tablePending">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <!-- All Users Tab -->
+     <widget class="QWidget" name="tabAllUsers">
+      <attribute name="title">
+       <string>Quản lý người dùng</string>
+      </attribute>
+      <layout class="QVBoxLayout">
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="lblTotalUsers">
+           <property name="text">
+            <string>Tổng số: 0 người dùng</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+            </font>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnAddUser">
+           <property name="text">
+            <string>➕ Thêm người dùng</string>
+           </property>
+           <property name="styleSheet">
+            <string>background-color: #4CAF50; color: white;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tableAllUsers">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
+

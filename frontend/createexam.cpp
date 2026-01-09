@@ -32,18 +32,26 @@ CreateExam::CreateExam(QWidget *parent) :
     
     importBankBtn = new QPushButton("Nhập từ Ngân hàng", this);
     importBankBtn->setCursor(Qt::PointingHandCursor);
-    importBankBtn->setEnabled(false); 
+    importBankBtn->setEnabled(true);  // Enable ngay từ đầu
     ui->questionHeaderLayout->insertWidget(2, importBankBtn);
     
     connect(importBankBtn, &QPushButton::clicked, [this](){
-         if(currentClassId == -1 || currentExamId <= 0) {
-             QMessageBox::warning(this, "Lỗi", "Vui lòng lưu bài kiểm tra trước");
+         if(currentExamId <= 0) {
+             QMessageBox::warning(this, "Lỗi", "Vui lòng lưu bài kiểm tra trước khi nhập câu hỏi");
+             return;
+         }
+         if(currentClassId == -1) {
+             QMessageBox::warning(this, "Lỗi", "Không xác định được lớp học");
              return;
          }
          QuestionBank dlg(currentClassId, true, this);
          if(dlg.exec() == QDialog::Accepted) {
              int qId = dlg.getSelectedQuestionId();
-             importQuestion(qId);
+             if(qId > 0) {
+                 importQuestion(qId);
+             } else {
+                 QMessageBox::warning(this, "Lỗi", "Vui lòng chọn một câu hỏi");
+             }
          }
     });
 
@@ -80,7 +88,8 @@ void CreateExam::resetForm()
     ui->timeLimitSpinBox->setValue(60);
     ui->questionListWidget->clear();
     ui->addQuestionButton->setEnabled(false);
-    importBankBtn->setEnabled(false);
+    // importBankBtn vẫn để enabled để user có thể import bất cứ lúc nào
+    // importBankBtn->setEnabled(false);
 }
 
 void CreateExam::on_backButton_clicked()

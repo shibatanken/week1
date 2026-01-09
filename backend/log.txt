@@ -125,3 +125,13 @@
 2026-01-09 07:13:28 - User logged in with email: teacher1@test.com (role: teacher)
 2026-01-09 07:13:44 - Created exam: dfasdas in class 1
 2026-01-09 07:13:45 - Created exam: dfasdas in class 1
+2026-01-09 11:03:42 - User logged in with email: teacher@test.com (role: teacher)
+2026-01-09 11:06:08 - User logged in with email: teacher@test.com (role: teacher)
+2026-01-09 11:06:26 - Teacher 12 created class: Bóng bàn
+2026-01-09 11:12:46 - User logged in with email: teacher@test.com (role: teacher)
+2026-01-09 11:13:14 - Student 6 added to class 4
+2026-01-09 11:16:55 - User logged in with email: teacher@test.com (role: teacher)
+2026-01-09 11:28:39 - User logged in with email: teacher@test.com (role: teacher)
+2026-01-09 11:29:09 - Created exam: ádfasf in class 4
+2026-01-09 11:29:12 - Created exam: ádfasf in class 4
+2026-01-09 11:34:07 - User logged in with email: teacher@test.com (role: teacher)

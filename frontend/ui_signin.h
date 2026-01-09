@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'signin.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 6.10.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -34,44 +34,44 @@ public:
     void setupUi(QWidget *Signin)
     {
         if (Signin->objectName().isEmpty())
-            Signin->setObjectName(QString::fromUtf8("Signin"));
+            Signin->setObjectName("Signin");
         Signin->resize(400, 300);
         verticalLayout = new QVBoxLayout(Signin);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName("verticalLayout");
         emailLabel = new QLabel(Signin);
-        emailLabel->setObjectName(QString::fromUtf8("emailLabel"));
+        emailLabel->setObjectName("emailLabel");
 
         verticalLayout->addWidget(emailLabel);
 
         emailLineEdit = new QLineEdit(Signin);
-        emailLineEdit->setObjectName(QString::fromUtf8("emailLineEdit"));
+        emailLineEdit->setObjectName("emailLineEdit");
 
         verticalLayout->addWidget(emailLineEdit);
 
         passwordLabel = new QLabel(Signin);
-        passwordLabel->setObjectName(QString::fromUtf8("passwordLabel"));
+        passwordLabel->setObjectName("passwordLabel");
 
         verticalLayout->addWidget(passwordLabel);
 
         passwordLineEdit = new QLineEdit(Signin);
-        passwordLineEdit->setObjectName(QString::fromUtf8("passwordLineEdit"));
+        passwordLineEdit->setObjectName("passwordLineEdit");
         passwordLineEdit->setEchoMode(QLineEdit::Password);
 
         verticalLayout->addWidget(passwordLineEdit);
 
         signinButton = new QPushButton(Signin);
-        signinButton->setObjectName(QString::fromUtf8("signinButton"));
-        signinButton->setCursor(QCursor(Qt::PointingHandCursor));
+        signinButton->setObjectName("signinButton");
+        signinButton->setCursor(QCursor(Qt::CursorShape::PointingHandCursor));
 
         verticalLayout->addWidget(signinButton);
 
         signupButton = new QPushButton(Signin);
-        signupButton->setObjectName(QString::fromUtf8("signupButton"));
+        signupButton->setObjectName("signupButton");
 
         verticalLayout->addWidget(signupButton);
 
         responseLabel = new QLabel(Signin);
-        responseLabel->setObjectName(QString::fromUtf8("responseLabel"));
+        responseLabel->setObjectName("responseLabel");
 
         verticalLayout->addWidget(responseLabel);
 

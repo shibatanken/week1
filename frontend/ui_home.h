@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'home.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 6.10.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -35,27 +35,26 @@ public:
     void setupUi(QWidget *Home)
     {
         if (Home->objectName().isEmpty())
-            Home->setObjectName(QString::fromUtf8("Home"));
+            Home->setObjectName("Home");
         Home->resize(500, 400);
         verticalLayout = new QVBoxLayout(Home);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName("verticalLayout");
         titleLabel = new QLabel(Home);
-        titleLabel->setObjectName(QString::fromUtf8("titleLabel"));
+        titleLabel->setObjectName("titleLabel");
         QFont font;
         font.setPointSize(20);
         font.setBold(true);
-        font.setWeight(75);
         titleLabel->setFont(font);
         titleLabel->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(titleLabel);
 
-        verticalSpacer_1 = new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalSpacer_1 = new QSpacerItem(20, 20, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
         verticalLayout->addItem(verticalSpacer_1);
 
         welcomeLabel = new QLabel(Home);
-        welcomeLabel->setObjectName(QString::fromUtf8("welcomeLabel"));
+        welcomeLabel->setObjectName("welcomeLabel");
         QFont font1;
         font1.setPointSize(16);
         welcomeLabel->setFont(font1);
@@ -64,28 +63,28 @@ public:
         verticalLayout->addWidget(welcomeLabel);
 
         emailLabel = new QLabel(Home);
-        emailLabel->setObjectName(QString::fromUtf8("emailLabel"));
+        emailLabel->setObjectName("emailLabel");
         emailLabel->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(emailLabel);
 
-        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
         verticalLayout->addItem(verticalSpacer_2);
 
         examRoomButton = new QPushButton(Home);
-        examRoomButton->setObjectName(QString::fromUtf8("examRoomButton"));
-        examRoomButton->setCursor(QCursor(Qt::PointingHandCursor));
+        examRoomButton->setObjectName("examRoomButton");
+        examRoomButton->setCursor(QCursor(Qt::CursorShape::PointingHandCursor));
 
         verticalLayout->addWidget(examRoomButton);
 
-        verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
         verticalLayout->addItem(verticalSpacer_3);
 
         logoutButton = new QPushButton(Home);
-        logoutButton->setObjectName(QString::fromUtf8("logoutButton"));
-        logoutButton->setCursor(QCursor(Qt::PointingHandCursor));
+        logoutButton->setObjectName("logoutButton");
+        logoutButton->setCursor(QCursor(Qt::CursorShape::PointingHandCursor));
 
         verticalLayout->addWidget(logoutButton);
 

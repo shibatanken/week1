@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ExamTaking</class>
+ <widget class="QWidget" name="ExamTaking">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Làm bài thi</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <!-- Exam Taking Widget -->
+     <widget class="QWidget" name="examPage">
+      <layout class="QVBoxLayout" name="examLayout">
+       <!-- Header -->
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="lblExamName">
+           <property name="text">
+            <string>Tên bài thi</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>16</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblTimerIcon">
+           <property name="text">
+            <string>⏱️</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblTimer">
+           <property name="text">
+            <string>60:00</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>18</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string>color: green;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <!-- Progress -->
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="lblQuestionNumber">
+           <property name="text">
+            <string>Câu 1/10</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblTotalQuestions">
+           <property name="text">
+            <string>Tổng: 10 câu</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <!-- Question Content -->
+       <item>
+        <widget class="QFrame" name="questionFrame">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="styleSheet">
+          <string>background-color: #f5f5f5; padding: 20px; border-radius: 10px;</string>
+         </property>
+         <layout class="QVBoxLayout">
+          <item>
+           <widget class="QLabel" name="lblQuestionContent">
+            <property name="text">
+             <string>Nội dung câu hỏi sẽ hiển thị ở đây</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <!-- Answer Options -->
+       <item>
+        <widget class="QGroupBox" name="answersGroup">
+         <property name="title">
+          <string>Chọn đáp án:</string>
+         </property>
+         <layout class="QVBoxLayout">
+          <item>
+           <widget class="QRadioButton" name="radioA">
+            <property name="text">
+             <string>A. Đáp án A</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioB">
+            <property name="text">
+             <string>B. Đáp án B</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioC">
+            <property name="text">
+             <string>C. Đáp án C</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioD">
+            <property name="text">
+             <string>D. Đáp án D</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <!-- Navigation -->
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QPushButton" name="btnBack">
+           <property name="text">
+            <string>← Thoát</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnPrevious">
+           <property name="text">
+            <string>◀ Câu trước</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnNext">
+           <property name="text">
+            <string>Câu sau ▶</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnSubmit">
+           <property name="text">
+            <string>📝 Nộp bài</string>
+           </property>
+           <property name="styleSheet">
+            <string>background-color: #4CAF50; color: white; font-weight: bold; padding: 10px 20px;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <!-- Result Widget -->
+     <widget class="QWidget" name="resultPage">
+      <layout class="QVBoxLayout" name="resultLayout">
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblResultTitle">
+         <property name="text">
+          <string>🎉 Kết quả bài thi</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblResultScore">
+         <property name="text">
+          <string>85.5 điểm</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>48</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string>color: #4CAF50;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblResultDetail">
+         <property name="text">
+          <string>Số câu đúng: 8/10</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="textResultDetails">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="placeholderText">
+          <string>Chi tiết kết quả...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnBackToList">
+         <property name="text">
+          <string>← Quay lại danh sách</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>btnBackToList</sender>
+   <signal>clicked()</signal>
+   <receiver>ExamTaking</receiver>
+   <slot>backToExamList()</slot>
+  </connection>
+ </connections>
+ <slots>
+  <slot>backToExamList()</slot>
+ </slots>
+</ui>
+

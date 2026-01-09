@@ -1,0 +1,264 @@
+================================================================================
+                    GIẢI THÍCH CÁC FILE QUAN TRỌNG
+                    (Trả lời nhanh nếu giáo viên hỏi)
+================================================================================
+
+📁 BACKEND - SERVER (C)
+================================================================================
+
+main.c
+└─ Nhiệm vụ: Entry point của server
+   • Tạo socket TCP
+   • Kết nối database MySQL
+   • Set socket options (SO_REUSEADDR)
+   • Gọi setup_routes() để khởi động server
+
+routes.c / routes.h
+└─ Nhiệm vụ: Xử lý routing và multi-threading
+   • Bind socket với port 8081
+   • Listen connections (backlog = 10)
+   • Accept clients trong vòng lặp while(1)
+   • Tạo thread mới cho mỗi client (pthread_create)
+   • Parse message header (CONTROL/DATA/NOTIFICATION)
+   • Route đến handler tương ứng
+   • Quản lý mutex để thread-safe
+
+auth_controller.c / auth_controller.h
+└─ Nhiệm vụ: Controller xử lý authentication requests
+   • handle_login(): Xử lý request đăng nhập
+     - Parse JSON body (email, password)
+     - Gọi service layer login()
+     - Build response NOTIFICATION
+     - Send về client
+   • handle_signup(): Xử lý request đăng ký
+     - Parse JSON body (email, password, name, dob)
+     - Gọi service layer signup()
+     - Build response NOTIFICATION
+     - Send về client
+
+auth_service.c / auth_service.h
+└─ Nhiệm vụ: Business logic cho authentication
+   • login(): Xác thực người dùng
+     - Query database: SELECT * FROM user WHERE email='...' AND pass='...'
+     - Return user_id nếu tìm thấy, -1 nếu không
+     - Log activity vào DB và file
+   • signup(): Đăng ký tài khoản mới
+     - Insert user vào database
+     - Log activity vào DB và file
+     - Return 1 nếu thành công, 0 nếu thất bại
+
+connect-db.c / connect-db.h
+└─ Nhiệm vụ: Quản lý MySQL connection
+   • connect_db(): Khởi tạo kết nối MySQL
+   • get_db_connection(): Trả về con trỏ MYSQL*
+   • close_db(): Đóng kết nối database
+   • Credentials: localhost, user "quizz", database "quizz_db"
+
+json_utils.c / json_utils.h
+└─ Nhiệm vụ: Parse JSON từ client
+   • parse_json(): Parse JSON string thành key-value pairs
+   • Hỗ trợ lấy các field như email, password, name, dob
+
+log_utils.c / log_utils.h
+└─ Nhiệm vụ: Logging ra file
+   • log_to_file(): Ghi log activity ra file log.txt
+   • Format: [timestamp] message
+
+time_utils.c / time_utils.h
+└─ Nhiệm vụ: Xử lý timestamp
+   • get_current_time(): Trả về timestamp hiện tại
+   • Format: ISO 8601 (YYYY-MM-DDTHH:MM:SS)
+
+mysql_utils.c / mysql_utils.h
+└─ Nhiệm vụ: Helper functions cho MySQL
+   • print_mysql_result(): Debug - in kết quả query
+
+control_message.h
+└─ Nhiệm vụ: Định nghĩa CONTROL message protocol
+   • #define LOGIN "LOGIN"
+   • #define SIGN_UP "SIGN_UP"
+   • struct ControlMessage { char type[50]; char body[1024]; }
+
+data_message.h
+└─ Nhiệm vụ: Định nghĩa DATA message protocol (cho tương lai)
+   • Dùng cho file transfer
+   • struct DataMessage { type, data_type, data_size, body }
+
+notification_message.h
+└─ Nhiệm vụ: Định nghĩa NOTIFICATION message protocol
+   • Server → Client responses
+   • struct NotificationMessage { type, timestamp, body }
+
+create_01_user_table.sql
+└─ Nhiệm vụ: Database migration
+   • Tạo bảng user với các cột: id, email, pass, name, dob
+   • id là PRIMARY KEY AUTO_INCREMENT
+
+================================================================================
+
+📁 FRONTEND - CLIENT (Qt C++)
+================================================================================
+
+main.cpp
+└─ Nhiệm vụ: Entry point của Qt application
+   • Khởi tạo QApplication
+   • Tạo MainWindow
+   • Chạy event loop (app.exec())
+
+mainwindow.cpp / mainwindow.h / mainwindow.ui
+└─ Nhiệm vụ: Cửa sổ chính của application
+   • Quản lý QStackedWidget
+   • Chứa 2 forms: Signin và Signup
+   • Xử lý navigation giữa các forms
+   • Signals: showSignin(), showSignup()
+   • Khởi tạo QTcpSocket để kết nối server
+
+signin.cpp / signin.h / signin.ui
+└─ Nhiệm vụ: Form đăng nhập
+   • UI Components:
+     - QLineEdit: emailLineEdit, passwordLineEdit
+     - QPushButton: signinButton, signupButton (chuyển form)
+     - QLabel: responseLabel (hiển thị kết quả)
+   • Chức năng:
+     - on_signinButton_clicked(): 
+       * Tạo QJsonObject với email, password
+       * connectToHost("localhost", 8081)
+       * write("CONTROL LOGIN\n{JSON}")
+     - onReadyRead():
+       * Đọc response từ server
+       * Parse NOTIFICATION LOGIN_SUCCESS/FAILURE
+       * Cập nhật UI (màu xanh/đỏ)
+       * Lưu user_id vào UserData singleton
+
+signup.cpp / signup.h / signup.ui
+└─ Nhiệm vụ: Form đăng ký
+   • UI Components:
+     - QLineEdit: emailLineEdit, passwordLineEdit, usernameLineEdit
+     - QDateTimeEdit: dateTimeEdit (DOB)
+     - QPushButton: signupButton, signinButton
+   • Chức năng:
+     - handleSignup():
+       * Tạo QJsonObject với email, password, name, dob
+       * connectToHost("localhost", 8081)
+       * write("CONTROL SIGN_UP\n{JSON}")
+     - handleSignupResponse():
+       * Đọc NOTIFICATION SIGN_UP_SUCCESS/FAILURE
+       * Hiển thị QMessageBox
+
+userdata.h
+└─ Nhiệm vụ: Singleton lưu thông tin user đã đăng nhập
+   • Lưu user_id, email, name, etc.
+   • Dùng sau khi login thành công
+   • Pattern: Singleton để access global
+
+config.h
+└─ Nhiệm vụ: Cấu hình
+   • #define IPADDRESS "127.0.0.1"
+   • Định nghĩa địa chỉ IP server để client kết nối
+
+frontend.pro
+└─ Nhiệm vụ: Qt project configuration file
+   • Liệt kê các sources, headers, forms
+   • Cấu hình compiler options
+   • Link thư viện Qt (network, widgets)
+
+Makefile
+└─ Nhiệm vụ: Build frontend (generated by qmake)
+   • Compile .cpp files
+   • Generate moc files (Qt meta-object compiler)
+   • Link thành executable
+
+================================================================================
+
+🔄 LUỒNG HOẠT ĐỘNG (Nếu giáo viên hỏi)
+================================================================================
+
+ĐĂNG NHẬP (LOGIN):
+1. User nhập email/password ở signin.cpp
+2. signin.cpp tạo JSON, gửi "CONTROL LOGIN\n{JSON}" qua QTcpSocket
+3. Server routes.c nhận, tạo thread mới
+4. routes.c parse header → gọi handle_login() trong auth_controller.c
+5. auth_controller.c parse body → gọi login() trong auth_service.c
+6. auth_service.c query database → trả user_id
+7. auth_controller.c build response "NOTIFICATION LOGIN_SUCCESS\n{user_id}"
+8. signin.cpp nhận response, parse, hiển thị "Đăng nhập thành công!"
+
+ĐĂNG KÝ (SIGNUP):
+1. User nhập thông tin ở signup.cpp
+2. signup.cpp tạo JSON, gửi "CONTROL SIGN_UP\n{JSON}" qua QTcpSocket
+3. Server routes.c nhận, tạo thread
+4. routes.c parse → gọi handle_signup() trong auth_controller.c
+5. auth_controller.c parse → gọi signup() trong auth_service.c
+6. auth_service.c INSERT INTO user table
+7. auth_controller.c build response "NOTIFICATION SIGN_UP_SUCCESS"
+8. signup.cpp nhận response, hiển thị QMessageBox
+
+MULTI-THREADING:
+• Mỗi client kết nối → routes.c tạo thread mới (pthread_create)
+• Thread detached → tự động cleanup khi xong
+• Mutex lock khi access database để thread-safe
+• Accept loop chạy vô hạn trong main thread
+
+================================================================================
+
+❓ CÂU HỎI THƯỜNG GẶP
+================================================================================
+
+Q: "File nào xử lý kết nối network?"
+A: Backend: routes.c (socket, bind, listen, accept)
+   Frontend: signin.cpp, signup.cpp (QTcpSocket)
+
+Q: "File nào query database?"
+A: auth_service.c (dùng MySQL C API)
+
+Q: "Xử lý multi-threading ở đâu?"
+A: routes.c (pthread_create, pthread_mutex_lock/unlock)
+
+Q: "Protocol được định nghĩa ở đâu?"
+A: Backend: control_message.h, data_message.h, notification_message.h
+   Parse ở: routes.c (trong pthread_routine)
+
+Q: "File nào xử lý JSON?"
+A: Backend: json_utils.c (parse JSON string)
+   Frontend: signin.cpp, signup.cpp (QJsonDocument, QJsonObject)
+
+Q: "Logging được làm ở đâu?"
+A: auth_service.c gọi log_to_file() từ log_utils.c
+   Ghi vào: backend/log.txt và database table log
+
+Q: "UI được thiết kế ở đâu?"
+A: .ui files (Qt Designer format)
+   Converted thành ui_*.h files bởi uic compiler
+
+Q: "MVC được implement như thế nào?"
+A: Model: connect-db.c, database
+   View: Frontend (signin.cpp, signup.cpp)
+   Controller: auth_controller.c
+   Service: auth_service.c (business logic)
+
+================================================================================
+
+💡 NHỚ NHANH
+================================================================================
+
+Backend Flow: main.c → routes.c → auth_controller.c → auth_service.c → DB
+Frontend Flow: signin.cpp → QTcpSocket → Server → Response → Update UI
+
+Key Files:
+• routes.c: Threading + routing
+• auth_controller.c: Parse request + build response  
+• auth_service.c: Database operations
+• signin.cpp: UI đăng nhập
+• signup.cpp: UI đăng ký
+
+Key Technologies:
+• Socket: socket(), bind(), listen(), accept(), read(), write()
+• Thread: pthread_create(), pthread_mutex_lock(), pthread_mutex_unlock()
+• Database: mysql_query(), mysql_store_result(), mysql_fetch_row()
+• Qt: QTcpSocket, QJsonDocument, QStackedWidget
+
+================================================================================
+END OF FILE
+================================================================================
+
+

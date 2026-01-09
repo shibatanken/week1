@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PracticeMode</class>
+ <widget class="QWidget" name="PracticeMode">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Chế độ luyện tập</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <item>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <!-- Start Page -->
+     <widget class="QWidget" name="startPage">
+      <layout class="QVBoxLayout">
+       <item>
+        <spacer><property name="orientation"><enum>Qt::Vertical</enum></property></spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblClassName">
+         <property name="text"><string>Luyện tập: Tên lớp</string></property>
+         <property name="alignment"><set>Qt::AlignCenter</set></property>
+         <property name="font"><font><pointsize>20</pointsize><bold>true</bold></font></property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout">
+         <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer></item>
+         <item>
+          <widget class="QLabel"><property name="text"><string>Số câu hỏi:</string></property></widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinNumQuestions">
+           <property name="minimum"><number>5</number></property>
+           <property name="maximum"><number>50</number></property>
+           <property name="value"><number>10</number></property>
+          </widget>
+         </item>
+         <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer></item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout">
+         <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer></item>
+         <item>
+          <widget class="QPushButton" name="btnStart">
+           <property name="text"><string>🚀 Bắt đầu luyện tập</string></property>
+           <property name="styleSheet"><string>background-color: #4CAF50; color: white; padding: 15px 30px; font-size: 16px;</string></property>
+          </widget>
+         </item>
+         <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer></item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnBack">
+         <property name="text"><string>← Quay lại</string></property>
+        </widget>
+       </item>
+       <item>
+        <spacer><property name="orientation"><enum>Qt::Vertical</enum></property></spacer>
+       </item>
+      </layout>
+     </widget>
+     <!-- Practice Page -->
+     <widget class="QWidget" name="practicePage">
+      <layout class="QVBoxLayout">
+       <item>
+        <widget class="QLabel" name="lblQuestionNumber">
+         <property name="text"><string>Câu 1/10</string></property>
+         <property name="font"><font><pointsize>14</pointsize></font></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame">
+         <property name="styleSheet"><string>background-color: #f5f5f5; padding: 20px; border-radius: 10px;</string></property>
+         <layout class="QVBoxLayout">
+          <item>
+           <widget class="QLabel" name="lblQuestionContent">
+            <property name="text"><string>Nội dung câu hỏi</string></property>
+            <property name="wordWrap"><bool>true</bool></property>
+            <property name="font"><font><pointsize>14</pointsize></font></property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox">
+         <property name="title"><string>Chọn đáp án:</string></property>
+         <layout class="QVBoxLayout">
+          <item><widget class="QRadioButton" name="radioA"><property name="text"><string>A.</string></property></widget></item>
+          <item><widget class="QRadioButton" name="radioB"><property name="text"><string>B.</string></property></widget></item>
+          <item><widget class="QRadioButton" name="radioC"><property name="text"><string>C.</string></property></widget></item>
+          <item><widget class="QRadioButton" name="radioD"><property name="text"><string>D.</string></property></widget></item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout">
+         <item><spacer><property name="orientation"><enum>Qt::Horizontal</enum></property></spacer></item>
+         <item>
+          <widget class="QPushButton" name="btnNext">
+           <property name="text"><string>Câu tiếp ▶</string></property>
+           <property name="styleSheet"><string>background-color: #2196F3; color: white; padding: 10px 20px;</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnFinish">
+           <property name="text"><string>Hoàn thành</string></property>
+           <property name="styleSheet"><string>background-color: #4CAF50; color: white; padding: 10px 20px;</string></property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <!-- Result Page -->
+     <widget class="QWidget" name="resultPage">
+      <layout class="QVBoxLayout">
+       <item><spacer><property name="orientation"><enum>Qt::Vertical</enum></property></spacer></item>
+       <item>
+        <widget class="QLabel">
+         <property name="text"><string>🎉 Kết quả luyện tập</string></property>
+         <property name="alignment"><set>Qt::AlignCenter</set></property>
+         <property name="font"><font><pointsize>24</pointsize><bold>true</bold></font></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblResultScore">
+         <property name="text"><string>85.0 điểm</string></property>
+         <property name="alignment"><set>Qt::AlignCenter</set></property>
+         <property name="font"><font><pointsize>48</pointsize><bold>true</bold></font></property>
+         <property name="styleSheet"><string>color: #4CAF50;</string></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblResultDetail">
+         <property name="text"><string>Số câu đúng: 8/10</string></property>
+         <property name="alignment"><set>Qt::AlignCenter</set></property>
+         <property name="font"><font><pointsize>16</pointsize></font></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="textResultDetails">
+         <property name="readOnly"><bool>true</bool></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnBackFromResult">
+         <property name="text"><string>← Quay lại</string></property>
+        </widget>
+       </item>
+       <item><spacer><property name="orientation"><enum>Qt::Vertical</enum></property></spacer></item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>btnBackFromResult</sender>
+   <signal>clicked()</signal>
+   <receiver>PracticeMode</receiver>
+   <slot>backToClassDetail()</slot>
+  </connection>
+ </connections>
+ <slots>
+  <slot>backToClassDetail()</slot>
+ </slots>
+</ui>
+

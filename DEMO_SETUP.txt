@@ -1,0 +1,202 @@
+====================================
+HỆ THỐNG THI TRỰC TUYẾN - HƯỚNG DẪN SỬ DỤNG
+====================================
+
+📋 TỔNG QUAN TÍNH NĂNG
+------------------------------------
+✅ Quản lý tài khoản: Đăng ký, đăng nhập, phân quyền (Admin/Teacher/Student)
+✅ Quản lý lớp học: Tạo lớp, thêm/xóa học sinh
+✅ Ngân hàng câu hỏi: Lưu trữ, phân loại câu hỏi theo lớp
+✅ Quản lý đề thi: Tạo, chỉnh sửa, xuất bản đề thi
+✅ Thi trực tuyến: Join exam, làm bài, timer, tự động chấm điểm
+✅ Chế độ luyện tập: Làm bài không giới hạn, xem đáp án ngay
+✅ Khiếu nại điểm: Student gửi appeal, Teacher xem xét
+✅ Quản trị viên: Duyệt tài khoản, quản lý user
+✅ Thống kê: Xem kết quả thi, phân tích điểm số
+
+⚙️ KIẾN TRÚC HỆ THỐNG
+------------------------------------
+- Backend: C Socket Server (TCP, Multi-threaded)
+- Frontend: Qt 6 (Cross-platform GUI)
+- Database: MySQL
+- Communication: JSON over TCP
+- Port: 8081
+
+
+I. CHUẨN BỊ DATABASE (chạy trên máy server hoặc WSL)
+------------------------------------
+1. Đảm bảo MySQL đang chạy
+2. Tạo database và user:
+
+mysql -u root -p
+CREATE DATABASE IF NOT EXISTS quizz_db;
+CREATE USER IF NOT EXISTS 'quizz'@'%' IDENTIFIED BY 'Quizz2003@';
+GRANT ALL PRIVILEGES ON quizz_db.* TO 'quizz'@'%';
+FLUSH PRIVILEGES;
+EXIT;
+
+3. Chạy migrations:
+
+# Trên Linux/Mac/WSL:
+cd week1/backend
+bash setup.sh
+
+# Hoặc thủ công:
+make migrate
+
+
+II. CHẠY SERVER
+------------------------------------
+Trên Linux/Mac/WSL:
+   cd week1/backend
+   make clean && make
+   ./server
+
+Trên Windows (dùng WSL):
+   wsl bash -c "cd /mnt/f/LTM/week1/backend && ./server"
+
+Server chạy trên port 8081, log hiển thị trực tiếp trên terminal
+
+
+III. CHẠY CLIENT (máy client hoặc cùng máy)
+------------------------------------
+1. Nếu chạy trên máy khác, cần sửa IP server trong config.h:
+   - Mở file week1/frontend/config.h
+   - Sửa SERVER_IP thành IP của máy server
+   
+2. Build và chạy (từ thư mục week1/frontend):
+
+Trên Windows:
+   build.bat
+   cd release
+   frontend.exe
+
+Trên Linux/Mac:
+   qmake
+   make
+   ./frontend.app/Contents/MacOS/frontend
+
+
+IV. TẠO TÀI KHOẢN DEMO
+------------------------------------
+Cách 1: Đăng ký qua UI (Sign Up) → Chờ admin duyệt
+
+Cách 2: Tạo trực tiếp qua MySQL:
+   wsl mysql -u quizz -pQuizz2003@ quizz_db -e "
+   INSERT INTO user (email, pass, name, dob, role, status) VALUES
+   ('admin@test.com', 'admin', 'Admin', '1990-01-01', 'teacher', 'approved'),
+   ('teacher@test.com', 'teacher', 'Teacher', '1990-01-01', 'teacher', 'approved'),
+   ('student@test.com', 'student', 'Student', '2000-01-01', 'student', 'approved');
+   "
+
+Sau đó login với: email / password tương ứng
+
+
+V. FLOW HOÀN CHỈNH CÁC CHỨC NĂNG
+------------------------------------
+
+🔐 FLOW 1: ĐĂNG KÝ & DUYỆT TÀI KHOẢN
+   Student/Teacher → Sign Up → Nhập thông tin → Tài khoản status='pending'
+   Admin → Login → Admin Dashboard → Xem pending users → Approve/Reject
+   User được approve → Login thành công
+
+📚 FLOW 2: TẠO LỚP HỌC & THÊM SINH VIÊN
+   Teacher → Login → Create Class → Nhập tên lớp, mô tả
+   Teacher → Class Detail → Add Students → Chọn student từ danh sách
+   Student → My Classes → Thấy lớp đã được thêm vào
+
+📝 FLOW 3: TẠO ĐỀ THI
+   Teacher → Class Detail → Exam Management → Create Exam
+   → Nhập tên, thời gian, mô tả
+   → Add Questions: Chọn từ Question Bank HOẶC tạo mới
+   → Update Status: draft → published
+   → Start Exam: Cho phép student tham gia
+
+✏️ FLOW 4: HỌC SINH THI
+   Student → My Classes → Chọn lớp → Available Exams
+   → Join Exam (tạo submission)
+   → Làm bài: Chọn đáp án A/B/C/D cho từng câu
+   → Submit Answer: Lưu từng câu (có thể sửa)
+   → Submit Exam: Nộp bài → Tự động chấm điểm
+   → View Result: Xem điểm, số câu đúng/sai
+
+🎯 FLOW 5: LUYỆN TẬP
+   Student → Practice Mode → Chọn số câu hỏi (5/10/20)
+   → Hệ thống random câu hỏi từ Question Bank
+   → Làm bài tương tự thi
+   → Submit → Xem kết quả ngay, không lưu vào lịch sử thi
+
+📢 FLOW 6: KHIẾU NẠI ĐIỂM
+   Student → Appeal Manager → Chọn bài thi → Chọn câu hỏi
+   → Nhập lý do khiếu nại → Submit Appeal
+   Teacher → Appeal Manager → Xem pending appeals
+   → Review: Xem câu hỏi, đáp án student chọn, lý do
+   → Respond: Chấp nhận/Từ chối + Comment
+   Student → Nhận thông báo kết quả
+
+👨‍💼 FLOW 7: QUẢN TRỊ HỆ THỐNG
+   Admin → Admin Dashboard
+   → User Management: Xem tất cả users, Add/Edit/Delete
+   → Pending Users: Duyệt tài khoản mới
+   → Change Role: Đổi role user (student ↔ teacher)
+
+📊 FLOW 8: XEM THỐNG KÊ
+   Teacher → Class Detail → Statistics
+   → Xem điểm trung bình, cao nhất, thấp nhất
+   → Phân bố điểm theo khoảng (0-10, 10-20...)
+   → Danh sách student và điểm từng bài
+
+
+VI. LƯU Ý DEMO 2 MÁY
+------------------------------------
+MÁY SERVER:
+- Chạy MySQL
+- Chạy backend server
+- Có thể chạy frontend cho giáo viên tạo đề
+
+MÁY CLIENT:
+- Chỉ chạy frontend
+- Sửa config.h trỏ đến IP máy server
+- Dùng cho học sinh thi
+
+KẾT NỐI:
+- Đảm bảo 2 máy cùng mạng LAN
+- Mở port 8081 trên máy server (firewall)
+- Ping thử IP giữa 2 máy
+
+
+VII. API ENDPOINTS (Backend)
+------------------------------------
+Auth: LOGIN, SIGN_UP
+Class: CREATE_CLASS, GET_CLASS_LIST, GET_CLASS_DETAIL, ADD_STUDENT_TO_CLASS, 
+       REMOVE_STUDENT_FROM_CLASS, GET_MY_CLASSES
+Exam: CREATE_EXAM, GET_EXAMS_IN_CLASS, GET_EXAM_DETAIL, UPDATE_EXAM_STATUS,
+      START_EXAM, JOIN_EXAM, GET_EXAM_FOR_STUDENT, SUBMIT_ANSWER, SUBMIT_EXAM,
+      GET_EXAM_RESULT, GET_MY_EXAM_HISTORY
+Question: ADD_QUESTION_TO_BANK, GET_QUESTION_BANK, IMPORT_QUESTION_FROM_BANK,
+          ADD_EXAM_QUESTION, GET_EXAM_QUESTIONS, DELETE_EXAM_QUESTION
+Practice: START_PRACTICE, GET_PRACTICE_QUESTIONS, SUBMIT_PRACTICE_ANSWER,
+          FINISH_PRACTICE, GET_PRACTICE_HISTORY
+Appeal: SUBMIT_APPEAL, GET_MY_APPEALS, GET_APPEALS_FOR_TEACHER, REVIEW_APPEAL
+Admin: ADMIN_GET_PENDING_USERS, ADMIN_APPROVE_USER, ADMIN_REJECT_USER,
+       ADMIN_GET_ALL_USERS, ADMIN_ADD_USER, ADMIN_UPDATE_USER, ADMIN_DELETE_USER
+Statistics: GET_EXAM_STATISTICS, GET_CLASS_STATISTICS
+
+
+VIII. XỬ LÝ LỖI
+------------------------------------
+❌ Backend không compile:
+   → Cài: sudo apt install mysql-server libmysqlclient-dev libcjson-dev gcc make
+
+❌ Frontend không compile:
+   → Cài Qt 6+, đảm bảo qmake trong PATH
+
+❌ Không kết nối được:
+   → Kiểm tra server chạy: ps aux | grep server
+   → Kiểm tra port: netstat -an | grep 8081
+   → Sửa IP trong frontend/config.h nếu demo 2 máy
+
+❌ Database lỗi:
+   → Reset: DROP DATABASE quizz_db; CREATE DATABASE quizz_db;
+   → Chạy lại: bash setup.sh
+

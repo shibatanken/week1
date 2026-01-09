@@ -10,6 +10,12 @@
 #include "classmembers.h"
 #include "createexam.h"
 #include "home.h"
+#include "examtaking.h"
+#include "examlist.h"
+#include "practicemode.h"
+#include "appealmanager.h"
+#include "admindashboard.h"
+#include "statisticsview.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,6 +36,16 @@ private slots:
     void showClassMembers(int classId, QString className);
     void showCreateExam(int classId);
     void showHome();
+    
+    // New slots
+    void showExamTaking(int examId, QString examName, int timeLimit);
+    void showExamList();
+    void showExamResult(int submissionId);
+    void showPracticeMode(int classId, QString className);
+    void showAppealManager();
+    void showAdminDashboard();
+    void showStatistics(int examId);
+    void showClassStatistics(int classId);
 
 private:
     Ui::MainWindow *ui;
@@ -42,7 +58,16 @@ private:
     CreateExam *createExamForm;
     Home *homeForm;
     
+    // New forms
+    ExamTaking *examTakingForm;
+    ExamList *examListForm;
+    PracticeMode *practiceModeForm;
+    AppealManager *appealManagerForm;
+    AdminDashboard *adminDashboardForm;
+    StatisticsView *statisticsViewForm;
+    
     int currentClassId;
+    int currentExamId;
 };
 
 #endif // MAINWINDOW_H

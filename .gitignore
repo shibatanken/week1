@@ -1,35 +1,34 @@
-# Build artifacts
+# Build files
 *.o
 *.exe
-server
 moc_*
 ui_*.h
 Makefile
-Makefile.Debug
-Makefile.Release
-
-# Frontend build directories
-frontend/debug/
-frontend/release/
-frontend/.qmake.stash
-frontend/object_script.*
+Makefile.*
+.qmake.stash
 
 # Backend
 backend/server
 backend/log.txt
+backend/*.log
 
-# Qt files
-*.pro.user
-*.autosave
-
-# OS files
-.DS_Store
-Thumbs.db
+# Frontend build
+frontend/release/
+frontend/debug/
+frontend/*.app/
+frontend/object_script.*
 
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
+*.user
+*.pro.user
 
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+*.tmp
+*.bak
+*~

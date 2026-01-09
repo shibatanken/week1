@@ -15,7 +15,13 @@ SOURCES += \
     classdetail.cpp \
     classmembers.cpp \
     createexam.cpp \
-    questionbank.cpp
+    questionbank.cpp \
+    examtaking.cpp \
+    examlist.cpp \
+    practicemode.cpp \
+    appealmanager.cpp \
+    admindashboard.cpp \
+    statisticsview.cpp
 
 HEADERS += \
     config.h \
@@ -28,7 +34,13 @@ HEADERS += \
     classdetail.h \
     classmembers.h \
     createexam.h \
-    questionbank.h
+    questionbank.h \
+    examtaking.h \
+    examlist.h \
+    practicemode.h \
+    appealmanager.h \
+    admindashboard.h \
+    statisticsview.h
 
 FORMS += \
     home.ui \
@@ -38,7 +50,14 @@ FORMS += \
     classlist.ui \
     classdetail.ui \
     classmembers.ui \
-    createexam.ui
+    createexam.ui \
+    createquestion.ui \
+    examtaking.ui \
+    examlist.ui \
+    practicemode.ui \
+    appealmanager.ui \
+    admindashboard.ui \
+    statisticsview.ui
 
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

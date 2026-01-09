@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'signup.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 6.10.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -39,65 +39,65 @@ public:
     void setupUi(QWidget *Signup)
     {
         if (Signup->objectName().isEmpty())
-            Signup->setObjectName(QString::fromUtf8("Signup"));
+            Signup->setObjectName("Signup");
         Signup->resize(400, 300);
         verticalLayout = new QVBoxLayout(Signup);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName("verticalLayout");
         emailLabel = new QLabel(Signup);
-        emailLabel->setObjectName(QString::fromUtf8("emailLabel"));
+        emailLabel->setObjectName("emailLabel");
 
         verticalLayout->addWidget(emailLabel);
 
         emailLineEdit = new QLineEdit(Signup);
-        emailLineEdit->setObjectName(QString::fromUtf8("emailLineEdit"));
+        emailLineEdit->setObjectName("emailLineEdit");
 
         verticalLayout->addWidget(emailLineEdit);
 
         passwordLabel = new QLabel(Signup);
-        passwordLabel->setObjectName(QString::fromUtf8("passwordLabel"));
+        passwordLabel->setObjectName("passwordLabel");
 
         verticalLayout->addWidget(passwordLabel);
 
         passwordLineEdit = new QLineEdit(Signup);
-        passwordLineEdit->setObjectName(QString::fromUtf8("passwordLineEdit"));
+        passwordLineEdit->setObjectName("passwordLineEdit");
         passwordLineEdit->setEchoMode(QLineEdit::Password);
 
         verticalLayout->addWidget(passwordLineEdit);
 
         usernameLabel = new QLabel(Signup);
-        usernameLabel->setObjectName(QString::fromUtf8("usernameLabel"));
+        usernameLabel->setObjectName("usernameLabel");
 
         verticalLayout->addWidget(usernameLabel);
 
         usernameLineEdit = new QLineEdit(Signup);
-        usernameLineEdit->setObjectName(QString::fromUtf8("usernameLineEdit"));
+        usernameLineEdit->setObjectName("usernameLineEdit");
 
         verticalLayout->addWidget(usernameLineEdit);
 
         dobLabel = new QLabel(Signup);
-        dobLabel->setObjectName(QString::fromUtf8("dobLabel"));
+        dobLabel->setObjectName("dobLabel");
 
         verticalLayout->addWidget(dobLabel);
 
         dateTimeEdit = new QDateTimeEdit(Signup);
-        dateTimeEdit->setObjectName(QString::fromUtf8("dateTimeEdit"));
+        dateTimeEdit->setObjectName("dateTimeEdit");
 
         verticalLayout->addWidget(dateTimeEdit);
 
         signupButton = new QPushButton(Signup);
-        signupButton->setObjectName(QString::fromUtf8("signupButton"));
-        signupButton->setCursor(QCursor(Qt::PointingHandCursor));
+        signupButton->setObjectName("signupButton");
+        signupButton->setCursor(QCursor(Qt::CursorShape::PointingHandCursor));
 
         verticalLayout->addWidget(signupButton);
 
         signinButton = new QPushButton(Signup);
-        signinButton->setObjectName(QString::fromUtf8("signinButton"));
-        signinButton->setCursor(QCursor(Qt::PointingHandCursor));
+        signinButton->setObjectName("signinButton");
+        signinButton->setCursor(QCursor(Qt::CursorShape::PointingHandCursor));
 
         verticalLayout->addWidget(signinButton);
 
         dobLineEdit = new QLabel(Signup);
-        dobLineEdit->setObjectName(QString::fromUtf8("dobLineEdit"));
+        dobLineEdit->setObjectName("dobLineEdit");
 
         verticalLayout->addWidget(dobLineEdit);
 

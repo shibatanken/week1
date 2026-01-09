@@ -16,30 +16,57 @@
 #define DELETE_CLASS "DELETE_CLASS"
 #define GET_MY_CLASSES "GET_MY_CLASSES"
 
-// Control Types - Exam Management (new)
+// Control Types - Exam Management
 #define CREATE_EXAM "CREATE_EXAM"
 #define GET_EXAMS_IN_CLASS "GET_EXAMS_IN_CLASS"
 #define GET_EXAM_DETAIL "GET_EXAM_DETAIL"
 #define DELETE_EXAM "DELETE_EXAM"
 #define UPDATE_EXAM_STATUS "UPDATE_EXAM_STATUS"
 
-// Control Types - Exam Question Management (new)
-#define ADD_EXAM_QUESTION "ADD_EXAM_QUESTION" // Legacy: mapped to bank or exam depending on usage, better usage: Bank
+// Control Types - Exam Question Management
+#define ADD_EXAM_QUESTION "ADD_EXAM_QUESTION"
 #define GET_EXAM_QUESTIONS "GET_EXAM_QUESTIONS"
 #define DELETE_EXAM_QUESTION "DELETE_EXAM_QUESTION"
-
-// NEW COMMANDS for Refactoring
 #define ADD_QUESTION_TO_EXAM "ADD_QUESTION_TO_EXAM"
-#define ADD_QUESTION_TO_BANK "ADD_QUESTION_TO_BANK" // Explicit Bank
-#define IMPORT_QUESTION_FROM_BANK "IMPORT_QUESTION_FROM_BANK" // Bank -> Exam
-#define GET_QUESTION_BANK "GET_QUESTION_BANK" // List Bank
+#define ADD_QUESTION_TO_BANK "ADD_QUESTION_TO_BANK"
+#define IMPORT_QUESTION_FROM_BANK "IMPORT_QUESTION_FROM_BANK"
+#define GET_QUESTION_BANK "GET_QUESTION_BANK"
 #define DELETE_QUESTION_FROM_BANK "DELETE_QUESTION_FROM_BANK"
 
-// Legacy - Room (can be removed later)
-#define CREATE_ROOM "CREATE_ROOM"
-#define GET_ROOM_LIST "GET_ROOM_LIST"
-#define ADD_QUESTION "ADD_QUESTION"
-#define GET_ROOM_QUESTION "GET_ROOM_QUESTION"
+// Control Types - Student Exam Flow (học sinh làm bài)
+#define START_EXAM "START_EXAM"                     // Teacher bắt đầu kỳ thi
+#define JOIN_EXAM "JOIN_EXAM"                       // Student tham gia
+#define GET_EXAM_FOR_STUDENT "GET_EXAM_FOR_STUDENT" // Student lấy đề
+#define SUBMIT_ANSWER "SUBMIT_ANSWER"               // Student trả lời 1 câu
+#define SUBMIT_EXAM "SUBMIT_EXAM"                   // Student nộp bài
+#define GET_EXAM_RESULT "GET_EXAM_RESULT"           // Xem kết quả
+#define GET_MY_EXAM_HISTORY "GET_MY_EXAM_HISTORY"   // Lịch sử thi
+
+// Control Types - Practice Mode
+#define START_PRACTICE "START_PRACTICE"
+#define GET_PRACTICE_QUESTIONS "GET_PRACTICE_QUESTIONS"
+#define SUBMIT_PRACTICE_ANSWER "SUBMIT_PRACTICE_ANSWER"
+#define FINISH_PRACTICE "FINISH_PRACTICE"
+#define GET_PRACTICE_HISTORY "GET_PRACTICE_HISTORY"
+
+// Control Types - Appeal (Khiếu nại)
+#define SUBMIT_APPEAL "SUBMIT_APPEAL"
+#define GET_MY_APPEALS "GET_MY_APPEALS"
+#define GET_APPEALS_FOR_TEACHER "GET_APPEALS_FOR_TEACHER"
+#define REVIEW_APPEAL "REVIEW_APPEAL"
+
+// Control Types - Admin
+#define ADMIN_GET_PENDING_USERS "ADMIN_GET_PENDING_USERS"
+#define ADMIN_APPROVE_USER "ADMIN_APPROVE_USER"
+#define ADMIN_REJECT_USER "ADMIN_REJECT_USER"
+#define ADMIN_GET_ALL_USERS "ADMIN_GET_ALL_USERS"
+#define ADMIN_ADD_USER "ADMIN_ADD_USER"
+#define ADMIN_UPDATE_USER "ADMIN_UPDATE_USER"
+#define ADMIN_DELETE_USER "ADMIN_DELETE_USER"
+
+// Control Types - Statistics
+#define GET_EXAM_STATISTICS "GET_EXAM_STATISTICS"
+#define GET_CLASS_STATISTICS "GET_CLASS_STATISTICS"
 
 // Struct Definition
 typedef struct
