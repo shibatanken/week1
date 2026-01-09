@@ -31,6 +31,16 @@ void QuestionBank::setupUi() {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
     m_listWidget = new QListWidget(this);
+    connect(m_listWidget, &QListWidget::itemDoubleClicked, this, [this](QListWidgetItem *item) {
+        QString details = QString("Câu hỏi: %1\n\nA. %2\nB. %3\nC. %4\nD. %5\n\nĐáp án đúng: %6")
+            .arg(item->text())
+            .arg(item->data(Qt::UserRole + 1).toString())
+            .arg(item->data(Qt::UserRole + 2).toString())
+            .arg(item->data(Qt::UserRole + 3).toString())
+            .arg(item->data(Qt::UserRole + 4).toString())
+            .arg(item->data(Qt::UserRole + 5).toString());
+        QMessageBox::information(this, "Chi tiết câu hỏi", details);
+    });
     mainLayout->addWidget(m_listWidget);
 
     QHBoxLayout *btnLayout = new QHBoxLayout();

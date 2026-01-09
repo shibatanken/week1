@@ -24,6 +24,30 @@ ClassList::ClassList(QWidget *parent) :
     
     connect(tcpSocket, &QTcpSocket::readyRead, this, &ClassList::onReadyRead);
     
+    // Add extra buttons for students
+    QString role = UserData::instance().getRole();
+    if (role == "student") {
+        QPushButton *practiceBtn = new QPushButton("Chế độ luyện tập", this);
+        practiceBtn->setStyleSheet("background-color: #28a745; color: white;");
+        connect(practiceBtn, &QPushButton::clicked, []() {
+            QMessageBox::information(nullptr, "Practice Mode", "Chọn một lớp học, vào Class Detail, sau đó chọn Practice!");
+        });
+        ui->buttonLayout->insertWidget(2, practiceBtn);
+        
+        QPushButton *appealBtn = new QPushButton("Khiếu nại điểm", this);
+        appealBtn->setStyleSheet("background-color: #ffc107; color: black;");
+        connect(appealBtn, &QPushButton::clicked, this, &ClassList::showAppealManager);
+        ui->buttonLayout->insertWidget(3, appealBtn);
+    }
+    
+    // Admin dashboard button
+    if (role == "teacher") {
+        QPushButton *adminBtn = new QPushButton("Admin Dashboard", this);
+        adminBtn->setStyleSheet("background-color: #6610f2; color: white;");
+        connect(adminBtn, &QPushButton::clicked, this, &ClassList::showAdminDashboard);
+        ui->buttonLayout->insertWidget(1, adminBtn);
+    }
+    
     // Load class list khi widget được hiển thị
     loadClassList();
 }

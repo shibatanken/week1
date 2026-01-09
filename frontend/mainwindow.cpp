@@ -52,6 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
     
     // Class connections
     connect(classListForm, &ClassList::showClassDetail, this, &MainWindow::showClassDetail);
+    connect(classListForm, &ClassList::showAppealManager, this, &MainWindow::showAppealManager);
+    connect(classListForm, &ClassList::showAdminDashboard, this, &MainWindow::showAdminDashboard);
     connect(classDetailForm, &ClassDetail::backToClassList, this, &MainWindow::showClassList);
     connect(classDetailForm, &ClassDetail::openClassMembers, this, &MainWindow::showClassMembers);
     connect(classMembersForm, &ClassMembers::backToClassDetail, [this]() {

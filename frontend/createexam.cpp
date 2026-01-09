@@ -336,7 +336,45 @@ void CreateExam::saveQuestion(int questionIndex)
     delete saveSocket;
 }
 
-void CreateExam::loadExamQuestions() {}
+void CreateExam::loadExamQuestions() {
+    if (currentExamId <= 0) return;
+    
+    ui->questionListWidget->clear();
+    
+    QTcpSocket socket;
+    socket.connectToHost(IPADDRESS, 8081);
+    if (!socket.waitForConnected(3000)) return;
+    
+    QJsonObject json;
+    json["exam_id"] = currentExamId;
+    QJsonDocument doc(json);
+    QString req = QString("CONTROL GET_EXAM_QUESTIONS\n%1").arg(QString(doc.toJson(QJsonDocument::Compact)));
+    
+    socket.write(req.toUtf8());
+    socket.flush();
+    
+    if (socket.waitForReadyRead(3000)) {
+        QString res(socket.readAll());
+        int idx = res.indexOf('{');
+        if (idx != -1) {
+            QJsonDocument d = QJsonDocument::fromJson(res.mid(idx).toUtf8());
+            QJsonArray arr = d.object()["questions"].toArray();
+            for (const auto &val : arr) {
+                QJsonObject obj = val.toObject();
+                QString content = obj["content"].toString();
+                QString optA = obj["option_a"].toString();
+                QString optB = obj["option_b"].toString();
+                QString optC = obj["option_c"].toString();
+                QString optD = obj["option_d"].toString();
+                QString correct = obj["correct_option"].toString();
+                
+                QString itemText = QString("%1\nA. %2 | B. %3 | C. %4 | D. %5 (Đúng: %6)")
+                    .arg(content).arg(optA).arg(optB).arg(optC).arg(optD).arg(correct);
+                ui->questionListWidget->addItem(itemText);
+            }
+        }
+    }
+}
 
 void CreateExam::importQuestion(int questionId) {
     QJsonObject json;
@@ -354,9 +392,7 @@ void CreateExam::importQuestion(int questionId) {
             QString res(socket.readAll());
             if(res.contains("SUCCESS")) {
                 QMessageBox::information(this, "Thành công", "Đã nhập câu hỏi vào đề thi");
-                QListWidgetItem *item = new QListWidgetItem("Câu hỏi được nhập từ ngân hàng (ID: " + QString::number(questionId) + ")");
-                item->setBackground(Qt::lightGray);
-                ui->questionListWidget->addItem(item);
+                loadExamQuestions(); // Reload để hiển thị đầy đủ câu hỏi
             } else {
                  QMessageBox::warning(this, "Lỗi", "Không thể nhập câu hỏi: " + res);
             }

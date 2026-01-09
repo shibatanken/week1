@@ -24,6 +24,8 @@ signals:
     void showSignin();
     void showClassDetail(int classId);
     void logout();
+    void showAppealManager();
+    void showAdminDashboard();
 
 private slots:
     void on_createClassButton_clicked();
