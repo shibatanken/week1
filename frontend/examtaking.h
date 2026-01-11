@@ -37,6 +37,9 @@ private slots:
     void onBackToListClicked();
     void onAppealClicked();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     Ui::ExamTaking *ui;
     QTcpSocket *tcpSocket;

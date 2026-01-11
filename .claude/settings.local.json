@@ -47,7 +47,20 @@
       "Bash(mingw32-make -j4)",
       "Bash(export PATH=\"/f/Qt/6.10.1/mingw_64/bin:/f/Qt/Tools/mingw1310_64/bin:$PATH\")",
       "Bash(mingw32-make)",
-      "Bash(python -c \"\ncontent = open\\(''F:/LTM/week1/frontend/signin.cpp'', ''r'', encoding=''utf-8''\\).read\\(\\)\n# Fix missing closing brace\ncontent = content.replace\\(''emit showAppealManager\\(\\);\\\\n                    }\\);'', ''emit showAppealManager\\(\\);\\\\n                        }\\\\n                    }\\);''\\)\nopen\\(''F:/LTM/week1/frontend/signin.cpp'', ''w'', encoding=''utf-8''\\).write\\(content\\)\nprint\\(''[OK] Fixed''\\)\n\")"
+      "Bash(python -c \"\ncontent = open\\(''F:/LTM/week1/frontend/signin.cpp'', ''r'', encoding=''utf-8''\\).read\\(\\)\n# Fix missing closing brace\ncontent = content.replace\\(''emit showAppealManager\\(\\);\\\\n                    }\\);'', ''emit showAppealManager\\(\\);\\\\n                        }\\\\n                    }\\);''\\)\nopen\\(''F:/LTM/week1/frontend/signin.cpp'', ''w'', encoding=''utf-8''\\).write\\(content\\)\nprint\\(''[OK] Fixed''\\)\n\")",
+      "Bash(python F:/LTM/week1/frontend/fix_examlist.py)",
+      "Bash(python -c \"\nwith open\\(''F:/LTM/week1/frontend/examlist.cpp'', ''r'', encoding=''utf-8''\\) as f:\n    lines = f.readlines\\(\\)\n# Print lines 104-132 with repr to see exact characters\nfor i in range\\(103, 132\\):\n    print\\(f''{i+1}: {repr\\(lines[i]\\)}''[:150]\\)\n\")",
+      "Bash(python F:/LTM/week1/frontend/fix_examlist2.py)",
+      "Bash(python F:/LTM/week1/frontend/add_close_event.py)",
+      "Bash(python F:/LTM/week1/frontend/add_close_impl.py)",
+      "Bash(python F:/LTM/week1/backend/fix_appeal_score.py)",
+      "Bash(wsl -d Ubuntu bash -c \"pkill -f ''./server'' && sleep 1 && cd /mnt/f/LTM/week1/backend && ./server 2>&1 &\")",
+      "Bash(python F:/LTM/week1/frontend/fix_appealmanager_score2.py)",
+      "Bash(python F:/LTM/week1/frontend/fix_appealmanager_score3.py)",
+      "Bash(python F:/LTM/week1/frontend/fix_appealmanager_h.py)",
+      "Bash(python F:/LTM/week1/frontend/add_student_score_display.py)",
+      "Bash(mingw32-make clean)",
+      "Bash(python F:/LTM/week1/frontend/fix_varname_conflict.py)"
     ]
   }
 }

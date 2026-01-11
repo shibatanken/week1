@@ -27,7 +27,7 @@ signals:
 private slots:
     void onReadyRead();
     void onSubmitAppeal();
-    void onReviewAppeal(int appealId, QString status);
+    void onReviewAppeal(int appealId, QString status, double currentScore, QString examName);
 
 private:
     Ui::AppealManager *ui;

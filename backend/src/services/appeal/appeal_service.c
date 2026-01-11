@@ -44,7 +44,7 @@ char *get_my_appeals(int user_id)
     snprintf(query, sizeof(query),
              "SELECT a.id, a.submission_id, a.question_id, q.content as question_content, "
              "a.reason, a.status, a.teacher_response, a.teacher_comment, a.score_adjustment, "
-             "a.created_at, a.resolved_at, e.exam_name "
+             "a.created_at, a.resolved_at, e.exam_name, s.score as current_score "
              "FROM appeals a "
              "JOIN exam_questions q ON a.question_id = q.id "
              "JOIN exam_submissions s ON a.submission_id = s.id "
@@ -71,6 +71,7 @@ char *get_my_appeals(int user_id)
         cJSON_AddStringToObject(obj, "created_at", row[9]);
         cJSON_AddStringToObject(obj, "resolved_at", row[10] ? row[10] : "");
         cJSON_AddStringToObject(obj, "exam_name", row[11]);
+        cJSON_AddNumberToObject(obj, "current_score", row[12] ? atof(row[12]) : 0.0);
         cJSON_AddItemToArray(json_array, obj);
     }
 
@@ -89,7 +90,8 @@ char *get_appeals_for_teacher(int teacher_id)
     snprintf(query, sizeof(query),
              "SELECT a.id, a.submission_id, a.question_id, q.content as question_content, "
              "a.reason, a.status, a.teacher_response, a.teacher_comment, a.score_adjustment, "
-             "a.created_at, a.resolved_at, e.exam_name, u.name as student_name, u.email "
+             "a.created_at, a.resolved_at, e.exam_name, u.name as student_name, u.email, "
+             "s.score as current_score "
              "FROM appeals a "
              "JOIN exam_questions q ON a.question_id = q.id "
              "JOIN exam_submissions s ON a.submission_id = s.id "
@@ -120,6 +122,7 @@ char *get_appeals_for_teacher(int teacher_id)
         cJSON_AddStringToObject(obj, "exam_name", row[11]);
         cJSON_AddStringToObject(obj, "student_name", row[12]);
         cJSON_AddStringToObject(obj, "student_email", row[13]);
+        cJSON_AddNumberToObject(obj, "current_score", row[14] ? atof(row[14]) : 0.0);
         cJSON_AddItemToArray(json_array, obj);
     }
 

@@ -15,6 +15,7 @@
 #include <QTimer>
 #include <QSharedPointer>
 #include <QApplication>
+#include <QCloseEvent>
 
 ExamTaking::ExamTaking(QWidget *parent) :
     QWidget(parent),
@@ -686,5 +687,30 @@ void ExamTaking::onAppealClicked()
     qDebug() << "Dialog created, calling exec()...";
     dialog.exec();
     qDebug() << "Dialog closed";
+}
+
+void ExamTaking::closeEvent(QCloseEvent *event)
+{
+    // Only warn if exam is in progress (not on result screen)
+    if (ui->stackedWidget->currentIndex() == 0 && examTimer->isActive()) {
+        QMessageBox::StandardButton reply = QMessageBox::warning(this,
+            "Cảnh báo",
+            "Bạn chưa hoàn thành bài thi!\n\n"
+            "Các câu trả lời hiện tại đã được lưu tự động.\n"
+            "Bạn có thể quay lại làm tiếp trong thời gian còn lại.\n\n"
+            "Nếu hết thời gian mà chưa nộp bài, hệ thống sẽ tự động chấm điểm.\n\n"
+            "Bạn có chắc muốn thoát?",
+            QMessageBox::Yes | QMessageBox::No);
+
+        if (reply == QMessageBox::No) {
+            event->ignore();
+            return;
+        }
+
+        // Save all current answers before exiting
+        saveAllAnswers();
+    }
+
+    event->accept();
 }
 

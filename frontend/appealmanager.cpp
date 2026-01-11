@@ -188,10 +188,34 @@ void AppealManager::displayAppeals()
         
         // Teacher comment if any
         if (!appeal["teacher_comment"].toString().isEmpty()) {
-            QLabel *commentLabel = new QLabel("Bình luận: " + appeal["teacher_comment"].toString());
+            QLabel *commentLabel = new QLabel("💬 Bình luận: " + appeal["teacher_comment"].toString());
             commentLabel->setWordWrap(true);
             commentLabel->setStyleSheet("color: #FF9800; font-style: italic; padding: 5px; background-color: #FFF3E0; border-radius: 4px;");
             cardLayout->addWidget(commentLabel);
+        }
+
+        // Score adjustment display for students (if resolved)
+        if (!isTeacherMode && status != "pending") {
+            double currentScore = appeal["current_score"].toDouble();
+            double scoreAdj = appeal["score_adjustment"].toDouble();
+            double newScore = currentScore + scoreAdj;
+
+            if (scoreAdj != 0.0) {
+                QString scoreText = QString("📊 Điểm số: %1 → %2 (%3%4)")
+                    .arg(currentScore, 0, 'f', 1)
+                    .arg(newScore, 0, 'f', 1)
+                    .arg(scoreAdj > 0 ? "+" : "")
+                    .arg(scoreAdj, 0, 'f', 1);
+                QLabel *scoreChangeLabel = new QLabel(scoreText);
+                scoreChangeLabel->setStyleSheet(scoreAdj > 0 ?
+                    "font-weight: bold; color: #4CAF50; font-size: 16px; padding: 8px; background-color: #E8F5E9; border-radius: 4px;" :
+                    "font-weight: bold; color: #F44336; font-size: 16px; padding: 8px; background-color: #FFEBEE; border-radius: 4px;");
+                cardLayout->addWidget(scoreChangeLabel);
+            } else {
+                QLabel *noChangeLabel = new QLabel(QString("📊 Điểm số: %1 (không thay đổi)").arg(currentScore, 0, 'f', 1));
+                noChangeLabel->setStyleSheet("color: #666; font-style: italic;");
+                cardLayout->addWidget(noChangeLabel);
+            }
         }
         
         // Teacher actions
@@ -202,15 +226,17 @@ void AppealManager::displayAppeals()
             
             QPushButton *approveBtn = new QPushButton("✓ Duyệt");
             approveBtn->setStyleSheet("background-color: #4CAF50; color: white; padding: 5px 15px;");
-            connect(approveBtn, &QPushButton::clicked, [this, appealId]() {
-                onReviewAppeal(appealId, "approved");
+            double currentScore = appeal["current_score"].toDouble();
+            QString examName = appeal["exam_name"].toString();
+            connect(approveBtn, &QPushButton::clicked, [this, appealId, currentScore, examName]() {
+                onReviewAppeal(appealId, "approved", currentScore, examName);
             });
             actionsLayout->addWidget(approveBtn);
             
             QPushButton *rejectBtn = new QPushButton("✗ Từ chối");
             rejectBtn->setStyleSheet("background-color: #f44336; color: white; padding: 5px 15px;");
-            connect(rejectBtn, &QPushButton::clicked, [this, appealId]() {
-                onReviewAppeal(appealId, "rejected");
+            connect(rejectBtn, &QPushButton::clicked, [this, appealId, currentScore, examName]() {
+                onReviewAppeal(appealId, "rejected", currentScore, examName);
             });
             actionsLayout->addWidget(rejectBtn);
             
@@ -298,7 +324,7 @@ void AppealManager::displayAppealForm()
     ui->appealsLayout->addStretch();
 }
 
-void AppealManager::onReviewAppeal(int appealId, QString status)
+void AppealManager::onReviewAppeal(int appealId, QString status, double currentScore, QString examName)
 {
     // Create dialog for review
     QDialog *dialog = new QDialog(this);
@@ -306,6 +332,16 @@ void AppealManager::onReviewAppeal(int appealId, QString status)
     dialog->setMinimumSize(400, 300);
     
     QVBoxLayout *layout = new QVBoxLayout(dialog);
+    
+    // Show exam name
+    QLabel *examLabel = new QLabel("Bài thi: " + examName);
+    examLabel->setStyleSheet("font-weight: bold; font-size: 14px; margin-bottom: 5px;");
+    layout->addWidget(examLabel);
+    
+    // Show current score
+    QLabel *scoreLabel = new QLabel(QString("Điểm hiện tại: %1").arg(currentScore, 0, 'f', 1));
+    scoreLabel->setStyleSheet("font-size: 16px; font-weight: bold; color: #2196F3; margin-bottom: 10px;");
+    layout->addWidget(scoreLabel);
     
     // Teacher comment field (optional)
     QLabel *commentLabel = new QLabel("Phản hồi cho sinh viên (tùy chọn):");
@@ -317,8 +353,8 @@ void AppealManager::onReviewAppeal(int appealId, QString status)
     layout->addWidget(commentEdit);
     
     // Score adjustment (optional)
-    QLabel *scoreLabel = new QLabel("Điều chỉnh điểm (nếu duyệt, tùy chọn):");
-    layout->addWidget(scoreLabel);
+    QLabel *scoreAdjLabel = new QLabel("Điều chỉnh điểm (nếu duyệt, tùy chọn):");
+    layout->addWidget(scoreAdjLabel);
     
     QLineEdit *scoreEdit = new QLineEdit();
     scoreEdit->setPlaceholderText("0.0");
