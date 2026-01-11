@@ -218,3 +218,48 @@
 2026-01-09 23:53:28 - User logged in with email: student1@test.com (role: student)
 2026-01-09 23:58:10 - User logged in with email: student1@test.com (role: student)
 2026-01-09 23:58:31 - Submission 5 submitted
+2026-01-10 00:15:17 - User logged in with email: student1@test.com (role: student)
+2026-01-10 00:14:39 - User logged in with email: teacher@test.com (role: teacher)
+2026-01-10 00:15:05 - Submission 5 submitted
+2026-01-10 00:15:33 - Submission 4 submitted
+2026-01-10 00:15:59 - Submission 4 submitted
+2026-01-10 00:16:27 - Submission 4 submitted
+2026-01-10 00:21:57 - User logged in with email: student1@test.com (role: student)
+2026-01-10 00:22:24 - Submission 4 submitted
+2026-01-10 00:29:12 - User logged in with email: teacher@test.com (role: teacher)
+2026-01-10 00:30:00 - User logged in with email: student1@test.com (role: student)
+2026-01-10 00:30:59 - Submission 4 submitted
+2026-01-10 00:33:32 - Submission 4 submitted
+2026-01-10 00:38:39 - User logged in with email: student1@test.com (role: student)
+2026-01-10 00:38:58 - Submission 4 submitted
+2026-01-10 00:41:03 - User logged in with email: student1@test.com (role: student)
+2026-01-10 00:41:21 - Submission 4 submitted
+2026-01-10 00:41:30 - Appeal submitted by user 13 for question 30
+2026-01-10 00:43:31 - User logged in with email: teacher@test.com (role: teacher)
+2026-01-10 00:48:19 - User logged in with email: student1@test.com (role: student)
+2026-01-10 00:50:10 - Submission 4 submitted
+2026-01-10 00:48:46 - Appeal submitted by user 13 for question 30
+2026-01-10 00:54:09 - User logged in with email: student1@test.com (role: student)
+2026-01-10 00:54:28 - Submission 4 submitted
+2026-01-10 00:57:32 - User logged in with email: student1@test.com (role: student)
+2026-01-10 00:58:06 - Submission 4 submitted
+2026-01-10 01:03:04 - User logged in with email: student1@test.com (role: student)
+2026-01-10 01:03:25 - Submission 4 submitted
+2026-01-10 01:09:12 - User logged in with email: student1@test.com (role: student)
+2026-01-10 01:09:37 - Submission 4 submitted
+2026-01-10 01:16:15 - User logged in with email: student1@test.com (role: student)
+2026-01-10 19:44:58 - User logged in with email: student1@test.com (role: student)
+2026-01-10 19:51:22 - User logged in with email: student1@test.com (role: student)
+2026-01-10 20:25:47 - User logged in with email: student1@test.com (role: student)
+2026-01-10 20:26:08 - Submission 5 submitted
+2026-01-10 20:26:35 - Submission 4 submitted
+2026-01-10 20:32:24 - Appeal submitted by user 13 for question 30
+2026-01-10 20:31:22 - User logged in with email: teacher@test.com (role: teacher)
+2026-01-10 21:00:41 - User logged in with email: student1@test.com (role: student)
+2026-01-10 21:00:58 - Submission 4 submitted
+2026-01-10 20:59:45 - Appeal submitted by user 13 for question 30
+2026-01-10 21:00:18 - User logged in with email: teacher@test.com (role: teacher)
+2026-01-10 21:01:47 - Appeal 8 reviewed: approved
+2026-01-11 10:20:03 - User logged in with email: student1@test.com (role: student)
+2026-01-11 10:31:58 - User logged in with email: student1@test.com (role: student)
+2026-01-11 10:33:20 - User 13 joined exam 37 (submission 6)

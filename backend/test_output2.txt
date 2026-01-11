@@ -1,0 +1,70 @@
+=== RAW RESPONSE ===
+DATA JSON EXAM_FOR_STUDENT
+{"questions": [{
+		"id":	1,
+		"content":	"Giao thức TCP hoạt động ở tầng nào trong mô hình OSI?",
+		"option_a":	"Tầng vật lý",
+		"option_b":	"Tầng liên kết dữ liệu",
+		"option_c":	"Tầng mạng",
+		"option_d":	"Tầng giao vận"
+	}, {
+		"id":	2,
+		"content":	"Cổng mặc định của HTTP là gì?",
+		"option_a":	"21",
+		"option_b":	"22",
+		"option_c":	"80",
+		"option_d":	"443"
+	}, {
+		"id":	3,
+		"content":	"Socket là gì?",
+		"option_a":	"Một loại ổ cắm điện",
+		"option_b":	"Điểm cuố
+
+=== RESPONSE LENGTH ===
+1024
+
+=== JSON PART ===
+{"questions": [{
+		"id":	1,
+		"content":	"Giao thức TCP hoạt động ở tầng nào trong mô hình OSI?",
+		"option_a":	"Tầng vật lý",
+		"option_b":	"Tầng liên kết dữ liệu",
+		"option_c":	"Tầng mạng",
+		"option_d":	"Tầng giao vận"
+	}, {
+		"id":	2,
+		"content":	"Cổng mặc định của HTTP là gì?",
+		"option_a":	"21",
+		"option_b":	"22",
+		"option_c":	"80",
+		"option_d":	"443"
+	}, {
+		"id":	3,
+		"content":	"Socket là gì?",
+		"option_a":	"Một loại ổ cắm điện",
+		"option_b":	"Điểm cuối của kết nối mạng",
+		"option_c":	"Một giao thức mạng",
+		"option_d":	"Một loại cable"
+	}, {
+		"id":	4,
+		"content":	"Hàm nào dùng để lắng nghe kết nối trong TCP?",
+		"option_a":	"connect()",
+		"option_b":	"bind()",
+		"option_c":	"listen()",
+		"option_d":	"accept()"
+	}, {
+		"id":	5,
+		"content":	"UDP khác TCP ở điểm nào?",
+		"option_a":	"UDP nhanh hơn và không đảm bảo",
+		"option_b":	"UDP chậm hơn và đảm bảo",
+		"option_c":	"UDP dùng port, TCP không",
+		"option_d":	"Không có sự khác biệt"
+	}], "submission": submitted}
+
+=== CHAR AT POSITION 1115 ===
+
+=== JSON PARSE ERROR ===
+Error: Expecting value: line 36 column 20 (char 987)
+Position: 987
+Context: ...on_d":	"Không có sự khác biệt"
+	}], "submission": submitted}...

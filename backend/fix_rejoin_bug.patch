@@ -1,0 +1,30 @@
+--- a/backend/src/services/exam/exam_service.c
++++ b/backend/src/services/exam/exam_service.c
+@@ -383,13 +383,24 @@ int join_exam(int exam_id, int user_id)
+     // Check if already joined
+     char query[512];
+     snprintf(query, sizeof(query),
+-             "SELECT id FROM exam_submissions WHERE exam_id = %d AND user_id = %d",
++             "SELECT id, status FROM exam_submissions WHERE exam_id = %d AND user_id = %d",
+              exam_id, user_id);
+
+     if (mysql_query(conn, query)) return 0;
+     MYSQL_RES *res = mysql_store_result(conn);
+
+     if (res && mysql_num_rows(res) > 0) {
+-        // Already joined, return existing submission_id
+         MYSQL_ROW row = mysql_fetch_row(res);
+         int submission_id = atoi(row[0]);
++        const char *status = row[1];
++
++        // CRITICAL: Only allow rejoining if status is 'in_progress'
++        // If already submitted, do NOT allow joining again with old answers
++        if (strcmp(status, "submitted") == 0) {
++            fprintf(stderr, "User %d attempted to rejoin already submitted exam %d\n", user_id, exam_id);
++            mysql_free_result(res);
++            return 0; // Return 0 to indicate cannot join
++        }
++
++        // If in_progress, allow rejoining with existing submission
+         mysql_free_result(res);
+         return submission_id;

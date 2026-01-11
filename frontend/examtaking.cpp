@@ -1,5 +1,6 @@
 #include "examtaking.h"
 #include "ui_examtaking.h"
+#include "appealdialog.h"
 #include "config.h"
 #include "userdata.h"
 #include <QJsonDocument>
@@ -10,6 +11,10 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QtMath>
+#include <QEventLoop>
+#include <QTimer>
+#include <QSharedPointer>
+#include <QApplication>
 
 ExamTaking::ExamTaking(QWidget *parent) :
     QWidget(parent),
@@ -242,8 +247,30 @@ void ExamTaking::onReadyRead()
         examTimer->stop();
         int jsonStart = responseStr.indexOf('{');
         if (jsonStart != -1) {
-            QJsonDocument doc = QJsonDocument::fromJson(responseStr.mid(jsonStart).toUtf8());
-            showResult(doc.object());
+            QString jsonStr = responseStr.mid(jsonStart);
+            qDebug() << "=== SUBMIT_EXAM_SUCCESS response ===";
+            qDebug() << "Full JSON:" << jsonStr;
+            
+            QJsonParseError error;
+            QJsonDocument doc = QJsonDocument::fromJson(jsonStr.toUtf8(), &error);
+            if (error.error != QJsonParseError::NoError) {
+                qDebug() << "JSON parse error:" << error.errorString() << "at offset" << error.offset;
+                return;
+            }
+            
+            QJsonObject resultObj = doc.object();
+            qDebug() << "Parsed object keys:" << resultObj.keys();
+            
+            if (resultObj.contains("answers")) {
+                QJsonArray answers = resultObj["answers"].toArray();
+                qDebug() << "Answers array size:" << answers.size();
+                for (int i = 0; i < answers.size(); i++) {
+                    QJsonObject a = answers[i].toObject();
+                    qDebug() << "Answer" << (i+1) << "user_answer:" << a["user_answer"].toString() << "is_correct:" << a["is_correct"].toBool();
+                }
+            }
+            
+            showResult(resultObj);
         }
     }
     else if (responseStr.contains("JOIN_EXAM_FAILURE") || responseStr.contains("EXAM_FOR_STUDENT_FAILURE")) {
@@ -436,9 +463,95 @@ void ExamTaking::onSubmitClicked()
     }
 }
 
+void ExamTaking::saveAllAnswers()
+{
+    // Count how many answers need to be saved
+    int totalAnswers = 0;
+    for (int i = 0; i < questions.size(); i++) {
+        QJsonObject q = questions[i].toObject();
+        int questionId = q["id"].toInt();
+        if (userAnswers.contains(questionId)) {
+            totalAnswers++;
+        }
+    }
+    
+    if (totalAnswers == 0) {
+        qDebug() << "No answers to save";
+        return;
+    }
+    
+    // Use a counter to track completed saves
+    QSharedPointer<int> completedCount(new int(0));
+    
+    // Save all answers
+    for (int i = 0; i < questions.size(); i++) {
+        QJsonObject q = questions[i].toObject();
+        int questionId = q["id"].toInt();
+        
+        if (userAnswers.contains(questionId)) {
+            // Use a separate socket for saving answers
+            QTcpSocket *answerSocket = new QTcpSocket(this);
+            
+            connect(answerSocket, &QTcpSocket::connected, [this, answerSocket, questionId]() {
+                QJsonObject json;
+                json["submission_id"] = submissionId;
+                json["question_id"] = questionId;
+                json["answer"] = userAnswers[questionId];
+                
+                QString request = QString("CONTROL SUBMIT_ANSWER\n%1").arg(QString(QJsonDocument(json).toJson(QJsonDocument::Compact)));
+                answerSocket->write(request.toUtf8());
+                answerSocket->flush();
+            });
+            
+            connect(answerSocket, &QTcpSocket::readyRead, [answerSocket, completedCount, totalAnswers]() {
+                QByteArray data = answerSocket->readAll();
+                qDebug() << "Answer saved before submit:" << data.left(100);
+                answerSocket->close();
+                (*completedCount)++;
+                answerSocket->deleteLater();
+            });
+            
+            connect(answerSocket, &QTcpSocket::errorOccurred, [answerSocket, completedCount, totalAnswers](QAbstractSocket::SocketError) {
+                qDebug() << "Answer save error:" << answerSocket->errorString();
+                (*completedCount)++;
+                answerSocket->deleteLater();
+            });
+            
+            answerSocket->connectToHost(IPADDRESS, PORT);
+        }
+    }
+    
+    // Wait for all sockets to complete (with timeout)
+    QEventLoop loop;
+    QTimer timeout;
+    timeout.setSingleShot(true);
+    timeout.setInterval(3000); // 3 second timeout
+    
+    connect(&timeout, &QTimer::timeout, &loop, &QEventLoop::quit);
+    
+    QTimer checkTimer;
+    checkTimer.setInterval(50);
+    connect(&checkTimer, &QTimer::timeout, [&loop, completedCount, totalAnswers]() {
+        if (*completedCount >= totalAnswers) {
+            loop.quit();
+        }
+    });
+    
+    timeout.start();
+    checkTimer.start();
+    loop.exec();
+    checkTimer.stop();
+    timeout.stop();
+    
+    qDebug() << "Saved" << *completedCount << "out of" << totalAnswers << "answers before submit";
+}
+
 void ExamTaking::submitExam()
 {
     examTimer->stop();
+    
+    // Save all answers before submitting
+    saveAllAnswers();
     
     // Reset socket state
     if (tcpSocket->state() != QAbstractSocket::UnconnectedState) {
@@ -482,14 +595,24 @@ void ExamTaking::showResult(const QJsonObject &result)
     
     // Show detailed answers if available
     if (result.contains("answers")) {
-        QJsonArray answers = result["answers"].toArray();
+        resultAnswers = result["answers"].toArray(); // Store for appeal dialog
+        QJsonArray answers = resultAnswers;
         for (int i = 0; i < answers.size(); i++) {
             QJsonObject a = answers[i].toObject();
             bool isCorrect = a["is_correct"].toBool();
             QString status = isCorrect ? "✅ ĐÚNG" : "❌ SAI";
-            QString userAns = a["user_answer"].toString();
+            QString userAns = a["user_answer"].toString().trimmed();
             QString correctAns = a["correct_option"].toString();
             QString content = a["content"].toString();
+            
+            // CRITICAL: Validate user_answer - must be empty or one of A, B, C, D
+            if (!userAns.isEmpty() && userAns != "A" && userAns != "B" && userAns != "C" && userAns != "D") {
+                qDebug() << "WARNING: Invalid user_answer detected:" << userAns << "- treating as empty";
+                userAns = "";
+                isCorrect = false; // Force incorrect if invalid answer
+            }
+            
+            qDebug() << "Question" << (i+1) << "user_answer:" << userAns << "is_correct:" << isCorrect;
             
             details += QString("────────────────────────────────────────\n");
             details += QString("📌 CÂU %1: %2\n").arg(i + 1).arg(status);
@@ -500,7 +623,8 @@ void ExamTaking::showResult(const QJsonObject &result)
             details += QString("C. %1\n").arg(a["option_c"].toString());
             details += QString("D. %1\n\n").arg(a["option_d"].toString());
             
-            if (userAns.isEmpty()) {
+            // CRITICAL: Only show answer if it's valid (A, B, C, or D)
+            if (userAns.isEmpty() || (userAns != "A" && userAns != "B" && userAns != "C" && userAns != "D")) {
                 details += QString("👉 Bạn chưa trả lời\n");
             } else {
                 details += QString("👉 Bạn chọn: %1\n").arg(userAns);
@@ -523,7 +647,8 @@ void ExamTaking::showResult(const QJsonObject &result)
             details += QString("C. %1\n").arg(q["option_c"].toString());
             details += QString("D. %1\n").arg(q["option_d"].toString());
             
-            if (userAns.isEmpty()) {
+            // CRITICAL: Only show answer if it's valid (A, B, C, or D)
+            if (userAns.isEmpty() || (userAns != "A" && userAns != "B" && userAns != "C" && userAns != "D")) {
                 details += QString("👉 Bạn chưa trả lời\n\n");
             } else {
                 details += QString("👉 Bạn chọn: %1\n\n").arg(userAns);
@@ -546,6 +671,20 @@ void ExamTaking::onBackToListClicked()
 
 void ExamTaking::onAppealClicked()
 {
-    emit openAppeal(submissionId, examId, examName);
+    qDebug() << "=== onAppealClicked ===";
+    qDebug() << "resultAnswers.size():" << resultAnswers.size();
+    qDebug() << "submissionId:" << submissionId;
+    qDebug() << "examId:" << examId;
+    
+    if (resultAnswers.isEmpty()) {
+        QMessageBox::warning(this, "Lỗi", "Không có thông tin chi tiết bài làm để khiếu nại!");
+        return;
+    }
+    
+    qDebug() << "Creating AppealDialog...";
+    AppealDialog dialog(submissionId, examId, resultAnswers, this);
+    qDebug() << "Dialog created, calling exec()...";
+    dialog.exec();
+    qDebug() << "Dialog closed";
 }
 

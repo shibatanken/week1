@@ -20,6 +20,7 @@ SOURCES += \
     examlist.cpp \
     practicemode.cpp \
     appealmanager.cpp \
+    appealdialog.cpp \
     admindashboard.cpp \
     statisticsview.cpp
 
@@ -39,6 +40,7 @@ HEADERS += \
     examlist.h \
     practicemode.h \
     appealmanager.h \
+    appealdialog.h \
     admindashboard.h \
     statisticsview.h
 
@@ -56,6 +58,7 @@ FORMS += \
     examlist.ui \
     practicemode.ui \
     appealmanager.ui \
+    appealdialog.ui \
     admindashboard.ui \
     statisticsview.ui
 

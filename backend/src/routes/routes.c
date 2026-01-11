@@ -82,6 +82,8 @@ void handle_control_message(int socket, ControlMessage *msg)
     else if (strcmp(msg->type, GET_MY_APPEALS) == 0) handle_get_my_appeals(socket, msg);
     else if (strcmp(msg->type, GET_APPEALS_FOR_TEACHER) == 0) handle_get_appeals_for_teacher(socket, msg);
     else if (strcmp(msg->type, REVIEW_APPEAL) == 0) handle_review_appeal(socket, msg);
+    else if (strcmp(msg->type, GET_UNREAD_APPEALS_COUNT) == 0) handle_get_unread_appeals_count(socket, msg);
+    else if (strcmp(msg->type, MARK_APPEAL_AS_READ) == 0) handle_mark_appeal_as_read(socket, msg);
     
     // Admin Routes
     else if (strcmp(msg->type, ADMIN_GET_PENDING_USERS) == 0) handle_admin_get_pending_users(socket, msg);

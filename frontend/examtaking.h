@@ -26,7 +26,6 @@ public:
 signals:
     void backToExamList();
     void examFinished(int submissionId);
-    void openAppeal(int submissionId, int examId, QString examName);
 
 private slots:
     void onReadyRead();
@@ -52,10 +51,12 @@ private:
     QJsonArray questions;
     int currentQuestionIndex;
     QMap<int, QString> userAnswers; // question_id -> answer
+    QJsonArray resultAnswers; // Store detailed answers for appeal dialog
     
     void loadQuestions();
     void displayQuestion(int index);
     void saveCurrentAnswer();
+    void saveAllAnswers();
     void submitExam();
     void showResult(const QJsonObject &result);
 };

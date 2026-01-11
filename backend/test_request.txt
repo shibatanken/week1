@@ -1,0 +1,2 @@
+CONTROL GET_EXAM_FOR_STUDENT
+{"exam_id":1,"user_id":13}

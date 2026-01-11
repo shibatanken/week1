@@ -393,16 +393,26 @@ void handle_get_exam_for_student(int client_socket, ControlMessage *msg)
     memset(response, 0, response_size);
 
     if (questions == NULL) {
-        snprintf(response, response_size, "DATA JSON EXAM_FOR_STUDENT\n{\"questions\": [], \"submission\": %s}", 
-                 status ? status : "null");
+        if (status) {
+            snprintf(response, response_size, "DATA JSON EXAM_FOR_STUDENT\n{\"questions\": [], \"submission\": %s}", status);
+        } else {
+            snprintf(response, response_size, "DATA JSON EXAM_FOR_STUDENT\n{\"questions\": [], \"submission\": null}");
+        }
     } else {
-        snprintf(response, response_size, "DATA JSON EXAM_FOR_STUDENT\n{\"questions\": %s, \"submission\": %s}", 
-                 questions, status ? status : "null");
+        if (status) {
+            snprintf(response, response_size, "DATA JSON EXAM_FOR_STUDENT\n{\"questions\": %s, \"submission\": %s}", questions, status);
+        } else {
+            snprintf(response, response_size, "DATA JSON EXAM_FOR_STUDENT\n{\"questions\": %s, \"submission\": null}", questions);
+        }
         free(questions);
     }
     if (status) free(status);
 
-    write(client_socket, response, strlen(response));
+    size_t response_len = strlen(response);
+    fprintf(stderr, "DEBUG: Response length = %zu\n", response_len);
+    fprintf(stderr, "DEBUG: Last 100 chars: ...%s\n", response + (response_len > 100 ? response_len - 100 : 0));
+
+    write(client_socket, response, response_len);
     close(client_socket);
     free(response);
 }

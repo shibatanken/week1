@@ -63,6 +63,7 @@ CreateExam::CreateExam(QWidget *parent) :
     // Connect signals
     connect(ui->saveExamButton, &QPushButton::clicked, this, &CreateExam::on_saveExamButton_clicked);
     connect(ui->addQuestionButton, &QPushButton::clicked, this, &CreateExam::on_addQuestionButton_clicked);
+    connect(ui->publishButton, &QPushButton::clicked, this, &CreateExam::on_publishButton_clicked);
 }
 
 CreateExam::~CreateExam()

@@ -4,6 +4,7 @@
 #include "userdata.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonParseError>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -13,6 +14,7 @@
 #include <QTextEdit>
 #include <QInputDialog>
 #include <QComboBox>
+#include <QDebug>
 
 AppealManager::AppealManager(QWidget *parent) :
     QWidget(parent),
@@ -45,6 +47,12 @@ void AppealManager::setMode(bool isTeacher)
 
 void AppealManager::loadAppeals()
 {
+    // Disconnect any existing connection
+    if (tcpSocket->state() != QAbstractSocket::UnconnectedState) {
+        tcpSocket->disconnect(this);
+        tcpSocket->close();
+    }
+    
     tcpSocket->connectToHost(IPADDRESS, PORT);
     if (tcpSocket->waitForConnected(3000)) {
         QJsonObject json;
@@ -53,16 +61,23 @@ void AppealManager::loadAppeals()
         if (isTeacherMode) {
             json["teacher_id"] = UserData::instance().getUserId();
             command = "GET_APPEALS_FOR_TEACHER";
+            qDebug() << "Loading appeals for teacher, teacher_id:" << UserData::instance().getUserId();
         } else {
             json["user_id"] = UserData::instance().getUserId();
             command = "GET_MY_APPEALS";
+            qDebug() << "Loading appeals for student, user_id:" << UserData::instance().getUserId();
         }
         
         QString request = QString("CONTROL %1\n%2").arg(command).arg(QString(QJsonDocument(json).toJson(QJsonDocument::Compact)));
+        qDebug() << "Sending request:" << request;
         tcpSocket->write(request.toUtf8());
         tcpSocket->flush();
         
+        // Disconnect any existing connection first
+        tcpSocket->disconnect(this);
         connect(tcpSocket, &QTcpSocket::readyRead, this, &AppealManager::onReadyRead);
+    } else {
+        qDebug() << "Failed to connect to server for appeals";
     }
 }
 
@@ -72,15 +87,34 @@ void AppealManager::onReadyRead()
     QString responseStr(response);
     qDebug() << "Appeal response:" << responseStr;
     
-    tcpSocket->disconnect(SIGNAL(readyRead()));
+    tcpSocket->disconnect(this);
     tcpSocket->close();
+    
+    qDebug() << "AppealManager response:" << responseStr;
     
     if (responseStr.contains("APPEALS") || responseStr.contains("MY_APPEALS")) {
         int jsonStart = responseStr.indexOf('{');
         if (jsonStart != -1) {
-            QJsonDocument doc = QJsonDocument::fromJson(responseStr.mid(jsonStart).toUtf8());
-            appeals = doc.object()["data"].toArray();
-            displayAppeals();
+            QString jsonStr = responseStr.mid(jsonStart);
+            QJsonParseError error;
+            QJsonDocument doc = QJsonDocument::fromJson(jsonStr.toUtf8(), &error);
+            
+            if (error.error != QJsonParseError::NoError) {
+                qDebug() << "JSON parse error:" << error.errorString() << "at offset" << error.offset;
+                qDebug() << "JSON string:" << jsonStr;
+                return;
+            }
+            
+            QJsonObject obj = doc.object();
+            qDebug() << "Parsed object keys:" << obj.keys();
+            
+            if (obj.contains("data")) {
+                appeals = obj["data"].toArray();
+                qDebug() << "Found" << appeals.size() << "appeals";
+                displayAppeals();
+            } else {
+                qDebug() << "No 'data' key in response!";
+            }
         }
     }
     else if (responseStr.contains("REVIEW_APPEAL_SUCCESS")) {
@@ -150,6 +184,14 @@ void AppealManager::displayAppeals()
             responseLabel->setWordWrap(true);
             responseLabel->setStyleSheet("color: #2196F3; font-style: italic;");
             cardLayout->addWidget(responseLabel);
+        }
+        
+        // Teacher comment if any
+        if (!appeal["teacher_comment"].toString().isEmpty()) {
+            QLabel *commentLabel = new QLabel("Bình luận: " + appeal["teacher_comment"].toString());
+            commentLabel->setWordWrap(true);
+            commentLabel->setStyleSheet("color: #FF9800; font-style: italic; padding: 5px; background-color: #FFF3E0; border-radius: 4px;");
+            cardLayout->addWidget(commentLabel);
         }
         
         // Teacher actions
@@ -258,25 +300,68 @@ void AppealManager::displayAppealForm()
 
 void AppealManager::onReviewAppeal(int appealId, QString status)
 {
-    QString response = "";
-    bool ok;
-    response = QInputDialog::getText(this, "Phản hồi", "Nhập phản hồi (tùy chọn):", QLineEdit::Normal, "", &ok);
+    // Create dialog for review
+    QDialog *dialog = new QDialog(this);
+    dialog->setWindowTitle(status == "approved" ? "Duyệt khiếu nại" : "Từ chối khiếu nại");
+    dialog->setMinimumSize(400, 300);
     
-    if (!ok) return;
+    QVBoxLayout *layout = new QVBoxLayout(dialog);
     
-    tcpSocket->connectToHost(IPADDRESS, PORT);
-    if (tcpSocket->waitForConnected(3000)) {
-        QJsonObject json;
-        json["appeal_id"] = appealId;
-        json["status"] = status;
-        json["response"] = response;
-        json["score_adjustment"] = 0; // Could add input for this
+    // Teacher comment field (optional)
+    QLabel *commentLabel = new QLabel("Phản hồi cho sinh viên (tùy chọn):");
+    layout->addWidget(commentLabel);
+    
+    QTextEdit *commentEdit = new QTextEdit();
+    commentEdit->setPlaceholderText("Nhập phản hồi cho sinh viên...");
+    commentEdit->setMaximumHeight(100);
+    layout->addWidget(commentEdit);
+    
+    // Score adjustment (optional)
+    QLabel *scoreLabel = new QLabel("Điều chỉnh điểm (nếu duyệt, tùy chọn):");
+    layout->addWidget(scoreLabel);
+    
+    QLineEdit *scoreEdit = new QLineEdit();
+    scoreEdit->setPlaceholderText("0.0");
+    scoreEdit->setValidator(new QDoubleValidator(-100, 100, 2, this));
+    layout->addWidget(scoreEdit);
+    
+    // Buttons
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    QPushButton *cancelBtn = new QPushButton("Hủy");
+    QPushButton *confirmBtn = new QPushButton(status == "approved" ? "✓ Duyệt" : "✗ Từ chối");
+    confirmBtn->setStyleSheet(status == "approved" ? 
+        "background-color: #4CAF50; color: white;" : 
+        "background-color: #f44336; color: white;");
+    
+    connect(cancelBtn, &QPushButton::clicked, dialog, &QDialog::reject);
+    connect(confirmBtn, &QPushButton::clicked, dialog, &QDialog::accept);
+    
+    buttonLayout->addStretch();
+    buttonLayout->addWidget(cancelBtn);
+    buttonLayout->addWidget(confirmBtn);
+    layout->addLayout(buttonLayout);
+    
+    if (dialog->exec() == QDialog::Accepted) {
+        QString teacherComment = commentEdit->toPlainText().trimmed();
+        double scoreAdj = scoreEdit->text().toDouble();
         
-        QString request = QString("CONTROL REVIEW_APPEAL\n%1").arg(QString(QJsonDocument(json).toJson(QJsonDocument::Compact)));
-        tcpSocket->write(request.toUtf8());
-        tcpSocket->flush();
-        
-        connect(tcpSocket, &QTcpSocket::readyRead, this, &AppealManager::onReadyRead);
+        tcpSocket->connectToHost(IPADDRESS, PORT);
+        if (tcpSocket->waitForConnected(3000)) {
+            QJsonObject json;
+            json["appeal_id"] = appealId;
+            json["status"] = status;
+            json["response"] = ""; // Keep for backward compatibility
+            json["teacher_comment"] = teacherComment;
+            json["score_adjustment"] = scoreAdj;
+            
+            QString request = QString("CONTROL REVIEW_APPEAL\n%1").arg(QString(QJsonDocument(json).toJson(QJsonDocument::Compact)));
+            tcpSocket->write(request.toUtf8());
+            tcpSocket->flush();
+            
+            connect(tcpSocket, &QTcpSocket::readyRead, this, &AppealManager::onReadyRead);
+        }
     }
+    
+    dialog->deleteLater();
 }
 

@@ -1,6 +1,7 @@
 #include "auth_controller.h"
 #include "../../data_structures/index.h"
 #include "../../services/service.h"
+#include "../../services/appeal/appeal_service.h"
 #include "../../utils/json_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -35,8 +36,12 @@ void handle_login(int client_socket, ControlMessage *msg)
 
     if (login_result.user_id != -1)
     {
-        snprintf(response, sizeof(response), "NOTIFICATION LOGIN_SUCCESS %s\n{\"user_id\": %d, \"role\": \"%s\"}", 
-                 timestamp, login_result.user_id, login_result.role);
+        // Get unread appeals count
+        int is_teacher = (strcmp(login_result.role, "teacher") == 0);
+        int unread_count = get_unread_appeals_count(login_result.user_id, is_teacher);
+        
+        snprintf(response, sizeof(response), "NOTIFICATION LOGIN_SUCCESS %s\n{\"user_id\": %d, \"role\": \"%s\", \"unread_appeals_count\": %d}", 
+                 timestamp, login_result.user_id, login_result.role, unread_count);
     }
     else
     {

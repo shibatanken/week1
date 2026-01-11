@@ -20,6 +20,7 @@ signals:
     void showHome();
     void showSignup();
     void loginSuccess();
+    void showAppealManager();
 
 private slots:
     void on_signinButton_clicked();

@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Auth connections
     connect(signupForm, &Signup::showSignin, this, &MainWindow::showSignin);
     connect(signinForm, &Signin::showSignup, this, &MainWindow::showSignup);
+    connect(signinForm, &Signin::showAppealManager, this, &MainWindow::showAppealManager);
     connect(signinForm, &Signin::loginSuccess, [this]() {
         QString role = UserData::instance().getRole();
         if (role == "admin") {
@@ -72,14 +73,6 @@ MainWindow::MainWindow(QWidget *parent)
         showClassDetail(currentClassId);
     });
     connect(examTakingForm, &ExamTaking::examFinished, this, &MainWindow::showExamResult);
-    connect(examTakingForm, &ExamTaking::openAppeal, [this](int submissionId, int examId, QString examName) {
-        Q_UNUSED(examId);
-        Q_UNUSED(examName);
-        appealManagerForm->setSubmissionId(submissionId);
-        appealManagerForm->setMode(false); // Student mode
-        appealManagerForm->loadAppeals();
-        ui->stackedWidget->setCurrentWidget(appealManagerForm);
-    });
     connect(examListForm, &ExamList::backToClassList, this, &MainWindow::showClassList);
     connect(examListForm, &ExamList::startExam, this, &MainWindow::showExamTaking);
     connect(examListForm, &ExamList::viewExamResult, this, &MainWindow::showExamResult);

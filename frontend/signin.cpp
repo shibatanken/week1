@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QMessageBox>
+#include <QTimer>
 
 Signin::Signin(QWidget *parent)
     : QWidget(parent)
@@ -80,12 +81,38 @@ void Signin::onReadyRead() {
                 ui->emailLineEdit->setText("");
                 ui->passwordLineEdit->setText("");
                 
-                // Disconnect socket so it doesn't linger? 
-                // Using tcpSocket->disconnectFromHost(); might be good practice 
-                // but we rely on next connectToHost to abort. 
-                // The server closes its end mostly anyway.
-
+                // First navigate to main screen
                 emit loginSuccess();
+
+                // THEN show popup after delay so main screen loads first
+                // Check for unread appeals
+                int unreadCount = jsonObj["unread_appeals_count"].toInt();
+                if (unreadCount > 0) {
+                    QString role = UserData::instance().getRole();
+                    QString message;
+                    if (role == "teacher") {
+                        message = QString("Bạn có %1 khiếu nại mới cần xử lý!").arg(unreadCount);
+                    } else {
+                        message = QString("Bạn có %1 thông báo khiếu nại mới!").arg(unreadCount);
+                    }
+                    
+
+                    // Delay 500ms for main screen to load
+                    QTimer::singleShot(500, this, [this, message]() {
+                        QMessageBox msgBox;
+                        msgBox.setWindowTitle("🔔 Thông báo khiếu nại");
+                        msgBox.setText(message);
+                        msgBox.setInformativeText("Bạn có muốn xem ngay không?");
+                        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                        msgBox.setDefaultButton(QMessageBox::Yes);
+                        msgBox.setIcon(QMessageBox::Information);
+                    
+                        int ret = msgBox.exec();
+                        if (ret == QMessageBox::Yes) {
+                            emit showAppealManager();
+                        }
+                    });
+                }
             }
         }
     } else {

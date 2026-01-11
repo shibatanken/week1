@@ -96,7 +96,7 @@ void handle_review_appeal(int client_socket, ControlMessage *msg)
     int pair_count = parse_json(msg->body, pairs, 10);
 
     int appeal_id = -1;
-    char status[32] = "", response_text[1024] = "";
+    char status[32] = "", response_text[1024] = "", teacher_comment[1024] = "";
     double score_adj = 0;
 
     for (int i = 0; i < pair_count; i++) {
@@ -104,9 +104,10 @@ void handle_review_appeal(int client_socket, ControlMessage *msg)
         else if (strcmp(pairs[i].key, "status") == 0) strncpy(status, pairs[i].value, sizeof(status) - 1);
         else if (strcmp(pairs[i].key, "response") == 0) strncpy(response_text, pairs[i].value, sizeof(response_text) - 1);
         else if (strcmp(pairs[i].key, "score_adjustment") == 0) score_adj = atof(pairs[i].value);
+        else if (strcmp(pairs[i].key, "teacher_comment") == 0) strncpy(teacher_comment, pairs[i].value, sizeof(teacher_comment) - 1);
     }
 
-    int result = review_appeal(appeal_id, status, response_text, score_adj);
+    int result = review_appeal(appeal_id, status, response_text, score_adj, teacher_comment);
     char response[2048];
     char timestamp[50];
     time_t now = time(NULL);
@@ -118,6 +119,55 @@ void handle_review_appeal(int client_socket, ControlMessage *msg)
         snprintf(response, sizeof(response), "NOTIFICATION REVIEW_APPEAL_SUCCESS %s\n{\"appeal_id\": %d, \"status\": \"%s\"}", timestamp, appeal_id, status);
     }
 
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+}
+
+void handle_get_unread_appeals_count(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 10);
+    
+    int user_id = -1, is_teacher = 0;
+    for (int i = 0; i < pair_count; i++) {
+        if (strcmp(pairs[i].key, "user_id") == 0) user_id = atoi(pairs[i].value);
+        else if (strcmp(pairs[i].key, "is_teacher") == 0) is_teacher = atoi(pairs[i].value);
+    }
+
+    int count = get_unread_appeals_count(user_id, is_teacher);
+    
+    char response[512];
+    snprintf(response, sizeof(response), "DATA JSON UNREAD_APPEALS_COUNT\n{\"count\": %d}", count);
+    
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+}
+
+void handle_mark_appeal_as_read(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 10);
+    
+    int appeal_id = -1, user_id = -1, is_teacher = 0;
+    for (int i = 0; i < pair_count; i++) {
+        if (strcmp(pairs[i].key, "appeal_id") == 0) appeal_id = atoi(pairs[i].value);
+        else if (strcmp(pairs[i].key, "user_id") == 0) user_id = atoi(pairs[i].value);
+        else if (strcmp(pairs[i].key, "is_teacher") == 0) is_teacher = atoi(pairs[i].value);
+    }
+
+    int result = mark_appeal_as_read(appeal_id, user_id, is_teacher);
+    
+    char response[512];
+    char timestamp[50];
+    time_t now = time(NULL);
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%S", localtime(&now));
+    
+    if (result == 0) {
+        snprintf(response, sizeof(response), "NOTIFICATION MARK_APPEAL_AS_READ_FAILURE %s\n{\"message\": \"Failed to mark appeal as read\"}", timestamp);
+    } else {
+        snprintf(response, sizeof(response), "NOTIFICATION MARK_APPEAL_AS_READ_SUCCESS %s\n{\"appeal_id\": %d}", timestamp, appeal_id);
+    }
+    
     write(client_socket, response, strlen(response));
     close(client_socket);
 }
