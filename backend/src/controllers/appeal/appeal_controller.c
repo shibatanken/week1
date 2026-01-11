@@ -1,6 +1,7 @@
 #include "appeal_controller.h"
 #include "../../services/appeal/appeal_service.h"
 #include "../../utils/json_utils.h"
+#include "../../utils/log_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>

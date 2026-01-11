@@ -1,6 +1,7 @@
 #include "practice_controller.h"
 #include "../../services/practice/practice_service.h"
 #include "../../utils/json_utils.h"
+#include "../../utils/log_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -20,6 +21,10 @@ void handle_start_practice(int client_socket, ControlMessage *msg)
         else if (strcmp(pairs[i].key, "num_questions") == 0) num_questions = atoi(pairs[i].value);
     }
 
+    char details[256];
+    snprintf(details, sizeof(details), "User ID: %d, Class ID: %d, Questions: %d", user_id, class_id, num_questions);
+    log_request("START_PRACTICE", "Student", details);
+
     int session_id = start_practice(user_id, class_id, num_questions);
     char response[2048];
     char timestamp[50];
@@ -28,8 +33,11 @@ void handle_start_practice(int client_socket, ControlMessage *msg)
 
     if (session_id == 0) {
         snprintf(response, sizeof(response), "NOTIFICATION START_PRACTICE_FAILURE %s\n{\"message\": \"Failed\"}", timestamp);
+        log_response("START_PRACTICE", "FAILURE", "Failed to start practice session");
     } else {
         snprintf(response, sizeof(response), "NOTIFICATION START_PRACTICE_SUCCESS %s\n{\"session_id\": %d}", timestamp, session_id);
+        snprintf(details, sizeof(details), "Practice session started (session_id=%d)", session_id);
+        log_response("START_PRACTICE", "SUCCESS", details);
     }
 
     write(client_socket, response, strlen(response));
@@ -101,12 +109,17 @@ void handle_finish_practice(int client_socket, ControlMessage *msg)
         if (strcmp(pairs[i].key, "session_id") == 0) session_id = atoi(pairs[i].value);
     }
 
+    char details[256];
+    snprintf(details, sizeof(details), "Session ID: %d", session_id);
+    log_request("FINISH_PRACTICE", "Student", details);
+
     int success = finish_practice(session_id);
     char *result = get_practice_result(session_id);
     char *response;
 
     if (!success || result == NULL) {
         response = strdup("NOTIFICATION FINISH_PRACTICE_FAILURE\n{\"message\": \"Failed\"}");
+        log_response("FINISH_PRACTICE", "FAILURE", "Failed to finish practice");
     } else {
         size_t response_size = strlen(result) + 128;
         response = (char *)malloc(response_size);
@@ -114,6 +127,8 @@ void handle_finish_practice(int client_socket, ControlMessage *msg)
         time_t now = time(NULL);
         strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%S", localtime(&now));
         snprintf(response, response_size, "NOTIFICATION FINISH_PRACTICE_SUCCESS %s\n%s", timestamp, result);
+        snprintf(details, sizeof(details), "Practice finished (session_id=%d)", session_id);
+        log_response("FINISH_PRACTICE", "SUCCESS", details);
         free(result);
     }
 

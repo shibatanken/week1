@@ -2,6 +2,7 @@
 #include "../../data_structures/index.h"
 #include "../../services/service.h"
 #include "../../utils/json_utils.h"
+#include "../../utils/log_utils.h"
 #include "../../db/connect-db.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -30,6 +31,10 @@ void handle_create_exam(int client_socket, ControlMessage *msg)
         else if (strcmp(pairs[i].key, "end_time") == 0) strncpy(end_time, pairs[i].value, sizeof(end_time) - 1);
     }
 
+    char details[512];
+    snprintf(details, sizeof(details), "Name: %s, Class ID: %d, Time Limit: %d min", exam_name, class_id, time_limit);
+    log_request("CREATE_EXAM", "Teacher", details);
+
     int exam_id = create_exam(exam_name, description, class_id, time_limit, start_time, end_time);
     char response[2048];
     char timestamp[50];
@@ -39,10 +44,13 @@ void handle_create_exam(int client_socket, ControlMessage *msg)
     if (exam_id == 0)
     {
         snprintf(response, sizeof(response), "NOTIFICATION CREATE_EXAM_FAILURE %s\n{\"message\": \"Failed to create exam\"}", timestamp);
+        log_response("CREATE_EXAM", "FAILURE", "Failed to create exam");
     }
     else
     {
         snprintf(response, sizeof(response), "NOTIFICATION CREATE_EXAM_SUCCESS %s\n{\"message\": \"Exam created successfully\", \"exam_id\": %d}", timestamp, exam_id);
+        snprintf(details, sizeof(details), "Exam ID: %d created successfully", exam_id);
+        log_response("CREATE_EXAM", "SUCCESS", details);
     }
 
     write(client_socket, response, strlen(response));
@@ -369,6 +377,10 @@ void handle_start_exam(int client_socket, ControlMessage *msg)
         if (strcmp(pairs[i].key, "exam_id") == 0) exam_id = atoi(pairs[i].value);
     }
 
+    char details[256];
+    snprintf(details, sizeof(details), "Exam ID: %d", exam_id);
+    log_request("START_EXAM", "Teacher", details);
+
     int result = start_exam(exam_id);
     char response[2048];
     char timestamp[50];
@@ -377,8 +389,11 @@ void handle_start_exam(int client_socket, ControlMessage *msg)
 
     if (result == 0) {
         snprintf(response, sizeof(response), "NOTIFICATION START_EXAM_FAILURE %s\n{\"message\": \"Failed to start exam\"}", timestamp);
+        log_response("START_EXAM", "FAILURE", "Failed to start exam");
     } else {
         snprintf(response, sizeof(response), "NOTIFICATION START_EXAM_SUCCESS %s\n{\"message\": \"Exam started\", \"exam_id\": %d}", timestamp, exam_id);
+        snprintf(details, sizeof(details), "Exam ID %d started successfully", exam_id);
+        log_response("START_EXAM", "SUCCESS", details);
     }
 
     write(client_socket, response, strlen(response));
@@ -396,6 +411,10 @@ void handle_join_exam(int client_socket, ControlMessage *msg)
         else if (strcmp(pairs[i].key, "user_id") == 0) user_id = atoi(pairs[i].value);
     }
 
+    char details[256];
+    snprintf(details, sizeof(details), "Exam ID: %d, User ID: %d", exam_id, user_id);
+    log_request("JOIN_EXAM", "Student", details);
+
     int submission_id = join_exam(exam_id, user_id);
     char response[2048];
     char timestamp[50];
@@ -404,8 +423,11 @@ void handle_join_exam(int client_socket, ControlMessage *msg)
 
     if (submission_id == 0) {
         snprintf(response, sizeof(response), "NOTIFICATION JOIN_EXAM_FAILURE %s\n{\"message\": \"Failed to join exam\"}", timestamp);
+        log_response("JOIN_EXAM", "FAILURE", "Failed to join exam");
     } else {
         snprintf(response, sizeof(response), "NOTIFICATION JOIN_EXAM_SUCCESS %s\n{\"submission_id\": %d, \"exam_id\": %d}", timestamp, submission_id, exam_id);
+        snprintf(details, sizeof(details), "Student joined exam (submission_id=%d)", submission_id);
+        log_response("JOIN_EXAM", "SUCCESS", details);
     }
 
     write(client_socket, response, strlen(response));
@@ -497,6 +519,10 @@ void handle_submit_exam(int client_socket, ControlMessage *msg)
         if (strcmp(pairs[i].key, "submission_id") == 0) submission_id = atoi(pairs[i].value);
     }
 
+    char details[256];
+    snprintf(details, sizeof(details), "Submission ID: %d", submission_id);
+    log_request("SUBMIT_EXAM", "Student", details);
+
     int result = submit_exam(submission_id);
     char response[2048];
     char timestamp[50];
@@ -505,6 +531,7 @@ void handle_submit_exam(int client_socket, ControlMessage *msg)
 
     if (result == 0) {
         snprintf(response, sizeof(response), "NOTIFICATION SUBMIT_EXAM_FAILURE %s\n{\"message\": \"Failed to submit exam\"}", timestamp);
+        log_response("SUBMIT_EXAM", "FAILURE", "Failed to submit exam");
     } else {
         // Get result immediately
         char *exam_result = get_exam_result(submission_id);
@@ -514,6 +541,8 @@ void handle_submit_exam(int client_socket, ControlMessage *msg)
         } else {
             snprintf(response, sizeof(response), "NOTIFICATION SUBMIT_EXAM_SUCCESS %s\n{\"message\": \"Exam submitted\"}", timestamp);
         }
+        snprintf(details, sizeof(details), "Exam submitted successfully (submission_id=%d)", submission_id);
+        log_response("SUBMIT_EXAM", "SUCCESS", details);
     }
 
     write(client_socket, response, strlen(response));

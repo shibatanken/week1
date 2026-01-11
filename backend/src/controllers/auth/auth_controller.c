@@ -3,6 +3,7 @@
 #include "../../services/service.h"
 #include "../../services/appeal/appeal_service.h"
 #include "../../utils/json_utils.h"
+#include "../../utils/log_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -27,6 +28,11 @@ void handle_login(int client_socket, ControlMessage *msg)
         }
     }
 
+    // Log request
+    char details[512];
+    snprintf(details, sizeof(details), "Email: %s", email);
+    log_request("LOGIN", "Client", details);
+
     LoginResult login_result = login(email, password);
     char response[2048];
     char timestamp[50];
@@ -39,13 +45,20 @@ void handle_login(int client_socket, ControlMessage *msg)
         // Get unread appeals count
         int is_teacher = (strcmp(login_result.role, "teacher") == 0);
         int unread_count = get_unread_appeals_count(login_result.user_id, is_teacher);
-        
-        snprintf(response, sizeof(response), "NOTIFICATION LOGIN_SUCCESS %s\n{\"user_id\": %d, \"role\": \"%s\", \"unread_appeals_count\": %d}", 
+
+        snprintf(response, sizeof(response), "NOTIFICATION LOGIN_SUCCESS %s\n{\"user_id\": %d, \"role\": \"%s\", \"unread_appeals_count\": %d}",
                  timestamp, login_result.user_id, login_result.role, unread_count);
+
+        // Log success
+        char result_details[512];
+        snprintf(result_details, sizeof(result_details), "user_id=%d, role=%s, unread_appeals=%d",
+                 login_result.user_id, login_result.role, unread_count);
+        log_response("LOGIN", "SUCCESS", result_details);
     }
     else
     {
         snprintf(response, sizeof(response), "NOTIFICATION LOGIN_FAILURE %s\n{\"message\": \"User not found or wrong password\"}", timestamp);
+        log_response("LOGIN", "FAILURE", "Invalid credentials");
     }
 
     write(client_socket, response, strlen(response));
@@ -78,7 +91,10 @@ void handle_signup(int client_socket, ControlMessage *msg)
         }
     }
 
-    printf("email: %s, password: %s, username: %s, dob: %s\n", email, password, username, dob);
+    // Log request
+    char details[512];
+    snprintf(details, sizeof(details), "Email: %s, Name: %s, DOB: %s", email, username, dob);
+    log_request("SIGNUP", "Client", details);
 
     int result = signup(email, password, username, dob);
 
@@ -90,10 +106,12 @@ void handle_signup(int client_socket, ControlMessage *msg)
     if (result)
     {
         snprintf(response, sizeof(response), "NOTIFICATION SIGN_UP_SUCCESS %s", timestamp);
+        log_response("SIGNUP", "SUCCESS", "User registered successfully (pending approval)");
     }
     else
     {
         snprintf(response, sizeof(response), "NOTIFICATION SIGN_UP_FAILURE %s", timestamp);
+        log_response("SIGNUP", "FAILURE", "Registration failed (email may already exist)");
     }
 
     write(client_socket, response, strlen(response));

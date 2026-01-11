@@ -272,3 +272,5 @@
 2026-01-11 11:30:53 - Student 7 added to class 2
 2026-01-11 11:31:04 - Student 13 added to class 2
 2026-01-11 11:31:46 - User logged in with email: admin@test.com (role: teacher)
+2026-01-11 14:10:12 - User 13 joined exam 2 (submission 7)
+2026-01-11 14:10:31 - Submission 7 submitted

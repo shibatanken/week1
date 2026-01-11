@@ -13,14 +13,20 @@
 #include <QInputDialog>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QShowEvent>
+#include <QDebug>
+#include <QTimer>
 
 AdminDashboard::AdminDashboard(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::AdminDashboard),
-    tcpSocket(new QTcpSocket(this))
+    tcpSocket(new QTcpSocket(this)),
+    isFirstShow(true)
 {
     ui->setupUi(this);
-    
+
+    qDebug() << "AdminDashboard: Constructor called";
+
     connect(ui->btnLogout, &QPushButton::clicked, this, &AdminDashboard::logout);
     connect(ui->btnRefresh, &QPushButton::clicked, this, &AdminDashboard::loadData);
     connect(ui->btnAddUser, &QPushButton::clicked, this, &AdminDashboard::onAddUser);
@@ -32,8 +38,23 @@ AdminDashboard::~AdminDashboard()
     delete ui;
 }
 
+void AdminDashboard::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+
+    qDebug() << "AdminDashboard: showEvent called, isFirstShow =" << isFirstShow;
+
+    if (isFirstShow) {
+        isFirstShow = false;
+        // Load data after a short delay to ensure UI is fully initialized
+        QTimer::singleShot(100, this, &AdminDashboard::loadData);
+    }
+}
+
 void AdminDashboard::loadData()
 {
+    qDebug() << "AdminDashboard: loadData called, currentTab =" << ui->tabWidget->currentIndex();
+
     if (ui->tabWidget->currentIndex() == 0) {
         loadPendingUsers();
     } else {
@@ -43,6 +64,8 @@ void AdminDashboard::loadData()
 
 void AdminDashboard::onTabChanged(int index)
 {
+    qDebug() << "AdminDashboard: Tab changed to" << index;
+
     if (index == 0) {
         loadPendingUsers();
     } else {
@@ -52,25 +75,43 @@ void AdminDashboard::onTabChanged(int index)
 
 void AdminDashboard::loadPendingUsers()
 {
+    qDebug() << "AdminDashboard: loadPendingUsers called";
+
     tcpSocket->connectToHost(IPADDRESS, PORT);
     if (tcpSocket->waitForConnected(3000)) {
+        qDebug() << "AdminDashboard: Connected to server";
+
         QString request = "CONTROL ADMIN_GET_PENDING_USERS\n{}";
         tcpSocket->write(request.toUtf8());
         tcpSocket->flush();
-        
-        connect(tcpSocket, &QTcpSocket::readyRead, this, &AdminDashboard::onReadyRead);
+
+        qDebug() << "AdminDashboard: Request sent:" << request;
+
+        connect(tcpSocket, &QTcpSocket::readyRead, this, &AdminDashboard::onReadyRead, Qt::UniqueConnection);
+    } else {
+        qDebug() << "AdminDashboard: Failed to connect to server:" << tcpSocket->errorString();
+        QMessageBox::warning(this, "Lỗi kết nối", "Không thể kết nối đến server: " + tcpSocket->errorString());
     }
 }
 
 void AdminDashboard::loadAllUsers()
 {
+    qDebug() << "AdminDashboard: loadAllUsers called";
+
     tcpSocket->connectToHost(IPADDRESS, PORT);
     if (tcpSocket->waitForConnected(3000)) {
+        qDebug() << "AdminDashboard: Connected to server";
+
         QString request = "CONTROL ADMIN_GET_ALL_USERS\n{}";
         tcpSocket->write(request.toUtf8());
         tcpSocket->flush();
-        
-        connect(tcpSocket, &QTcpSocket::readyRead, this, &AdminDashboard::onReadyRead);
+
+        qDebug() << "AdminDashboard: Request sent:" << request;
+
+        connect(tcpSocket, &QTcpSocket::readyRead, this, &AdminDashboard::onReadyRead, Qt::UniqueConnection);
+    } else {
+        qDebug() << "AdminDashboard: Failed to connect to server:" << tcpSocket->errorString();
+        QMessageBox::warning(this, "Lỗi kết nối", "Không thể kết nối đến server: " + tcpSocket->errorString());
     }
 }
 

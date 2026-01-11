@@ -65,7 +65,13 @@
       "Bash(python F:/LTM/week1/frontend/fix_double_add_bug.py)",
       "Bash(wsl -d Ubuntu bash -c \"cd /mnt/f/LTM/week1/backend && make 2>&1\")",
       "Bash(python F:/LTM/week1/backend/fix_exam_controller_includes.py)",
-      "Bash(python F:/LTM/week1/frontend/complete_view_submission.py)"
+      "Bash(python F:/LTM/week1/frontend/complete_view_submission.py)",
+      "Bash(wsl -d Ubuntu bash -c \"mysql -u quizz -pQuizz2003@ quizz_db -e ''SHOW TABLES''\")",
+      "Bash(wsl -d Ubuntu bash -c \"mysql -u quizz -pQuizz2003@ quizz_db -e ''DESCRIBE user''\")",
+      "Bash(wsl -d Ubuntu bash -c \"cd /mnt/f/LTM/week1/backend && make clean && make 2>&1 | head -100\")",
+      "Bash(ls -1 *.md)",
+      "Bash(wsl -d Ubuntu bash -c \"cd /mnt/f/LTM/week1/backend && make clean && make 2>&1 | tail -50\")",
+      "Bash(wsl -d Ubuntu bash -c \"cd /mnt/f/LTM/week1/backend && ls -lh server\")"
     ]
   }
 }

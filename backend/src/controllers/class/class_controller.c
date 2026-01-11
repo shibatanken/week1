@@ -2,6 +2,7 @@
 #include "../../data_structures/index.h"
 #include "../../services/service.h"
 #include "../../utils/json_utils.h"
+#include "../../utils/log_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>

@@ -1,6 +1,7 @@
 #include "statistics_controller.h"
 #include "../../services/statistics/statistics_service.h"
 #include "../../utils/json_utils.h"
+#include "../../utils/log_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>

@@ -16,8 +16,11 @@ class AdminDashboard : public QWidget
 public:
     explicit AdminDashboard(QWidget *parent = nullptr);
     ~AdminDashboard();
-    
+
     void loadData();
+
+protected:
+    void showEvent(QShowEvent *event) override;
 
 signals:
     void logout();
@@ -35,7 +38,8 @@ private:
     QTcpSocket *tcpSocket;
     QJsonArray pendingUsers;
     QJsonArray allUsers;
-    
+    bool isFirstShow;
+
     void loadPendingUsers();
     void loadAllUsers();
     void displayPendingUsers();
