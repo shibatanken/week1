@@ -30,8 +30,6 @@ void *pthread_routine(void *arg);
 
 void handle_control_message(int socket, ControlMessage *msg)
 {
-    // Debug print
-    printf("Debug: Processing message type '%s'\n", msg->type);
 
     if (strcmp(msg->type, LOGIN) == 0) handle_login(socket, msg);
     else if (strcmp(msg->type, SIGN_UP) == 0) handle_signup(socket, msg);
@@ -101,56 +99,56 @@ void handle_control_message(int socket, ControlMessage *msg)
     else printf("Unknown message type: '%s'\n", msg->type);
 }
 
+void handle_data_message(int socket, DataMessage *msg)
+{
+    // Placeholder
+}
+
+void handle_notification_message(int socket, NotificationMessage *msg)
+{
+    // Placeholder
+}
+
 void *pthread_routine(void *arg)
 {
     pthread_arg_t *pthread_arg = (pthread_arg_t *)arg;
-    int client_socket = pthread_arg->new_socket_fd;
-    struct sockaddr_in client_address = pthread_arg->client_address;
-    free(arg);
+    int new_socket_fd = pthread_arg->new_socket_fd;
 
     char buffer[4096];
-    ControlMessage msg;
-    memset(&msg, 0, sizeof(msg));
+    memset(buffer, 0, sizeof(buffer));
+    read(new_socket_fd, buffer, sizeof(buffer));
+    printf("Received message: %s\n", buffer);
 
-    printf("Handling connection from %s:%d\n", inet_ntoa(client_address.sin_addr), ntohs(client_address.sin_port));
+    char *header = strtok(buffer, "\n");
+    char *body = header + strlen(header) + 1;
 
-    while (1)
+    printf("header: %s - body: %s\n", header, body);
+    pthread_mutex_lock(&lock);
+    if (strncmp(header, "CONTROL", 7) == 0)
     {
-        memset(buffer, 0, sizeof(buffer));
-        int bytes_read = read(client_socket, buffer, sizeof(buffer) - 1);
-        if (bytes_read <= 0)
-        {
-            break; 
-        }
-
-        // Parse line by line to support CONTROL COMMAND\nBODY
-        char *line = strtok(buffer, "\n");
-        if (line == NULL) continue;
-        
-        // Fix: Strip "CONTROL " prefix if present
-        if (strncmp(line, "CONTROL ", 8) == 0) {
-            strncpy(msg.type, line + 8, sizeof(msg.type) - 1);
-        } else {
-            strncpy(msg.type, line, sizeof(msg.type) - 1);
-        }
-        
-        // The body starts after the first newline. 
-        // buffer contains the read data, strtok put a \0 at the end of line.
-        // So body starts at buffer + strlen(line) + 1.
-        char *body_start = buffer + strlen(line) + 1;
-        
-        if (body_start < buffer + bytes_read) {
-             strncpy(msg.body, body_start, sizeof(msg.body) - 1);
-        } else {
-             memset(msg.body, 0, sizeof(msg.body));
-        }
-
-        printf("Received raw command: %s. Parsed type: %s\n", line, msg.type);
-        handle_control_message(client_socket, &msg);
-        break; 
+        ControlMessage msg;
+        sscanf(header, "CONTROL %s", msg.type);
+        strncpy(msg.body, body, sizeof(msg.body) - 1);
+        handle_control_message(new_socket_fd, &msg);
     }
-    
-    close(client_socket);
+    else if (strncmp(header, "DATA", 4) == 0)
+    {
+        DataMessage msg;
+        sscanf(header, "DATA %s %s %d", msg.type, msg.data_type, &msg.data_size);
+        strncpy(msg.body, body, sizeof(msg.body) - 1);
+        handle_data_message(new_socket_fd, &msg);
+    }
+    else if (strncmp(header, "NOTIFICATION", 12) == 0)
+    {
+        NotificationMessage msg;
+        sscanf(header, "NOTIFICATION %s %s", msg.type, msg.timestamp);
+        strncpy(msg.body, body, sizeof(msg.body) - 1);
+        handle_notification_message(new_socket_fd, &msg);
+    }
+    pthread_mutex_unlock(&lock);
+
+    close(new_socket_fd);
+    free(pthread_arg);
     return NULL;
 }
 
