@@ -160,7 +160,9 @@ void MainWindow::showExamList() {
 }
 
 void MainWindow::showExamResult(int submissionId) {
-    // Could load result into a dedicated view
+    // Load submission result into ExamTaking (result view mode)
+    // For now, we redirect to exam list - user can see score there
+    // TODO: Load full submission details with answers in ExamTaking result screen
     Q_UNUSED(submissionId);
     showExamList();
 }

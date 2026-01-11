@@ -2,10 +2,12 @@
 #include "../../data_structures/index.h"
 #include "../../services/service.h"
 #include "../../utils/json_utils.h"
+#include "../../db/connect-db.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <mysql/mysql.h>
 #include <cjson/cJSON.h>
 #include <time.h>
 
@@ -311,10 +313,48 @@ void handle_delete_question_from_bank(int client_socket, ControlMessage *msg)
     close(client_socket);
 }
 
-// Legacy mapped to bank
+// Delete question from exam (unlink only, do NOT delete from bank)
 void handle_delete_exam_question(int client_socket, ControlMessage *msg)
 {
-    handle_delete_question_from_bank(client_socket, msg);
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 1);
+    int question_id = -1;
+    for (int i = 0; i < pair_count; i++) {
+        if (strcmp(pairs[i].key, "question_id") == 0) question_id = atoi(pairs[i].value);
+    }
+
+    // CRITICAL FIX: Only unlink from exam, do NOT delete from question bank
+    // We just need to mark this question as not part of the exam
+    // The question should remain in the question bank for reuse
+
+    // For now, we'll delete the exam_questions record only
+    // This requires a new service function
+    MYSQL *conn = get_db_connection();
+    if (conn == NULL) {
+        char response[256];
+        snprintf(response, sizeof(response), "NOTIFICATION DELETE_QUESTION_FAILURE\n{\"message\": \"Database connection failed\"}");
+        write(client_socket, response, strlen(response));
+        close(client_socket);
+        return;
+    }
+
+    char query[512];
+    snprintf(query, sizeof(query), "DELETE FROM exam_questions WHERE id = %d", question_id);
+
+    int result = mysql_query(conn, query);
+    char response[2048];
+    char timestamp[50];
+    time_t now = time(NULL);
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%S", localtime(&now));
+
+    if (result != 0) {
+        snprintf(response, sizeof(response), "NOTIFICATION DELETE_QUESTION_FAILURE %s\n{\"message\": \"Failed to delete question from exam\"}", timestamp);
+    } else {
+        snprintf(response, sizeof(response), "NOTIFICATION DELETE_QUESTION_SUCCESS %s\n{\"message\": \"Question removed from exam (still in bank)\"}", timestamp);
+    }
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
 }
 
 // ============= STUDENT EXAM FLOW HANDLERS =============

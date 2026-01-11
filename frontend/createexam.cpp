@@ -62,7 +62,7 @@ CreateExam::CreateExam(QWidget *parent) :
     
     // Connect signals
     connect(ui->saveExamButton, &QPushButton::clicked, this, &CreateExam::on_saveExamButton_clicked);
-    connect(ui->addQuestionButton, &QPushButton::clicked, this, &CreateExam::on_addQuestionButton_clicked);
+    // Qt auto-connects on_addQuestionButton_clicked - no manual connect needed
     connect(ui->publishButton, &QPushButton::clicked, this, &CreateExam::on_publishButton_clicked);
 }
 
