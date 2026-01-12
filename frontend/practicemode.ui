@@ -164,16 +164,6 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>btnBackFromResult</sender>
-   <signal>clicked()</signal>
-   <receiver>PracticeMode</receiver>
-   <slot>backToClassDetail()</slot>
-  </connection>
- </connections>
- <slots>
-  <slot>backToClassDetail()</slot>
- </slots>
+ <connections/>
 </ui>
 

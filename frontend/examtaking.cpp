@@ -275,8 +275,8 @@ void ExamTaking::onReadyRead()
         }
     }
     else if (responseStr.contains("JOIN_EXAM_FAILURE") || responseStr.contains("EXAM_FOR_STUDENT_FAILURE")) {
-        QMessageBox::critical(this, "Lỗi", "Không thể tham gia bài thi!");
-        emit backToExamList();
+        // Kiểm tra xem exam đã finished chưa và có submission không
+        checkAndShowOldExamResult();
     }
 }
 
@@ -712,5 +712,181 @@ void ExamTaking::closeEvent(QCloseEvent *event)
     }
 
     event->accept();
+}
+
+void ExamTaking::checkAndShowOldExamResult()
+{
+    // Kiểm tra xem exam đã finished và có submission không
+    QTcpSocket *checkSocket = new QTcpSocket(this);
+    QSharedPointer<bool> connectionSuccess(new bool(false));
+    
+    connect(checkSocket, &QTcpSocket::connected, [this, checkSocket, connectionSuccess]() {
+        *connectionSuccess = true;
+        QJsonObject json;
+        json["exam_id"] = examId;
+        json["user_id"] = UserData::instance().getUserId();
+        
+        QString request = QString("CONTROL GET_SUBMISSION_STATUS\n%1")
+            .arg(QString(QJsonDocument(json).toJson(QJsonDocument::Compact)));
+        checkSocket->write(request.toUtf8());
+        checkSocket->flush();
+    });
+    
+    connect(checkSocket, &QTcpSocket::readyRead, [this, checkSocket]() {
+        QByteArray response = checkSocket->readAll();
+        QString responseStr(response);
+        checkSocket->close();
+        checkSocket->deleteLater();
+        
+        int jsonStart = responseStr.indexOf('{');
+        if (jsonStart == -1) {
+            QMessageBox::information(this, "Thông báo", "Bạn chưa tham gia bài thi này.");
+            emit backToExamList();
+            return;
+        }
+        
+        QJsonDocument doc = QJsonDocument::fromJson(responseStr.mid(jsonStart).toUtf8());
+        if (doc.isNull()) {
+            QMessageBox::information(this, "Thông báo", "Bạn chưa tham gia bài thi này.");
+            emit backToExamList();
+            return;
+        }
+        
+        QJsonObject obj = doc.object();
+        int submissionId = obj["submission_id"].toInt();
+        QString status = obj["status"].toString();
+        
+        if (submissionId > 0 && status == "submitted") {
+            // Có submission đã nộp → hiển thị kết quả
+            emit examFinished(submissionId);
+        } else if (submissionId > 0 && status == "in_progress") {
+            // Có submission nhưng chưa nộp → thông báo
+            QMessageBox::information(this, "Thông báo", 
+                "Bạn đã bắt đầu làm bài thi này nhưng chưa nộp bài.\n"
+                "Vui lòng hoàn thành bài thi trong thời gian quy định.");
+            emit backToExamList();
+        } else {
+            // Không có submission
+            QMessageBox::information(this, "Thông báo", "Bạn chưa tham gia bài thi này.");
+            emit backToExamList();
+        }
+    });
+    
+    connect(checkSocket, &QTcpSocket::errorOccurred, [this, checkSocket, connectionSuccess](QAbstractSocket::SocketError) {
+        if (!(*connectionSuccess)) {
+            // Chỉ hiển thị lỗi nếu chưa kết nối được
+            QMessageBox::critical(this, "Lỗi", 
+                QString("Không thể kết nối đến server!\n\n"
+                        "Vui lòng kiểm tra:\n"
+                        "1. Backend server đã được khởi động chưa?\n"
+                        "2. IP và Port trong config.h có đúng không?\n"
+                        "3. Firewall có chặn kết nối không?"));
+        }
+        checkSocket->deleteLater();
+        emit backToExamList();
+    });
+    
+    checkSocket->connectToHost(IPADDRESS, PORT);
+    if (!checkSocket->waitForConnected(3000)) {
+        if (!(*connectionSuccess)) {
+            QMessageBox::critical(this, "Lỗi", 
+                QString("Không thể kết nối đến server tại %1:%2!\n\n"
+                        "Vui lòng kiểm tra:\n"
+                        "1. Backend server đã được khởi động chưa?\n"
+                        "2. IP và Port có đúng không?\n"
+                        "3. Firewall có chặn kết nối không?")
+                    .arg(IPADDRESS).arg(PORT));
+        }
+        checkSocket->deleteLater();
+        emit backToExamList();
+    }
+}
+
+void ExamTaking::loadExamResult(int submissionId)
+{
+    qDebug() << "=== loadExamResult ===";
+    qDebug() << "submissionId:" << submissionId;
+    
+    // Reset state
+    this->submissionId = submissionId;
+    questions = QJsonArray();
+    userAnswers.clear();
+    currentQuestionIndex = 0;
+    
+    // Hiển thị loading state ngay - QUAN TRỌNG: Phải set result page trước
+    ui->stackedWidget->setCurrentIndex(1); // Show result page (index 1)
+    qDebug() << "Set result page, current index:" << ui->stackedWidget->currentIndex();
+    
+    // Set loading text
+    ui->lblExamName->setText("Đang tải kết quả...");
+    ui->lblResultScore->setText("...");
+    ui->lblResultDetail->setText("Đang tải dữ liệu...");
+    ui->textResultDetails->setText("Vui lòng đợi...");
+    
+    // Force update
+    ui->stackedWidget->update();
+    this->update();
+    
+    // Disconnect any existing connections
+    if (tcpSocket->state() != QAbstractSocket::UnconnectedState) {
+        tcpSocket->disconnect(this);
+        tcpSocket->close();
+    }
+    
+    // Connect to server to get exam result (async)
+    tcpSocket->connectToHost(IPADDRESS, PORT);
+    
+    connect(tcpSocket, &QTcpSocket::connected, [this, submissionId]() {
+        QJsonObject json;
+        json["submission_id"] = submissionId;
+        
+        QString request = QString("CONTROL GET_EXAM_RESULT\n%1")
+            .arg(QString(QJsonDocument(json).toJson(QJsonDocument::Compact)));
+        tcpSocket->write(request.toUtf8());
+        tcpSocket->flush();
+    });
+    
+    connect(tcpSocket, &QTcpSocket::readyRead, [this]() {
+        QByteArray response = tcpSocket->readAll();
+        QString responseStr(response);
+        tcpSocket->disconnect(this);
+        tcpSocket->close();
+        
+        int jsonStart = responseStr.indexOf('{');
+        if (jsonStart == -1) {
+            QMessageBox::critical(this, "Lỗi", "Dữ liệu không hợp lệ!");
+            emit backToExamList();
+            return;
+        }
+        
+        QJsonDocument doc = QJsonDocument::fromJson(responseStr.mid(jsonStart).toUtf8());
+        if (doc.isNull()) {
+            QMessageBox::critical(this, "Lỗi", "Không thể parse dữ liệu!");
+            emit backToExamList();
+            return;
+        }
+        
+        QJsonObject resultObj = doc.object();
+        
+        // Extract exam info
+        examName = resultObj["exam_name"].toString();
+        ui->lblExamName->setText(examName);
+        
+        // Show result
+        showResult(resultObj);
+    });
+    
+    connect(tcpSocket, &QTcpSocket::errorOccurred, [this](QAbstractSocket::SocketError) {
+        QMessageBox::critical(this, "Lỗi", "Không thể kết nối server!");
+        tcpSocket->disconnect(this);
+        emit backToExamList();
+    });
+    
+    // Nếu không kết nối được trong 3 giây, báo lỗi
+    if (!tcpSocket->waitForConnected(3000)) {
+        QMessageBox::critical(this, "Lỗi", "Không thể kết nối server!");
+        tcpSocket->disconnect(this);
+        emit backToExamList();
+    }
 }
 

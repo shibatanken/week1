@@ -63,6 +63,7 @@ void handle_control_message(int socket, ControlMessage *msg)
     else if (strcmp(msg->type, START_EXAM) == 0) handle_start_exam(socket, msg);
     else if (strcmp(msg->type, JOIN_EXAM) == 0) handle_join_exam(socket, msg);
     else if (strcmp(msg->type, GET_EXAM_FOR_STUDENT) == 0) handle_get_exam_for_student(socket, msg);
+    else if (strcmp(msg->type, GET_SUBMISSION_STATUS) == 0) handle_get_submission_status(socket, msg);
     else if (strcmp(msg->type, SUBMIT_ANSWER) == 0) handle_submit_answer(socket, msg);
     else if (strcmp(msg->type, SUBMIT_EXAM) == 0) handle_submit_exam(socket, msg);
     else if (strcmp(msg->type, GET_EXAM_RESULT) == 0) handle_get_exam_result(socket, msg);

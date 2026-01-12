@@ -17,6 +17,7 @@ PracticeMode::PracticeMode(QWidget *parent) :
     ui->setupUi(this);
     
     connect(ui->btnBack, &QPushButton::clicked, this, &PracticeMode::backToClassDetail);
+    connect(ui->btnBackFromResult, &QPushButton::clicked, this, &PracticeMode::backToClassDetail);
     connect(ui->btnStart, &QPushButton::clicked, this, &PracticeMode::onStartPractice);
     connect(ui->btnNext, &QPushButton::clicked, this, &PracticeMode::onNextQuestion);
     connect(ui->btnFinish, &QPushButton::clicked, this, &PracticeMode::onFinishPractice);

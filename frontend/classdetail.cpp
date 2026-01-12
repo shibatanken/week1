@@ -139,14 +139,17 @@ void ClassDetail::loadExamsInClass()
                     int timeLimit = examObj["time_limit"].toInt();
                     
                     QString displayText;
+                    QString normalizedStatus = status.toLower();
                     if (isStudent) {
                         // Sinh viên: hiển thị đơn giản hơn
-                        if (status == "published") {
+                        if (normalizedStatus == "published") {
                             displayText = QString("📝 %1 (%2 câu, %3 phút)").arg(examTitle).arg(questionCount).arg(timeLimit);
-                        } else if (status == "ongoing") {
+                        } else if (normalizedStatus == "ongoing") {
                             displayText = QString("🔴 %1 - ĐANG DIỄN RA (%2 câu)").arg(examTitle).arg(questionCount);
                         } else {
+                            // finished, closed, hoặc bất kỳ status nào khác = đã kết thúc
                             displayText = QString("✅ %1 - Đã kết thúc").arg(examTitle);
+                            normalizedStatus = "finished"; // Normalize để check sau
                         }
                     } else {
                         // Giáo viên: hiển thị đầy đủ
@@ -157,9 +160,9 @@ void ClassDetail::loadExamsInClass()
                     item->setData(Qt::UserRole, examId);
                     item->setData(Qt::UserRole + 1, examTitle);
                     item->setData(Qt::UserRole + 2, timeLimit);
-                    item->setData(Qt::UserRole + 3, status);
+                    item->setData(Qt::UserRole + 3, normalizedStatus); // Lưu normalized status
                     
-                    if (status == "closed" || status == "finished") {
+                    if (normalizedStatus == "closed" || normalizedStatus == "finished") {
                         item->setForeground(Qt::gray);
                     } else if (status == "ongoing") {
                         item->setForeground(Qt::red);
@@ -208,60 +211,99 @@ void ClassDetail::onExamItemClicked(QListWidgetItem *item)
     if (examId <= 0) return; // Ignore placeholder items
 
     QString userRole = UserData::instance().getRole();
+    qDebug() << "=== ClassDetail::onExamItemClicked ===";
+    qDebug() << "examId:" << examId;
+    qDebug() << "userRole:" << userRole;
 
     if (userRole == "student") {
         // Sinh viên → mở làm bài thi hoặc xem kết quả
         QString examName = item->data(Qt::UserRole + 1).toString();
         int timeLimit = item->data(Qt::UserRole + 2).toInt();
-        QString status = item->data(Qt::UserRole + 3).toString();
+        QString status = item->data(Qt::UserRole + 3).toString().toLower();
+        
+        qDebug() << "examName:" << examName;
+        qDebug() << "timeLimit:" << timeLimit;
+        qDebug() << "status:" << status;
 
-        if (status == "finished" || status == "closed") {
-            // Bài thi đã kết thúc → lấy submission_id và xem kết quả
-            QTcpSocket socket;
-            socket.connectToHost(IPADDRESS, PORT);
-            if (!socket.waitForConnected(3000)) {
-                QMessageBox::critical(this, "Lỗi", "Không thể kết nối server!");
-                return;
-            }
-
-            QJsonObject json;
-            json["exam_id"] = examId;
-            json["user_id"] = UserData::instance().getUserId();
-
-            QString request = QString("CONTROL GET_SUBMISSION_STATUS\n%1")
-                .arg(QString(QJsonDocument(json).toJson(QJsonDocument::Compact)));
-            socket.write(request.toUtf8());
-            socket.flush();
-
-            if (!socket.waitForReadyRead(5000)) {
-                QMessageBox::information(this, "Thông báo", "Bạn chưa tham gia bài thi này.");
-                socket.close();
-                return;
-            }
-
-            QByteArray response = socket.readAll();
-            QString responseStr(response);
-            socket.close();
-
-            int jsonStart = responseStr.indexOf('{');
-            if (jsonStart == -1) {
-                QMessageBox::information(this, "Thông báo", "Bạn chưa tham gia bài thi này.");
-                return;
-            }
-
-            QJsonDocument doc = QJsonDocument::fromJson(responseStr.mid(jsonStart).toUtf8());
-            QJsonObject obj = doc.object();
-            int submissionId = obj["submission_id"].toInt();
-
-            if (submissionId > 0) {
-                emit viewExamResult(submissionId);
-            } else {
-                QMessageBox::information(this, "Thông báo", "Bạn chưa tham gia bài thi này.");
-            }
+        // QUAN TRỌNG: Luôn kiểm tra submission status trước để biết đã làm bài chưa
+        // Nếu đã submitted thì xem kết quả, nếu chưa thì mới làm bài
+        qDebug() << "Kiểm tra submission status...";
+        QTcpSocket socket;
+        socket.connectToHost(IPADDRESS, PORT);
+        if (!socket.waitForConnected(3000)) {
+            qDebug() << "Không thể kết nối server!";
+            QMessageBox::critical(this, "Lỗi kết nối", 
+                QString("Không thể kết nối đến server tại %1:%2!\n\n"
+                        "Vui lòng kiểm tra:\n"
+                        "1. Backend server đã được khởi động chưa?\n"
+                        "2. IP và Port trong config.h có đúng không?\n"
+                        "3. Firewall có chặn kết nối không?")
+                    .arg(IPADDRESS).arg(PORT));
             return;
         }
 
-        emit startExamForStudent(examId, examName, timeLimit);
+        QJsonObject json;
+        json["exam_id"] = examId;
+        json["user_id"] = UserData::instance().getUserId();
+
+        QString request = QString("CONTROL GET_SUBMISSION_STATUS\n%1")
+            .arg(QString(QJsonDocument(json).toJson(QJsonDocument::Compact)));
+        qDebug() << "Sending request:" << request;
+        socket.write(request.toUtf8());
+        socket.flush();
+
+        if (!socket.waitForReadyRead(5000)) {
+            qDebug() << "Không nhận được response, có thể chưa tham gia - cho phép làm bài";
+            socket.close();
+            // Chưa có submission → cho phép làm bài
+            emit startExamForStudent(examId, examName, timeLimit);
+            return;
+        }
+
+        QByteArray response = socket.readAll();
+        QString responseStr(response);
+        socket.close();
+        
+        qDebug() << "Response:" << responseStr;
+
+        // Parse response format: "DATA JSON GET_SUBMISSION_STATUS\n{...}"
+        int jsonStart = responseStr.indexOf('{');
+        if (jsonStart == -1) {
+            qDebug() << "Không tìm thấy JSON, cho phép làm bài";
+            // Không có submission → cho phép làm bài
+            emit startExamForStudent(examId, examName, timeLimit);
+            return;
+        }
+
+        QString jsonStr = responseStr.mid(jsonStart);
+        QJsonDocument doc = QJsonDocument::fromJson(jsonStr.toUtf8());
+        if (doc.isNull()) {
+            qDebug() << "Không thể parse JSON, cho phép làm bài";
+            qDebug() << "JSON string:" << jsonStr;
+            emit startExamForStudent(examId, examName, timeLimit);
+            return;
+        }
+        
+        QJsonObject obj = doc.object();
+        int submissionId = obj["submission_id"].toInt();
+        QString submissionStatus = obj["status"].toString();
+        
+        qDebug() << "submissionId:" << submissionId;
+        qDebug() << "submissionStatus:" << submissionStatus;
+
+        if (submissionId > 0 && submissionStatus == "submitted") {
+            // Đã có submission và đã nộp bài → xem kết quả
+            qDebug() << "Đã nộp bài, emitting viewExamResult with submissionId:" << submissionId;
+            emit viewExamResult(submissionId);
+        } else if (submissionId > 0 && submissionStatus == "in_progress") {
+            // Đã bắt đầu nhưng chưa nộp → tiếp tục làm bài
+            qDebug() << "Đang làm dở, emit startExamForStudent";
+            emit startExamForStudent(examId, examName, timeLimit);
+        } else {
+            // Chưa có submission → cho phép làm bài
+            qDebug() << "Chưa tham gia, emit startExamForStudent";
+            emit startExamForStudent(examId, examName, timeLimit);
+        }
     } else {
         // Giáo viên → mở chỉnh sửa đề
         emit openExamDetail(examId);

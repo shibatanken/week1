@@ -22,6 +22,7 @@ public:
     
     void setExamInfo(int examId, QString examName, int timeLimit);
     void startExam();
+    void loadExamResult(int submissionId); // Load và hiển thị kết quả bài làm cũ
 
 signals:
     void backToExamList();
@@ -62,6 +63,7 @@ private:
     void saveAllAnswers();
     void submitExam();
     void showResult(const QJsonObject &result);
+    void checkAndShowOldExamResult();
 };
 
 #endif // EXAMTAKING_H

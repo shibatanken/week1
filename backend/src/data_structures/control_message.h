@@ -37,6 +37,7 @@
 #define START_EXAM "START_EXAM"                     // Teacher bắt đầu kỳ thi
 #define JOIN_EXAM "JOIN_EXAM"                       // Student tham gia
 #define GET_EXAM_FOR_STUDENT "GET_EXAM_FOR_STUDENT" // Student lấy đề
+#define GET_SUBMISSION_STATUS "GET_SUBMISSION_STATUS" // Kiểm tra submission status
 #define SUBMIT_ANSWER "SUBMIT_ANSWER"               // Student trả lời 1 câu
 #define SUBMIT_EXAM "SUBMIT_EXAM"                   // Student nộp bài
 #define GET_EXAM_RESULT "GET_EXAM_RESULT"           // Xem kết quả

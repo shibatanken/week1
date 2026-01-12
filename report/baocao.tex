@@ -15,8 +15,13 @@
 \usepackage{longtable}
 \usepackage{enumitem}
 \usepackage{adjustbox}
+\usepackage{url}
+\usepackage{xurl}
 
 \geometry{left=3.5cm,right=2cm,top=3cm,bottom=2.5cm}
+
+% Macro để hiển thị JSON với ngắt dòng tự động
+\newcommand{\json}[1]{\texttt{\allowbreak#1\allowbreak}}
 
 % Cấu hình code listing
 \lstset{
@@ -335,76 +340,156 @@ NOTIFICATION LOGIN_SUCCESS 2024-01-15T10:30:00
 
 \subsection{Danh sách cấu trúc gói tin}
 
+\sloppy
 \subsubsection{Authentication}
 \begin{itemize}
-    \item \texttt{LOGIN} - Đăng nhập
-    \item \texttt{SIGN\_UP} - Đăng ký
+    \item \texttt{LOGIN} - Đăng nhập \\
+    Request body: \json{\{ "email": "student@test.com", "password": "123456" \}} \\
+    Response: \json{\{ "user\_id": 1, "role": "student", "unread\_appeals\_count": 0 \}}
+    \item \texttt{SIGN\_UP} - Đăng ký \\
+    Request body: \json{\{ "email": "student@test.com", "password": "123456", "name": "Nguyen Van A", "dob": "2000-01-01" \}} \\
+    Response: \json{\{ "status": "success", "message": "Sign up successful", "data": \{ "user\_id": 101 \} \}}
 \end{itemize}
 
 \subsubsection{Class Management}
 \begin{itemize}
-    \item \texttt{CREATE\_CLASS} - Tạo lớp học
-    \item \texttt{GET\_CLASS\_LIST} - Lấy danh sách lớp
-    \item \texttt{GET\_CLASS\_DETAIL} - Chi tiết lớp
-    \item \texttt{ADD\_STUDENT\_TO\_CLASS} - Thêm sinh viên
-    \item \texttt{REMOVE\_STUDENT\_FROM\_CLASS} - Xóa sinh viên
-    \item \texttt{GET\_MY\_CLASSES} - Lấy lớp của user
+    \item \texttt{CREATE\_CLASS} - Tạo lớp học \\
+    Request body: \json{\{ "class\_name": "Lớp 10A1", "description": "Mô tả lớp học", "teacher\_id": 1 \}} \\
+    Response: \json{\{ "status": "success", "message": "Class created", "data": \{ "class\_id": 1, "class\_name": "Lớp 10A1", "total\_students": 5 \} \}}
+    \item \texttt{GET\_CLASS\_LIST} - Lấy danh sách lớp \\
+    Request body: \json{\{\}} \\
+    Response: \json{\{ "data": [\{ "id": 1, "class\_name": "Lớp 10A1", "teacher\_id": 1 \}] \}}
+    \item \texttt{GET\_CLASS\_DETAIL} - Chi tiết lớp \\
+    Request body: \json{\{ "class\_id": 1 \}} \\
+    Response: \json{\{ "data": \{ "id": 1, "class\_name": "Lớp 10A1", "description": "Mô tả", "teacher\_id": 1 \} \}}
+    \item \texttt{ADD\_STUDENT\_TO\_CLASS} - Thêm sinh viên \\
+    Request body: \json{\{ "class\_id": 1, "student\_id": 5 \}} \\
+    Response: \json{\{ "status": "success", "message": "Student added to class" \}}
+    \item \texttt{REMOVE\_STUDENT\_FROM\_CLASS} - Xóa sinh viên \\
+    Request body: \json{\{ "class\_id": 1, "student\_id": 5 \}} \\
+    Response: \json{\{ "status": "success", "message": "Student removed from class" \}}
+    \item \texttt{GET\_MY\_CLASSES} - Lấy lớp của user \\
+    Request body: \json{\{ "user\_id": 1, "role": "teacher" \}} \\
+    Response: \json{\{ "data": [\{ "id": 1, "class\_name": "Lớp 10A1" \}] \}}
 \end{itemize}
 
 \subsubsection{Exam Management}
 \begin{itemize}
-    \item \texttt{CREATE\_EXAM} - Tạo đề thi
-    \item \texttt{GET\_EXAMS\_IN\_CLASS} - Lấy danh sách đề thi
-    \item \texttt{GET\_EXAM\_DETAIL} - Chi tiết đề thi
-    \item \texttt{UPDATE\_EXAM\_STATUS} - Cập nhật trạng thái
-    \item \texttt{START\_EXAM} - Bắt đầu kỳ thi
-    \item \texttt{JOIN\_EXAM} - Tham gia kỳ thi
-    \item \texttt{GET\_EXAM\_FOR\_STUDENT} - Lấy đề cho sinh viên
-    \item \texttt{SUBMIT\_ANSWER} - Nộp câu trả lời
-    \item \texttt{SUBMIT\_EXAM} - Nộp bài
-    \item \texttt{GET\_EXAM\_RESULT} - Xem kết quả
+    \item \texttt{CREATE\_EXAM} - Tạo đề thi \\
+    Request body: \json{\{ "exam\_name": "Kiểm tra giữa kỳ", "description": "Mô tả đề thi", "class\_id": 1, "time\_limit": 60, "start\_time": "2024-01-15 08:00:00", "end\_time": "2024-01-15 10:00:00" \}} \\
+    Response: \json{\{ "status": "success", "message": "Exam created successfully", "exam\_id": 1 \}}
+    \item \texttt{GET\_EXAMS\_IN\_CLASS} - Lấy danh sách đề thi \\
+    Request body: \json{\{ "class\_id": 1 \}} \\
+    Response: \json{\{ "data": [\{ "id": 1, "exam\_name": "Kiểm tra giữa kỳ", "status": "draft" \}] \}}
+    \item \texttt{GET\_EXAM\_DETAIL} - Chi tiết đề thi \\
+    Request body: \json{\{ "exam\_id": 1 \}} \\
+    Response: \json{\{ "data": \{ "id": 1, "exam\_name": "Kiểm tra giữa kỳ", "time\_limit": 60, "status": "published" \} \}}
+    \item \texttt{UPDATE\_EXAM\_STATUS} - Cập nhật trạng thái \\
+    Request body: \json{\{ "exam\_id": 1, "status": "published" \}} \\
+    Response: \json{\{ "status": "success", "message": "Exam status updated" \}}
+    \item \texttt{START\_EXAM} - Bắt đầu kỳ thi \\
+    Request body: \json{\{ "exam\_id": 1 \}} \\
+    Response: \json{\{ "status": "success", "message": "Exam started" \}}
+    \item \texttt{JOIN\_EXAM} - Tham gia kỳ thi \\
+    Request body: \json{\{ "exam\_id": 1, "user\_id": 5 \}} \\
+    Response: \json{\{ "status": "success", "message": "Joined exam successfully", "submission\_id": 10 \}}
+    \item \texttt{GET\_EXAM\_FOR\_STUDENT} - Lấy đề cho sinh viên \\
+    Request body: \json{\{ "exam\_id": 1, "user\_id": 5 \}} \\
+    Response: \json{\{ "data": \{ "exam\_id": 1, "questions": [\{ "id": 1, "question\_text": "Câu hỏi 1", "options": ["A", "B", "C", "D"] \}] \} \}}
+    \item \texttt{SUBMIT\_ANSWER} - Nộp câu trả lời \\
+    Request body: \json{\{ "submission\_id": 10, "question\_id": 1, "answer": "A" \}} \\
+    Response: \json{\{ "status": "success", "message": "Answer submitted" \}}
+    \item \texttt{SUBMIT\_EXAM} - Nộp bài \\
+    Request body: \json{\{ "submission\_id": 10 \}} \\
+    Response: \json{\{ "status": "success", "message": "Exam submitted", "score": 8.5, "total\_score": 10 \}}
+    \item \texttt{GET\_EXAM\_RESULT} - Xem kết quả \\
+    Request body: \json{\{ "submission\_id": 10 \}} \\
+    Response: \json{\{ "data": \{ "submission\_id": 10, "score": 8.5, "total\_score": 10, "answers": [\{ "question\_id": 1, "user\_answer": "A", "correct\_answer": "B", "is\_correct": false \}] \} \}}
 \end{itemize}
 
 \subsubsection{Question Management}
 \begin{itemize}
-    \item \texttt{ADD\_QUESTION\_TO\_BANK} - Thêm câu hỏi
-    \item \texttt{GET\_QUESTION\_BANK} - Lấy ngân hàng câu hỏi
-    \item \texttt{ADD\_EXAM\_QUESTION} - Thêm câu vào đề
-    \item \texttt{DELETE\_EXAM\_QUESTION} - Xóa câu khỏi đề
+    \item \texttt{ADD\_QUESTION\_TO\_BANK} - Thêm câu hỏi \\
+    Request body: \json{\{ "question\_text": "Câu hỏi 1?", "option\_a": "Đáp án A", "option\_b": "Đáp án B", "option\_c": "Đáp án C", "option\_d": "Đáp án D", "correct\_answer": "A" \}} \\
+    Response: \json{\{ "status": "success", "message": "Question added", "question\_id": 1 \}}
+    \item \texttt{GET\_QUESTION\_BANK} - Lấy ngân hàng câu hỏi \\
+    Request body: \json{\{\}} \\
+    Response: \json{\{ "data": [\{ "id": 1, "question\_text": "Câu hỏi 1?", "correct\_answer": "A" \}] \}}
+    \item \texttt{ADD\_EXAM\_QUESTION} - Thêm câu vào đề \\
+    Request body: \json{\{ "exam\_id": 1, "question\_id": 1 \}} \\
+    Response: \json{\{ "status": "success", "message": "Question added to exam" \}}
+    \item \texttt{DELETE\_EXAM\_QUESTION} - Xóa câu khỏi đề \\
+    Request body: \json{\{ "exam\_id": 1, "question\_id": 1 \}} \\
+    Response: \json{\{ "status": "success", "message": "Question removed from exam" \}}
 \end{itemize}
 
 \subsubsection{Practice Mode}
 \begin{itemize}
-    \item \texttt{START\_PRACTICE} - Bắt đầu luyện tập
-    \item \texttt{GET\_PRACTICE\_QUESTIONS} - Lấy câu hỏi luyện tập
-    \item \texttt{SUBMIT\_PRACTICE\_ANSWER} - Nộp câu trả lời
-    \item \texttt{FINISH\_PRACTICE} - Kết thúc luyện tập
+    \item \texttt{START\_PRACTICE} - Bắt đầu luyện tập \\
+    Request body: \json{\{ "user\_id": 5, "num\_questions": 10 \}} \\
+    Response: \json{\{ "status": "success", "message": "Practice started", "session\_id": 20 \}}
+    \item \texttt{GET\_PRACTICE\_QUESTIONS} - Lấy câu hỏi luyện tập \\
+    Request body: \json{\{ "session\_id": 20 \}} \\
+    Response: \json{\{ "data": \{ "questions": [\{ "id": 1, "question\_text": "Câu hỏi 1?", "options": ["A", "B", "C", "D"] \}] \} \}}
+    \item \texttt{SUBMIT\_PRACTICE\_ANSWER} - Nộp câu trả lời \\
+    Request body: \json{\{ "session\_id": 20, "question\_id": 1, "answer": "A" \}} \\
+    Response: \json{\{ "status": "success", "message": "Answer submitted" \}}
+    \item \texttt{FINISH\_PRACTICE} - Kết thúc luyện tập \\
+    Request body: \json{\{ "session\_id": 20 \}} \\
+    Response: \json{\{ "status": "success", "message": "Practice finished", "score": 8, "total": 10 \}}
 \end{itemize}
 
 \subsubsection{Appeal Management}
 \begin{itemize}
-    \item \texttt{SUBMIT\_APPEAL} - Gửi khiếu nại
-    \item \texttt{GET\_MY\_APPEALS} - Lấy khiếu nại của user
-    \item \texttt{GET\_APPEALS\_FOR\_TEACHER} - Lấy khiếu nại cho giáo viên
-    \item \texttt{REVIEW\_APPEAL} - Xử lý khiếu nại
+    \item \texttt{SUBMIT\_APPEAL} - Gửi khiếu nại \\
+    Request body: \json{\{ "submission\_id": 10, "question\_id": 1, "reason": "Đáp án không đúng" \}} \\
+    Response: \json{\{ "status": "success", "message": "Appeal submitted", "appeal\_id": 5 \}}
+    \item \texttt{GET\_MY\_APPEALS} - Lấy khiếu nại của user \\
+    Request body: \json{\{ "user\_id": 5 \}} \\
+    Response: \json{\{ "data": [\{ "id": 5, "submission\_id": 10, "status": "pending", "reason": "Đáp án không đúng" \}] \}}
+    \item \texttt{GET\_APPEALS\_FOR\_TEACHER} - Lấy khiếu nại cho giáo viên \\
+    Request body: \json{\{ "teacher\_id": 1 \}} \\
+    Response: \json{\{ "data": [\{ "id": 5, "student\_name": "Nguyen Van A", "exam\_name": "Kiểm tra giữa kỳ", "status": "pending" \}] \}}
+    \item \texttt{REVIEW\_APPEAL} - Xử lý khiếu nại \\
+    Request body: \json{\{ "appeal\_id": 5, "decision": "approved", "new\_score": 9.0 \}} \\
+    Response: \json{\{ "status": "success", "message": "Appeal reviewed" \}}
 \end{itemize}
 
 \subsubsection{Admin Management}
 \begin{itemize}
-    \item \texttt{ADMIN\_GET\_PENDING\_USERS} - Lấy user chờ duyệt
-    \item \texttt{ADMIN\_APPROVE\_USER} - Duyệt user
-    \item \texttt{ADMIN\_REJECT\_USER} - Từ chối user
-    \item \texttt{ADMIN\_GET\_ALL\_USERS} - Lấy tất cả user
-    \item \texttt{ADMIN\_ADD\_USER} - Thêm user
-    \item \texttt{ADMIN\_UPDATE\_USER} - Cập nhật user
-    \item \texttt{ADMIN\_DELETE\_USER} - Xóa user
+    \item \texttt{ADMIN\_GET\_PENDING\_USERS} - Lấy user chờ duyệt \\
+    Request body: \json{\{\}} \\
+    Response: \json{\{ "data": [\{ "id": 10, "email": "student@test.com", "name": "Nguyen Van A", "status": "pending" \}] \}}
+    \item \texttt{ADMIN\_APPROVE\_USER} - Duyệt user \\
+    Request body: \json{\{ "user\_id": 10 \}} \\
+    Response: \json{\{ "status": "success", "message": "User approved" \}}
+    \item \texttt{ADMIN\_REJECT\_USER} - Từ chối user \\
+    Request body: \json{\{ "user\_id": 10 \}} \\
+    Response: \json{\{ "status": "success", "message": "User rejected" \}}
+    \item \texttt{ADMIN\_GET\_ALL\_USERS} - Lấy tất cả user \\
+    Request body: \json{\{\}} \\
+    Response: \json{\{ "data": [\{ "id": 1, "email": "teacher@test.com", "name": "Teacher", "role": "teacher", "status": "approved" \}] \}}
+    \item \texttt{ADMIN\_ADD\_USER} - Thêm user \\
+    Request body: \json{\{ "email": "new@test.com", "password": "123456", "name": "New User", "role": "student" \}} \\
+    Response: \json{\{ "status": "success", "message": "User added", "user\_id": 15 \}}
+    \item \texttt{ADMIN\_UPDATE\_USER} - Cập nhật user \\
+    Request body: \json{\{ "user\_id": 10, "name": "Updated Name", "role": "teacher" \}} \\
+    Response: \json{\{ "status": "success", "message": "User updated" \}}
+    \item \texttt{ADMIN\_DELETE\_USER} - Xóa user \\
+    Request body: \json{\{ "user\_id": 10 \}} \\
+    Response: \json{\{ "status": "success", "message": "User deleted" \}}
 \end{itemize}
 
 \subsubsection{Statistics}
 \begin{itemize}
-    \item \texttt{GET\_EXAM\_STATISTICS} - Thống kê đề thi
-    \item \texttt{GET\_CLASS\_STATISTICS} - Thống kê lớp học
+    \item \texttt{GET\_EXAM\_STATISTICS} - Thống kê đề thi \\
+    Request body: \json{\{ "exam\_id": 1 \}} \\
+    Response: \json{\{ "data": \{ "exam\_id": 1, "total\_students": 30, "average\_score": 7.5, "max\_score": 10, "min\_score": 5 \} \}}
+    \item \texttt{GET\_CLASS\_STATISTICS} - Thống kê lớp học \\
+    Request body: \json{\{ "class\_id": 1 \}} \\
+    Response: \json{\{ "data": \{ "class\_id": 1, "total\_exams": 5, "total\_students": 30, "average\_score": 7.8 \} \}}
 \end{itemize}
+\fussy
 
 \chapter{Cài đặt và triển khai}
 

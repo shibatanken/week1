@@ -24,6 +24,7 @@ void handle_delete_question_from_bank(int client_socket, ControlMessage *msg);
 void handle_start_exam(int client_socket, ControlMessage *msg);
 void handle_join_exam(int client_socket, ControlMessage *msg);
 void handle_get_exam_for_student(int client_socket, ControlMessage *msg);
+void handle_get_submission_status(int client_socket, ControlMessage *msg);
 void handle_submit_answer(int client_socket, ControlMessage *msg);
 void handle_submit_exam(int client_socket, ControlMessage *msg);
 void handle_get_exam_result(int client_socket, ControlMessage *msg);

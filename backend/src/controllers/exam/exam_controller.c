@@ -479,6 +479,31 @@ void handle_get_exam_for_student(int client_socket, ControlMessage *msg)
     free(response);
 }
 
+// Get submission status for a student
+void handle_get_submission_status(int client_socket, ControlMessage *msg)
+{
+    KeyValuePair pairs[10];
+    int pair_count = parse_json(msg->body, pairs, 2);
+    int exam_id = -1, user_id = -1;
+    for (int i = 0; i < pair_count; i++) {
+        if (strcmp(pairs[i].key, "exam_id") == 0) exam_id = atoi(pairs[i].value);
+        else if (strcmp(pairs[i].key, "user_id") == 0) user_id = atoi(pairs[i].value);
+    }
+
+    char *status = get_submission_status(exam_id, user_id);
+    char response[2048];
+    
+    if (status) {
+        snprintf(response, sizeof(response), "DATA JSON GET_SUBMISSION_STATUS\n%s", status);
+        free(status);
+    } else {
+        snprintf(response, sizeof(response), "DATA JSON GET_SUBMISSION_STATUS\n{\"submission_id\": 0, \"status\": \"\", \"score\": 0.0, \"total_questions\": 0, \"correct_answers\": 0}");
+    }
+
+    write(client_socket, response, strlen(response));
+    close(client_socket);
+}
+
 // Student submits answer for one question
 void handle_submit_answer(int client_socket, ControlMessage *msg)
 {
