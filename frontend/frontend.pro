@@ -4,6 +4,9 @@ QT += network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
+QMAKE_CXXFLAGS += -std=c++17
+QMAKE_CXXFLAGS -= -std=gnu++1z
+QMAKE_CXXFLAGS -= -std=gnu++11
 
 SOURCES += \
     home.cpp \

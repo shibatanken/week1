@@ -202,24 +202,65 @@ void ClassDetail::on_createExamButton_clicked() { emit openCreateExam(currentCla
 void ClassDetail::on_membersButton_clicked() { emit openClassMembers(currentClassId, currentClassName); }
 void ClassDetail::on_practiceButton_clicked() { emit openPracticeMode(currentClassId, currentClassName); }
 
-void ClassDetail::onExamItemClicked(QListWidgetItem *item) 
-{ 
+void ClassDetail::onExamItemClicked(QListWidgetItem *item)
+{
     int examId = item->data(Qt::UserRole).toInt();
     if (examId <= 0) return; // Ignore placeholder items
-    
+
     QString userRole = UserData::instance().getRole();
-    
+
     if (userRole == "student") {
-        // Sinh viên → mở làm bài thi
+        // Sinh viên → mở làm bài thi hoặc xem kết quả
         QString examName = item->data(Qt::UserRole + 1).toString();
         int timeLimit = item->data(Qt::UserRole + 2).toInt();
         QString status = item->data(Qt::UserRole + 3).toString();
-        
+
         if (status == "finished" || status == "closed") {
-            QMessageBox::information(this, "Thông báo", "Bài kiểm tra này đã kết thúc.");
+            // Bài thi đã kết thúc → lấy submission_id và xem kết quả
+            QTcpSocket socket;
+            socket.connectToHost(IPADDRESS, PORT);
+            if (!socket.waitForConnected(3000)) {
+                QMessageBox::critical(this, "Lỗi", "Không thể kết nối server!");
+                return;
+            }
+
+            QJsonObject json;
+            json["exam_id"] = examId;
+            json["user_id"] = UserData::instance().getUserId();
+
+            QString request = QString("CONTROL GET_SUBMISSION_STATUS\n%1")
+                .arg(QString(QJsonDocument(json).toJson(QJsonDocument::Compact)));
+            socket.write(request.toUtf8());
+            socket.flush();
+
+            if (!socket.waitForReadyRead(5000)) {
+                QMessageBox::information(this, "Thông báo", "Bạn chưa tham gia bài thi này.");
+                socket.close();
+                return;
+            }
+
+            QByteArray response = socket.readAll();
+            QString responseStr(response);
+            socket.close();
+
+            int jsonStart = responseStr.indexOf('{');
+            if (jsonStart == -1) {
+                QMessageBox::information(this, "Thông báo", "Bạn chưa tham gia bài thi này.");
+                return;
+            }
+
+            QJsonDocument doc = QJsonDocument::fromJson(responseStr.mid(jsonStart).toUtf8());
+            QJsonObject obj = doc.object();
+            int submissionId = obj["submission_id"].toInt();
+
+            if (submissionId > 0) {
+                emit viewExamResult(submissionId);
+            } else {
+                QMessageBox::information(this, "Thông báo", "Bạn chưa tham gia bài thi này.");
+            }
             return;
         }
-        
+
         emit startExamForStudent(examId, examName, timeLimit);
     } else {
         // Giáo viên → mở chỉnh sửa đề

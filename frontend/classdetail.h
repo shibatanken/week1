@@ -27,6 +27,7 @@ signals:
     void openExamDetail(int examId);
     void startExamForStudent(int examId, QString examName, int timeLimit);
     void openPracticeMode(int classId, QString className);
+    void viewExamResult(int submissionId);
 
 private slots:
     void on_backButton_clicked();

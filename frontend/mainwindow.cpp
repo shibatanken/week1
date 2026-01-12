@@ -1,6 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "userdata.h"
+#include "config.h"
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -64,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(classDetailForm, &ClassDetail::openExamDetail, this, &MainWindow::showEditExam);
     connect(classDetailForm, &ClassDetail::startExamForStudent, this, &MainWindow::showExamTaking);
     connect(classDetailForm, &ClassDetail::openPracticeMode, this, &MainWindow::showPracticeMode);
+    connect(classDetailForm, &ClassDetail::viewExamResult, this, &MainWindow::showExamResult);
     connect(createExamForm, &CreateExam::backToClassDetail, [this]() {
         showClassDetail(currentClassId);
     });
@@ -160,12 +166,81 @@ void MainWindow::showExamList() {
 }
 
 void MainWindow::showExamResult(int submissionId) {
-    // Load submission result into ExamTaking (result view mode)
-    // For now, we redirect to exam list - user can see score there
-    // TODO: Load full submission details with answers in ExamTaking result screen
-    Q_UNUSED(submissionId);
-    showExamList();
+    // Connect to server to get exam result
+    tcpSocket->connectToHost(IPADDRESS, PORT);
+    if (!tcpSocket->waitForConnected(3000)) {
+        QMessageBox::critical(this, "Lỗi", "Không thể kết nối server!");
+        return;
+    }
+
+    QJsonObject json;
+    json["submission_id"] = submissionId;
+
+    QString request = QString("CONTROL GET_EXAM_RESULT\n%1").arg(QString(QJsonDocument(json).toJson(QJsonDocument::Compact)));
+    tcpSocket->write(request.toUtf8());
+    tcpSocket->flush();
+
+    if (!tcpSocket->waitForReadyRead(5000)) {
+        QMessageBox::critical(this, "Lỗi", "Không nhận được phản hồi từ server!");
+        tcpSocket->close();
+        return;
+    }
+
+    QByteArray response = tcpSocket->readAll();
+    QString responseStr(response);
+    tcpSocket->close();
+
+    // Parse response
+    int jsonStart = responseStr.indexOf('{');
+    if (jsonStart == -1) {
+        QMessageBox::critical(this, "Lỗi", "Dữ liệu không hợp lệ!");
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(responseStr.mid(jsonStart).toUtf8());
+    QJsonObject resultObj = doc.object();
+
+    // Build result display
+    QString examName = resultObj["exam_name"].toString();
+    double score = resultObj["score"].toDouble();
+    int correct = resultObj["correct_answers"].toInt();
+    int total = resultObj["total_questions"].toInt();
+
+    QString resultText = QString("<h2>%1</h2>").arg(examName);
+    resultText += QString("<p><b>Điểm:</b> %1/%2</p>").arg(score, 0, 'f', 1).arg(total);
+    resultText += QString("<p><b>Số câu đúng:</b> %1/%2</p><hr>").arg(correct).arg(total);
+
+    QJsonArray answers = resultObj["answers"].toArray();
+    for (int i = 0; i < answers.size(); i++) {
+        QJsonObject answer = answers[i].toObject();
+        QString content = answer["content"].toString();
+        QString userAnswer = answer["user_answer"].toString();
+        QString correctOption = answer["correct_option"].toString();
+        bool isCorrect = answer["is_correct"].toBool();
+
+        QString optionA = answer["option_a"].toString();
+        QString optionB = answer["option_b"].toString();
+        QString optionC = answer["option_c"].toString();
+        QString optionD = answer["option_d"].toString();
+
+        resultText += QString("<p><b>Câu %1:</b> %2</p>").arg(i + 1).arg(content);
+        resultText += QString("<p>A. %1<br>B. %2<br>C. %3<br>D. %4</p>").arg(optionA).arg(optionB).arg(optionC).arg(optionD);
+        resultText += QString("<p><b>Đáp án của bạn:</b> %1 %2</p>")
+                          .arg(userAnswer.isEmpty() ? "(Không trả lời)" : userAnswer)
+                          .arg(isCorrect ? "✓" : "✗");
+        resultText += QString("<p><b>Đáp án đúng:</b> %1</p><hr>").arg(correctOption);
+    }
+
+    // Show in a message box with scrollable text
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle("Kết quả bài thi");
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setText(resultText);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setStyleSheet("QLabel{min-width: 600px; min-height: 400px;}");
+    msgBox.exec();
 }
+
 
 void MainWindow::showPracticeMode(int classId, QString className) {
     currentClassId = classId;

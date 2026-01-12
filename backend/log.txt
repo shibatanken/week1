@@ -274,3 +274,194 @@
 2026-01-11 11:31:46 - User logged in with email: admin@test.com (role: teacher)
 2026-01-11 14:10:12 - User 13 joined exam 2 (submission 7)
 2026-01-11 14:10:31 - Submission 7 submitted
+
+[2026-01-12 01:53:30] REQUEST: LOGIN
+  User: Client
+  Details: Email: teacher@test.com
+2026-01-12 01:53:30 - User logged in with email: teacher@test.com (role: teacher)
+  Result: SUCCESS
+  user_id=12, role=teacher, unread_appeals=3
+========================================
+
+[2026-01-12 01:53:32] REQUEST: LOGIN
+  User: Client
+  Details: Email: teacher@test.com
+2026-01-12 01:53:32 - User logged in with email: teacher@test.com (role: teacher)
+  Result: SUCCESS
+  user_id=12, role=teacher, unread_appeals=3
+========================================
+
+[2026-01-12 01:53:35] REQUEST: LOGIN
+  User: Client
+  Details: Email: teacher@test.com
+2026-01-12 01:53:35 - User logged in with email: teacher@test.com (role: teacher)
+  Result: SUCCESS
+  user_id=12, role=teacher, unread_appeals=3
+========================================
+
+[2026-01-12 02:16:03] REQUEST: LOGIN
+  User: Client
+  Details: Email: teacher@test.com
+2026-01-12 02:16:03 - User logged in with email: teacher@test.com (role: teacher)
+  Result: SUCCESS
+  user_id=12, role=teacher, unread_appeals=3
+========================================
+
+[2026-01-12 02:16:56] REQUEST: LOGIN
+  User: Client
+  Details: Email: student1@test.com
+2026-01-12 02:16:56 - User logged in with email: student1@test.com (role: student)
+  Result: SUCCESS
+  user_id=13, role=student, unread_appeals=2
+========================================
+
+[2026-01-12 02:18:37] REQUEST: CREATE_EXAM
+  User: Teacher
+  Details: Name: test-2-may, Class ID: 1, Time Limit: 30 min
+2026-01-12 02:18:37 - Created exam: test-2-may in class 1
+  Result: SUCCESS
+  Exam ID: 38 created successfully
+========================================
+
+[2026-01-12 02:19:18] REQUEST: JOIN_EXAM
+  User: Student
+  Details: Exam ID: 38, User ID: 13
+2026-01-12 02:19:18 - User 13 joined exam 38 (submission 8)
+  Result: SUCCESS
+  Student joined exam (submission_id=8)
+========================================
+
+[2026-01-12 09:32:33] REQUEST: LOGIN
+  User: Client
+  Details: Email: student1@test.com
+2026-01-12 09:32:33 - User logged in with email: student1@test.com (role: student)
+  Result: SUCCESS
+  user_id=13, role=student, unread_appeals=2
+========================================
+
+[2026-01-12 09:31:05] REQUEST: JOIN_EXAM
+  User: Student
+  Details: Exam ID: 38, User ID: 13
+  Result: SUCCESS
+  Student joined exam (submission_id=8)
+========================================
+
+[2026-01-12 09:31:14] REQUEST: SUBMIT_EXAM
+  User: Student
+  Details: Submission ID: 8
+2026-01-12 09:31:14 - Submission 8 submitted
+  Result: SUCCESS
+  Exam submitted successfully (submission_id=8)
+========================================
+
+[2026-01-12 09:33:03] REQUEST: JOIN_EXAM
+  User: Student
+  Details: Exam ID: 2, User ID: 13
+  Result: FAILURE
+  Failed to join exam
+========================================
+
+[2026-01-12 09:31:40] REQUEST: JOIN_EXAM
+  User: Student
+  Details: Exam ID: 2, User ID: 13
+  Result: FAILURE
+  Failed to join exam
+========================================
+
+[2026-01-12 09:41:52] REQUEST: LOGIN
+  User: Client
+  Details: Email: student1@test.com
+2026-01-12 09:41:52 - User logged in with email: student1@test.com (role: student)
+  Result: SUCCESS
+  user_id=13, role=student, unread_appeals=2
+========================================
+
+[2026-01-12 09:57:04] REQUEST: JOIN_EXAM
+  User: Student
+  Details: Exam ID: 1, User ID: 13
+  Result: FAILURE
+  Failed to join exam
+========================================
+
+[2026-01-12 09:58:53] REQUEST: LOGIN
+  User: Client
+  Details: Email: student1@test.com
+2026-01-12 09:58:53 - User logged in with email: student1@test.com (role: student)
+  Result: SUCCESS
+  user_id=13, role=student, unread_appeals=2
+========================================
+
+[2026-01-12 09:58:58] REQUEST: JOIN_EXAM
+  User: Student
+  Details: Exam ID: 1, User ID: 13
+  Result: FAILURE
+  Failed to join exam
+========================================
+
+[2026-01-12 10:38:41] REQUEST: LOGIN
+  User: Client
+  Details: Email: student1@test.com
+2026-01-12 10:38:41 - User logged in with email: student1@test.com (role: student)
+  Result: SUCCESS
+  user_id=13, role=student, unread_appeals=2
+========================================
+
+[2026-01-12 10:38:45] REQUEST: JOIN_EXAM
+  User: Student
+  Details: Exam ID: 1, User ID: 13
+  Result: FAILURE
+  Failed to join exam
+========================================
+
+[2026-01-12 10:38:53] REQUEST: JOIN_EXAM
+  User: Student
+  Details: Exam ID: 38, User ID: 13
+  Result: FAILURE
+  Failed to join exam
+========================================
+
+[2026-01-12 10:39:16] REQUEST: LOGIN
+  User: Client
+  Details: Email: teacher@test.com
+2026-01-12 10:39:16 - User logged in with email: teacher@test.com (role: teacher)
+  Result: SUCCESS
+  user_id=12, role=teacher, unread_appeals=3
+========================================
+
+[2026-01-12 10:39:32] REQUEST: CREATE_EXAM
+  User: Teacher
+  Details: Name: HHHHH, Class ID: 1, Time Limit: 60 min
+2026-01-12 10:39:32 - Created exam: HHHHH in class 1
+  Result: SUCCESS
+  Exam ID: 39 created successfully
+========================================
+
+[2026-01-12 10:39:55] REQUEST: JOIN_EXAM
+  User: Student
+  Details: Exam ID: 39, User ID: 13
+2026-01-12 10:39:55 - User 13 joined exam 39 (submission 9)
+  Result: SUCCESS
+  Student joined exam (submission_id=9)
+========================================
+
+[2026-01-12 10:40:00] REQUEST: SUBMIT_EXAM
+  User: Student
+  Details: Submission ID: 9
+2026-01-12 10:40:00 - Submission 9 submitted
+  Result: SUCCESS
+  Exam submitted successfully (submission_id=9)
+========================================
+
+[2026-01-12 10:40:05] REQUEST: JOIN_EXAM
+  User: Student
+  Details: Exam ID: 39, User ID: 13
+  Result: FAILURE
+  Failed to join exam
+========================================
+
+[2026-01-12 10:40:17] REQUEST: JOIN_EXAM
+  User: Student
+  Details: Exam ID: 1, User ID: 13
+  Result: FAILURE
+  Failed to join exam
+========================================

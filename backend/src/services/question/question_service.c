@@ -9,15 +9,24 @@ int add_question(int room_id, const char *content, int difficulty, int *question
 {
     MYSQL *conn = get_db_connection();
     if (conn == NULL)
-    {   
+    {
         fprintf(stderr, "Database connection failed.\n");
         return 0;
     }
 
-    char query[1024];
+    // Map difficulty integer to ENUM string: 1=Easy, 2=Medium, 3=Hard
+    const char *difficulty_str = "Medium";
+    if (difficulty == 1) difficulty_str = "Easy";
+    else if (difficulty == 2) difficulty_str = "Medium";
+    else if (difficulty == 3) difficulty_str = "Hard";
+
+    char escaped_content[1024];
+    mysql_real_escape_string(conn, escaped_content, content, strlen(content));
+
+    char query[2048];
     snprintf(query, sizeof(query),
-             "INSERT INTO question (room_id, content, difficulty) VALUES (%d, '%s', %d)",
-             room_id, content, difficulty);
+             "INSERT INTO questions (class_id, content, difficulty) VALUES (%d, '%s', '%s')",
+             room_id, escaped_content, difficulty_str);
 
     if (mysql_query(conn, query))
     {
